@@ -1,7 +1,7 @@
-package interfaces;
+package glassLine.interfaces;
 
 public interface Conveyor {
-	
+
 	public abstract void msgPopUpLowered();
 	
 	public abstract void msgPopUpRaised();
@@ -11,5 +11,3 @@ public interface Conveyor {
 	public abstract void msgSwitchOff();
 
 }
-
-
