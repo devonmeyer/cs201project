@@ -11,3 +11,5 @@ public interface Conveyor {
 	public abstract void msgSwitchOff();
 
 }
+
+
