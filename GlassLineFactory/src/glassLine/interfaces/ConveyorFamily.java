@@ -2,8 +2,6 @@ package glassLine.interfaces;
 
 import java.util.List;
 
-
-
 public interface ConveyorFamily {
 
 	/**@params: ConveyorFamily family : recipient of glass
@@ -17,7 +15,8 @@ public interface ConveyorFamily {
 	* just make one or the other null depending on who is sending
 	*/
 	
-	void msgGlassTransferRequest(ConveyorFamily family, Robot robot); 
+	void msgGlassTransferRequest(ConveyorFamily family); 
+	void msgGlassTransferRequest(Robot robot);
 	
 	/** @params: String name : name of Glass, List processes : processes performed on glass  
 	 * */
