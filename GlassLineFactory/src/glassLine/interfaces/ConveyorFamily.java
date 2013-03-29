@@ -12,9 +12,8 @@ public interface ConveyorFamily {
 	void msgReadyForGlass(ConveyorFamily conveyorFamily,
 			boolean ready);
 	
-	/**@params: ConveyorFamily family : sender of galss, 
+	/**@params: ConveyorFamily family : sender of glass, 
 	 * Robot robot : in case a robot is sending request
-	* just make one or the other null depending on who is sending
 	*/
 	
 	void msgGlassTransferRequest(ConveyorFamily family); 
