@@ -11,7 +11,11 @@ public class Glass {
 									// performed on glass
 	
 	public Glass(List<String> processes) {
-//		this.setID(id);
+		this.setProcesses(processes);
+	}
+	
+	public Glass(int id, List<String> processes) {
+		this.setID(id);
 		this.setProcesses(processes);
 	}
 	
