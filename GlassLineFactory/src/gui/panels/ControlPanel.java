@@ -1,6 +1,7 @@
 
 package gui.panels;
 
+import glassLine.Glass;
 import gui.panels.subcontrolpanels.GlassInfoPanel;
 import gui.panels.subcontrolpanels.GlassSelectPanel;
 import gui.panels.subcontrolpanels.LogoPanel;
@@ -267,5 +268,9 @@ public class ControlPanel extends JPanel implements TReceiver
 	public String toString()
 	{
 		return "Control Panel";
+	}
+	
+	public void makeGlass(Glass g){
+		parent.makeGlass(g);
 	}
 }
