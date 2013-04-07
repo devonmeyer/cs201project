@@ -10,8 +10,8 @@ public class Glass {
 	private List<String> processes; // This contains the list of processes to be
 									// performed on glass
 	
-	public Glass(int id, List<String> processes) {
-		this.setID(id);
+	public Glass(List<String> processes) {
+//		this.setID(id);
 		this.setProcesses(processes);
 	}
 	
