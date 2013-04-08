@@ -270,7 +270,8 @@ public class ControlPanel extends JPanel implements TReceiver
 		return "Control Panel";
 	}
 	
-	public void makeGlass(Glass g){
+	public void makeGlass(Glass g
+			){
 		parent.makeGlass(g);
 	}
 }
