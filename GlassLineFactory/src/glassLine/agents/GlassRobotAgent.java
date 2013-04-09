@@ -8,7 +8,7 @@ import gui.panels.subcontrolpanels.GlassSelectPanel;
 
 import java.util.*;
 
-public class GlassRobot extends Agent{
+public class GlassRobotAgent extends Agent{
 	
 	/** DATA *******************/
 	/*
