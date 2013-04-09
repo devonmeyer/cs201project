@@ -24,10 +24,10 @@ public class OnlineMachineAgent extends Agent{
 	private int capacity;
 	private List<MyGlass> glassList; 
 	
-	private enum PreviousAgentState {none, requestingToSend, sendPending, sending};
-	private enum FollowingAgentState {none, requestSent, receptionPending, readyToReceive, occupied, readyToReturn};
-	private enum GlassState {none, needsProcessing, notNeedProcessing, doneProcessing}
-	private PreviousAgentState previousAgentState;
+	private enum PrecedingAgentState {none, requestingToSend, sendPending, sending};
+	private enum FollowingAgentState {none, requestSent, receptionPending, readyToReceive};
+	private enum GlassState {none, needsProcessing, doneProcessing}
+	private PrecedingAgentState precedingAgentState;
 	private FollowingAgentState followingAgentState;
 	
 	
@@ -45,36 +45,84 @@ public class OnlineMachineAgent extends Agent{
 		this.guiIndex = guiIndex;
 		this.capacity = capacity;
 		this.factory = factory;
+		this.transducer = transducer;
 		
-		this.previousAgentState = PreviousAgentState.none;
+		// Registering to the appropriate transducer channel
+		try{
+		if(type.equals("BREAKOUT"))
+			this.transducer.register(this, TChannel.BREAKOUT);
+		else if (type.equals("MANUAL_BREAKOUT"))
+			this.transducer.register(this, TChannel.MANUAL_BREAKOUT);
+		else if (type.equals("CUTTER"))
+			this.transducer.register(this, TChannel.CUTTER);
+		else if (type.equals("WASHER"))
+			this.transducer.register(this, TChannel.WASHER);
+		else if (type.equals("UV_LAMP"))
+			this.transducer.register(this, TChannel.UV_LAMP);
+		else if (type.equals("OVEN"))
+			this.transducer.register(this, TChannel.OVEN);
+		else if (type.equals("PAINTER"))
+			this.transducer.register(this, TChannel.PAINTER);
+		else
+			throw new Exception("Invalid Machine Type");
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+		}
+		this.precedingAgentState = PrecedingAgentState.none;
 		this.followingAgentState = FollowingAgentState.none;
+		
 	}
 
 	/** MESSAGES **/
 
-	/** This message is sent by the ConveyorAgent transferring a piece of glass. 
-	 * @params : int id, List<String> processes (list of processed to be performed)
+	/** This message is sent by the preceding ConveyorAgent or by a RobotAgent transferring a piece of glass. 
+	 * @params : Glass g (instance of glass)
 	 **/
 	
-	public void msgHereIsGlass(int id, List<String> processes) {
-		glassList.add(new MyGlass(new Glass(id, processes)));
-		this.previousAgentState = PreviousAgentState.none;
+	public void msgHereIsGlass(Glass g, boolean needsProcessing) {
+		print("Receiving new piece of glass.");
+		glassList.add(new MyGlass(g));
+		if(needsProcessing)
+			glassList.get(0).state = GlassState.needsProcessing;
+		else 
+			glassList.get(0).state = GlassState.doneProcessing;
+		this.precedingAgentState = PrecedingAgentState.none;
 		
 		stateChanged();
 	}
+	
+	/** This message is sent by the preceding ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass. 
+	 * @params : Glass g (instance of glass)
+	 **/
 
 	public void msgGlassTransferRequest(){
-		this.previousAgentState = PreviousAgentState.requestingToSend;
+		print("Received a glass transfer request.");
+		this.precedingAgentState = PrecedingAgentState.requestingToSend;
+		
+		stateChanged();
+	}
+	
+	/** This message is sent by the following ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass. 
+	 * @params : Glass g (instance of glass)
+	 **/
+
+	public void msgReadyForGlass(){
+		print("Received a confirmation that recipient is ready for glass transfer.");
+		this.followingAgentState = FollowingAgentState.readyToReceive;
 		
 		stateChanged();
 	}
 
+	/** SCHEDULER **/
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
+	
+	
+	/** ACTIONS **/
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
