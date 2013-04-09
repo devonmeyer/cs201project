@@ -28,14 +28,6 @@ public class PopupAgent extends Agent implements Popup {
 
     private Glass currentGlass;
 
-/*
-    private Sensor popupSensor;
-*/
-
-/*
-    private Sensor conveyorSensor;
-*/
-
     private Conveyor entryConveyor;
 
     private Conveyor exitConveyor;
@@ -55,8 +47,6 @@ public class PopupAgent extends Agent implements Popup {
 
     public PopupAgent(){
         currentGlass = null;
-/*        popupSensor = null;
-        conveyorSensor = null;*/
         robot = null;
         popupEngaged = false;
         conveyorGlassState = GlassState.NONE;
