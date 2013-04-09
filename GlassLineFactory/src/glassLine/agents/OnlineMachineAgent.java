@@ -116,6 +116,24 @@ public class OnlineMachineAgent extends Agent{
 
 		stateChanged();
 	}
+	
+	/** This message is sent when the processing animation is done.
+	 *
+	 **/
+	public void msgGlassDoneProcessing(){
+		this.glassList.get(0).state = GlassState.doneProcessing;
+		stateChanged();
+	}
+	
+	
+	/** This message is sent when the transfer animation is done.
+	 *
+	 **/
+	public void msgGlassRemoved(){
+		this.glassList.remove(0);
+		stateChanged();
+	}
+	
 
 	/** SCHEDULER **/
 
@@ -231,57 +249,57 @@ public class OnlineMachineAgent extends Agent{
 		if(type.equals("BREAKOUT")){
 			if(channel == TChannel.BREAKOUT){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
-					this.glassList.get(0).state = GlassState.doneProcessing;
+					this.msgGlassDoneProcessing();
 				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
-					this.glassList.remove(0);
+					msgGlassRemoved();
 				}
 			}
 		}else if (type.equals("MANUAL_BREAKOUT")){
 			if(channel == TChannel.MANUAL_BREAKOUT){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
-					this.glassList.get(0).state = GlassState.doneProcessing;
+					this.msgGlassDoneProcessing();
 				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
-					this.glassList.remove(0);
+					msgGlassRemoved();
 				}
 			}
 		}else if (type.equals("CUTTER")){
 			if(channel == TChannel.CUTTER){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
-					this.glassList.get(0).state = GlassState.doneProcessing;
+					this.msgGlassDoneProcessing();
 				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
-					this.glassList.remove(0);
+					msgGlassRemoved();
 				}
 			}
 		}else if (type.equals("WASHER")){
 			if(channel == TChannel.WASHER){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
-					this.glassList.get(0).state = GlassState.doneProcessing;
+					this.msgGlassDoneProcessing();
 				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
-					this.glassList.remove(0);
+					msgGlassRemoved();
 				}
 			}
 		}else if (type.equals("UV_LAMP")){
 			if(channel == TChannel.UV_LAMP){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
-					this.glassList.get(0).state = GlassState.doneProcessing;
+					this.msgGlassDoneProcessing();
 				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
-					this.glassList.remove(0);
+					msgGlassRemoved();
 				}
 			}
 		}else if (type.equals("OVEN")){
 			if(channel == TChannel.OVEN){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
-					this.glassList.get(0).state = GlassState.doneProcessing;
+					this.msgGlassDoneProcessing();
 				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
-					this.glassList.remove(0);
+					msgGlassRemoved();
 				}
 			}
 		}else if (type.equals("PAINTER")){
 			if(channel == TChannel.PAINTER){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
-					this.glassList.get(0).state = GlassState.doneProcessing;
+					this.msgGlassDoneProcessing();
 				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
-					this.glassList.remove(0);
+					msgGlassRemoved();
 				}
 			}
 
