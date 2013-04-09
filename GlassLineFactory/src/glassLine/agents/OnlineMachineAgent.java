@@ -23,54 +23,58 @@ public class OnlineMachineAgent extends Agent{
 	private int guiIndex;  // for communication with GUI through transducer
 	private int capacity;
 	private List<MyGlass> glassList; 
-	
-	private enum PrecedingAgentState {none, requestingToSend, sendPending, sending};
-	private enum FollowingAgentState {none, requestSent, receptionPending, readyToReceive};
+
+	private enum PrecedingAgentState {none, requestingToSend, sending};
+	private enum FollowingAgentState {none, requestSent, readyToReceive};
 	private enum GlassState {none, needsProcessing, doneProcessing}
 	private PrecedingAgentState precedingAgentState;
 	private FollowingAgentState followingAgentState;
-	
-	
+	private ConveyorAgent precedingConveyorAgent;
+	private ConveyorAgent followingConveyorAgent;
+
+
 	private class MyGlass {
 		private Glass g;
 		private GlassState state;
-		
+
 		public MyGlass(Glass g){
 			this.state = GlassState.none;
 		}
 	}
-	
-	public OnlineMachineAgent(String type, int guiIndex, int capacity, FactoryDriver factory, Transducer transducer){
+
+	public OnlineMachineAgent(String type, int guiIndex, int capacity, ConveyorAgent preceding, ConveyorAgent following, FactoryDriver factory, Transducer transducer){
 		this.type = type;
 		this.guiIndex = guiIndex;
 		this.capacity = capacity;
+		this.precedingConveyorAgent = preceding;
+		this.followingConveyorAgent = following;
 		this.factory = factory;
 		this.transducer = transducer;
-		
+
 		// Registering to the appropriate transducer channel
 		try{
-		if(type.equals("BREAKOUT"))
-			this.transducer.register(this, TChannel.BREAKOUT);
-		else if (type.equals("MANUAL_BREAKOUT"))
-			this.transducer.register(this, TChannel.MANUAL_BREAKOUT);
-		else if (type.equals("CUTTER"))
-			this.transducer.register(this, TChannel.CUTTER);
-		else if (type.equals("WASHER"))
-			this.transducer.register(this, TChannel.WASHER);
-		else if (type.equals("UV_LAMP"))
-			this.transducer.register(this, TChannel.UV_LAMP);
-		else if (type.equals("OVEN"))
-			this.transducer.register(this, TChannel.OVEN);
-		else if (type.equals("PAINTER"))
-			this.transducer.register(this, TChannel.PAINTER);
-		else
-			throw new Exception("Invalid Machine Type");
+			if(type.equals("BREAKOUT"))
+				this.transducer.register(this, TChannel.BREAKOUT);
+			else if (type.equals("MANUAL_BREAKOUT"))
+				this.transducer.register(this, TChannel.MANUAL_BREAKOUT);
+			else if (type.equals("CUTTER"))
+				this.transducer.register(this, TChannel.CUTTER);
+			else if (type.equals("WASHER"))
+				this.transducer.register(this, TChannel.WASHER);
+			else if (type.equals("UV_LAMP"))
+				this.transducer.register(this, TChannel.UV_LAMP);
+			else if (type.equals("OVEN"))
+				this.transducer.register(this, TChannel.OVEN);
+			else if (type.equals("PAINTER"))
+				this.transducer.register(this, TChannel.PAINTER);
+			else
+				throw new Exception("Invalid Machine Type");
 		}catch(Exception e){
 			System.out.println(e.getMessage());
 		}
 		this.precedingAgentState = PrecedingAgentState.none;
 		this.followingAgentState = FollowingAgentState.none;
-		
+
 	}
 
 	/** MESSAGES **/
@@ -78,7 +82,7 @@ public class OnlineMachineAgent extends Agent{
 	/** This message is sent by the preceding ConveyorAgent or by a RobotAgent transferring a piece of glass. 
 	 * @params : Glass g (instance of glass)
 	 **/
-	
+
 	public void msgHereIsGlass(Glass g, boolean needsProcessing) {
 		print("Receiving new piece of glass.");
 		glassList.add(new MyGlass(g));
@@ -87,10 +91,10 @@ public class OnlineMachineAgent extends Agent{
 		else 
 			glassList.get(0).state = GlassState.doneProcessing;
 		this.precedingAgentState = PrecedingAgentState.none;
-		
+
 		stateChanged();
 	}
-	
+
 	/** This message is sent by the preceding ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass. 
 	 * @params : Glass g (instance of glass)
 	 **/
@@ -98,10 +102,10 @@ public class OnlineMachineAgent extends Agent{
 	public void msgGlassTransferRequest(){
 		print("Received a glass transfer request.");
 		this.precedingAgentState = PrecedingAgentState.requestingToSend;
-		
+
 		stateChanged();
 	}
-	
+
 	/** This message is sent by the following ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass. 
 	 * @params : Glass g (instance of glass)
 	 **/
@@ -109,7 +113,7 @@ public class OnlineMachineAgent extends Agent{
 	public void msgReadyForGlass(){
 		print("Received a confirmation that recipient is ready for glass transfer.");
 		this.followingAgentState = FollowingAgentState.readyToReceive;
-		
+
 		stateChanged();
 	}
 
@@ -117,17 +121,170 @@ public class OnlineMachineAgent extends Agent{
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		
+
+		/* If the preceding conveyor agent is requesting to send a piece of glass, 
+		    check if ready.  */
+		if(precedingAgentState == PrecedingAgentState.requestingToSend){
+			checkIfReadyToReceive();
+			return true;
+		}
+
+		/* If a piece of glass needs to be processed or transferred.  */
+		if(!glassList.isEmpty()){
+			if(glassList.get(0).state == GlassState.needsProcessing){
+				processGlass();
+				return true;
+			}else if (glassList.get(0).state == GlassState.doneProcessing ){
+				if(followingAgentState == FollowingAgentState.none)
+					requestToTransferGlass();
+				else if (followingAgentState == FollowingAgentState.readyToReceive)
+					transferGlass();
+				return true;
+			}
+		}
+
 		return false;
 	}
-	
-	
+
+
 	/** ACTIONS **/
+
+	/**This action checks if the machine is ready to receive a piece of glass. 
+	 * 
+	 **/
+	public void checkIfReadyToReceive(){
+		if(glassList.size() >= capacity){
+			//precedingConveyorAgent.msgReadyForGlass();
+			this.precedingAgentState = PrecedingAgentState.sending;
+		}else 
+			this.precedingAgentState = PrecedingAgentState.requestingToSend;
+
+		stateChanged();
+	}
+
+	/**This action fires an event on the transducer to perform the animation.
+	 * 
+	 **/
+	public void processGlass(){
+
+		Object args[] = new Object[1];
+		args[0] = this.guiIndex;
+		if(type.equals("BREAKOUT"))
+			this.transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("MANUAL_BREAKOUT"))
+			this.transducer.fireEvent(TChannel.MANUAL_BREAKOUT, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("CUTTER"))
+			this.transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("WASHER"))
+			this.transducer.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("UV_LAMP"))
+			this.transducer.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("OVEN"))
+			this.transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("PAINTER"))
+			this.transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_DO_ACTION, args); 
+
+		stateChanged();
+	}
+
+	/**This action sends a message to the following CovneyorAgent requesting to transfer a piece of glass.
+	 **/
+	public void requestToTransferGlass(){
+
+		//followingConveyorAgent.msgGlassTransferRequest();
+		this.followingAgentState = FollowingAgentState.requestSent;
+
+		stateChanged();
+	}
+
+	/**This action sends a message to the following CovneyorAgent transferring a piece of glass.
+	 **/
+	public void transferGlass(){
+
+		//followingConveyorAgent.msgHereIsGlass(this.glassList.get(0));
+		//this.glassList.remove(0);
+		this.glassList.get(0).state = GlassState.none;
+		this.followingAgentState = FollowingAgentState.none;
+
+		Object args[] = new Object[1];
+		args[0] = this.guiIndex;
+		if(type.equals("BREAKOUT"))
+			this.transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("MANUAL_BREAKOUT"))
+			this.transducer.fireEvent(TChannel.MANUAL_BREAKOUT, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("CUTTER"))
+			this.transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("WASHER"))
+			this.transducer.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("UV_LAMP"))
+			this.transducer.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("OVEN"))
+			this.transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("PAINTER"))
+			this.transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		stateChanged();
+	}
+
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		// TODO Auto-generated method stub
+		if(type.equals("BREAKOUT")){
+			if(channel == TChannel.BREAKOUT){
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+					this.glassList.get(0).state = GlassState.doneProcessing;
+				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+					this.glassList.remove(0);
+				}
+			}
+		}else if (type.equals("MANUAL_BREAKOUT")){
+			if(channel == TChannel.MANUAL_BREAKOUT){
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+					this.glassList.get(0).state = GlassState.doneProcessing;
+				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+					this.glassList.remove(0);
+				}
+			}
+		}else if (type.equals("CUTTER")){
+			if(channel == TChannel.CUTTER){
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+					this.glassList.get(0).state = GlassState.doneProcessing;
+				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+					this.glassList.remove(0);
+				}
+			}
+		}else if (type.equals("WASHER")){
+			if(channel == TChannel.WASHER){
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+					this.glassList.get(0).state = GlassState.doneProcessing;
+				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+					this.glassList.remove(0);
+				}
+			}
+		}else if (type.equals("UV_LAMP")){
+			if(channel == TChannel.UV_LAMP){
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+					this.glassList.get(0).state = GlassState.doneProcessing;
+				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+					this.glassList.remove(0);
+				}
+			}
+		}else if (type.equals("OVEN")){
+			if(channel == TChannel.OVEN){
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+					this.glassList.get(0).state = GlassState.doneProcessing;
+				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+					this.glassList.remove(0);
+				}
+			}
+		}else if (type.equals("PAINTER")){
+			if(channel == TChannel.PAINTER){
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+					this.glassList.get(0).state = GlassState.doneProcessing;
+				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+					this.glassList.remove(0);
+				}
+			}
 
+		}
 	}
-
 }
