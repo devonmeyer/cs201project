@@ -19,26 +19,56 @@ public class GlassRobotAgent extends Agent{
 	List<Glass> glasses;
 	GlassSelectPanel parent;
 	//ConveyorFamily entrance;
+	boolean entranceReady;
+	
+	/** Constructor ****/
+	public GlassRobotAgent(){
+		
+		glasses = new ArrayList<Glass>();
+		entranceReady = false;
+	}
 	
 	/** Messages *******************/
 	public void msgReadyForGlass(){
-		// TODO
+		entranceReady = true;
 		stateChanged();
 	}
 	
 	/** Scheduler *******************/
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
+		if(!glasses.isEmpty()){
+			if(entranceReady){
+				sendGlassToEntrance();
+				return true;
+			}
+		}
+		
 		return false;
 	}
 
 	/** Actions *********************/
+	
+	/*
+	 * Send the first glass in the list to the entrance conveyor 
+	 */
+	private void sendGlassToEntrance(){
+		//entrance.msgHereIsGlass(glasses.get(0));
+		entranceReady = false;						//set entrance to not ready after sending glass
+		stateChanged();
+	}
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/** Setters/Getters **/
+	public void setParent(GlassSelectPanel gsp){
+		parent = gsp;
+	}
 	
+	public void addGlass(Glass g){
+		glasses.add(g);
+	}
 }
