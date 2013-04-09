@@ -1,6 +1,5 @@
 package glassLine.agents;
 
-import engine.agent.Agent;
 import glassLine.Glass;
 import glassLine.interfaces.Popup;
 import glassLine.interfaces.Robot;

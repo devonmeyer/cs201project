@@ -1,7 +1,7 @@
 
 package gui.panels.subcontrolpanels;
 
-import engine.agent.Agent;
+import glassLine.agents.Agent;
 import gui.panels.ControlPanel;
 
 import java.awt.Color;

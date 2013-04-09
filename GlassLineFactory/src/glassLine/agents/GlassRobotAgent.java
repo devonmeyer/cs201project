@@ -2,7 +2,6 @@ package glassLine.agents;
 
 import transducer.TChannel;
 import transducer.TEvent;
-import engine.agent.Agent;
 import glassLine.*;
 import gui.panels.subcontrolpanels.GlassSelectPanel;
 

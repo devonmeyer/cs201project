@@ -1,6 +1,6 @@
 package gui.panels.subcontrolpanels;
 
-import engine.agent.Agent;
+import glassLine.agents.Agent;
 
 /**
  * TracePanelMessage represents a message and contains the agent

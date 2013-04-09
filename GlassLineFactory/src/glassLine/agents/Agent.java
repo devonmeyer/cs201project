@@ -1,5 +1,5 @@
 
-package engine.agent;
+package glassLine.agents;
 
 import engine.util.StringUtil;
 import gui.panels.subcontrolpanels.TracePanel;
