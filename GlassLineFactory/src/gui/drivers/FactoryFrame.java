@@ -2,6 +2,8 @@
 package gui.drivers;
 
 import gui.panels.FactoryPanel;
+import glassLine.*;
+import java.util.*;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -46,15 +48,22 @@ public class FactoryFrame extends JFrame
 	 * The panel that actually runs the factory
 	 */
 	private FactoryPanel fPanel;
+	
+	/**
+	 * List of glasses the factory has
+	 */
+	public List<Glass> glasses;
 
 	/**
 	 * Creates a new FactoryFrame, initializes the parts, and
 	 * displays both panels
 	 */
 	public FactoryFrame()
-	{
+	{	
 		super(WINDOW_TITLE);
 		this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		
+		glasses = new ArrayList<Glass>();
 
 		// make top container panel
 		topPanel = new JPanel();

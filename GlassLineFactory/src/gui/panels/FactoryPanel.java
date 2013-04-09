@@ -1,6 +1,7 @@
 
 package gui.panels;
 
+import glassLine.Glass;
 import gui.drivers.FactoryFrame;
 
 import javax.swing.BoxLayout;
@@ -113,5 +114,9 @@ public class FactoryPanel extends JPanel
 	public DisplayPanel getDisplayPanel()
 	{
 		return dPanel;
+	}
+	
+	public void makeGlass(Glass g){
+		parent.glasses.add(g);
 	}
 }
