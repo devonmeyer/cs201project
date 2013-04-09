@@ -4,13 +4,13 @@ import glassLine.Glass;
 
 public interface Popup {
 
-    public abstract void msgSensorGlassIsReady();
+    public abstract void msgGlassIsReady();
 
-    public abstract void msgSensorGlassNeedsThrough();
+    public abstract void msgGlassNeedsThrough();
 
-    public abstract void msgSensorHereIsGlass(Glass g);
+    public abstract void msgHereIsGlass(Glass g);
 
-    public abstract void msgSensorReady();
+    public abstract void msgConveyorReady();
 
     public abstract void msgRobotReady();
 

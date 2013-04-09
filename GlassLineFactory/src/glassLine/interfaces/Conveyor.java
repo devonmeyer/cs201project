@@ -4,13 +4,13 @@ import glassLine.Glass;
 
 public interface Conveyor {
 
-    public abstract void msgSensorGlassIsReady();
+    public abstract void msgGlassIsReady();
 
-    public abstract void msgSensorHereIsGlass(Glass g);
+    public abstract void msgHereIsGlass(Glass g);
 
-    public abstract void msgGlassAtEndOfConveyor(Glass g);
+    public abstract void msgGlassAtEndSensor(Glass g);
 
-    public abstract void msgSensorReady();
+    public abstract void msgReadyToTakeGlass();
 
 
 

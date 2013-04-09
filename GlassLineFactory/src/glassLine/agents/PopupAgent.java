@@ -2,9 +2,9 @@ package glassLine.agents;
 
 import engine.agent.Agent;
 import glassLine.Glass;
+import glassLine.interfaces.Conveyor;
 import glassLine.interfaces.Popup;
 import glassLine.interfaces.Robot;
-import glassLine.interfaces.Sensor;
 import glassLine.test.EventLog;
 import glassLine.test.LoggedEvent;
 import transducer.TChannel;
@@ -29,15 +29,23 @@ public class PopupAgent extends Agent implements Popup {
 
     private Glass currentGlass;
 
+/*
     private Sensor popupSensor;
+*/
 
+/*
     private Sensor conveyorSensor;
+*/
+
+    private Conveyor entryConveyor;
+
+    private Conveyor exitConveyor;
 
     private Robot robot;
 
     private boolean popupEngaged;
 
-    private GlassState sensorGlassState;
+    private GlassState conveyorGlassState;
 
     private GlassState myGlassState;
 
@@ -48,29 +56,29 @@ public class PopupAgent extends Agent implements Popup {
 
     public PopupAgent(){
         currentGlass = null;
-        popupSensor = null;
-        conveyorSensor = null;
+/*        popupSensor = null;
+        conveyorSensor = null;*/
         robot = null;
         popupEngaged = false;
-        sensorGlassState = GlassState.NONE;
+        conveyorGlassState = GlassState.NONE;
         myGlassState = GlassState.NONE;
         robotGlassState = GlassState.NONE;
         log = new EventLog();
 
     }
 
-    public void setSensors(Sensor p, Sensor c){
-        popupSensor = p;
-        conveyorSensor = c;
+    public void setConveyors(Conveyor ent, Conveyor ex){
+        entryConveyor = ent;
+        exitConveyor = ex;
     }
 
     public void setRobot(Robot r){
         robot = r;
     }
 
-    public boolean getSensorGlassGoingToRobot(){
+    public boolean getConveyorGlassGoingToRobot(){
 
-        if(sensorGlassState == GlassState.WAITING_ROBOT){
+        if(conveyorGlassState == GlassState.WAITING_ROBOT){
             return true;
         }
 
@@ -93,18 +101,18 @@ public class PopupAgent extends Agent implements Popup {
 
     */
 
-    public void msgSensorGlassIsReady(){
-        log.add(new LoggedEvent("Received message : msgSensorGlassIsReady"));
+    public void msgGlassIsReady(){
+        log.add(new LoggedEvent("Received message : msgGlassIsReady"));
 
-        sensorGlassState = GlassState.NEEDS_ROBOT;
+        conveyorGlassState = GlassState.NEEDS_ROBOT;
         stateChanged();
 
     }
 
-    public void msgSensorGlassNeedsThrough(){
-        log.add(new LoggedEvent("Received message : msgSensorGlassNeedsThrough"));
+    public void msgGlassNeedsThrough(){
+        log.add(new LoggedEvent("Received message : msgGlassNeedsThrough"));
 
-        sensorGlassState = GlassState.NEEDS_THROUGH;
+        conveyorGlassState = GlassState.NEEDS_THROUGH;
         stateChanged();
 
     }
@@ -116,18 +124,18 @@ public class PopupAgent extends Agent implements Popup {
 
     }
 
-    public void msgSensorHereIsGlass(Glass g){
-        log.add(new LoggedEvent("Received message : msgSensorHereIsGlass"));
+    public void msgHereIsGlass(Glass g){
+        log.add(new LoggedEvent("Received message : msgHereIsGlass"));
 
         currentGlass = g;
 
-        if(sensorGlassState == GlassState.WAITING_ROBOT){
+        if(conveyorGlassState == GlassState.WAITING_ROBOT){
             myGlassState = GlassState.NEEDS_ROBOT;
         } else {
             myGlassState = GlassState.NEEDS_THROUGH;
         }
 
-        sensorGlassState = GlassState.NONE;
+        conveyorGlassState = GlassState.NONE;
         stateChanged();
 
     }
@@ -149,8 +157,8 @@ public class PopupAgent extends Agent implements Popup {
 
     }
 
-    public void msgSensorReady(){
-        log.add(new LoggedEvent("Received message : msgSensorReady"));
+    public void msgConveyorReady(){
+        log.add(new LoggedEvent("Received message : msgConveyorReady"));
 
         myGlassState = GlassState.MOVE_TO_CONVEYOR;
 
@@ -196,15 +204,15 @@ public class PopupAgent extends Agent implements Popup {
                 return true;
 
             }
-            if(sensorGlassState == GlassState.NEEDS_THROUGH){
+            if(conveyorGlassState == GlassState.NEEDS_THROUGH){
 
-                readyMoveFromSensor();
+                readyMoveFromConveyor();
                 return true;
 
             }
-            if(sensorGlassState == GlassState.NEEDS_ROBOT && robotGlassState == GlassState.NONE){
+            if(conveyorGlassState == GlassState.NEEDS_ROBOT && robotGlassState == GlassState.NONE){
 
-                readyMoveFromSensor();
+                readyMoveFromConveyor();
                 return true;
 
             }
@@ -227,7 +235,7 @@ public class PopupAgent extends Agent implements Popup {
     private void readyMoveToConveyor(){
         log.add(new LoggedEvent("Carrying out action : readyMoveToConveyor"));
 
-        conveyorSensor.msgGlassIsReady();
+        exitConveyor.msgGlassIsReady();
         myGlassState = GlassState.WAITING;
 
     }
@@ -270,7 +278,7 @@ public class PopupAgent extends Agent implements Popup {
 
         //doMoveGlassToSensor();
 
-        conveyorSensor.msgHereIsGlass(currentGlass);
+        exitConveyor.msgHereIsGlass(currentGlass);
 
         currentGlass = null;
 
@@ -295,7 +303,7 @@ public class PopupAgent extends Agent implements Popup {
 
     }
 
-    private void readyMoveFromSensor(){
+    private void readyMoveFromConveyor(){
         log.add(new LoggedEvent("Carrying out action : readyMoveFromSensor"));
 
         if(popupEngaged){
@@ -303,15 +311,15 @@ public class PopupAgent extends Agent implements Popup {
             //doLowerPopup();
         }
 
-        if(sensorGlassState == GlassState.NEEDS_ROBOT){
-            sensorGlassState = GlassState.WAITING_ROBOT;
+        if(conveyorGlassState == GlassState.NEEDS_ROBOT){
+            conveyorGlassState = GlassState.WAITING_ROBOT;
         } else {
-            sensorGlassState = GlassState.WAITING_THROUGH;
+            conveyorGlassState = GlassState.WAITING_THROUGH;
         }
 
         myGlassState = GlassState.WAITING;
 
-        popupSensor.msgReadyToTakeGlass();
+        entryConveyor.msgReadyToTakeGlass();
 
     }
 

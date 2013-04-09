@@ -3,7 +3,7 @@ package glassLine.agents;
 import engine.agent.Agent;
 import glassLine.Glass;
 import glassLine.interfaces.Conveyor;
-import glassLine.interfaces.Sensor;
+import glassLine.interfaces.Popup;
 import glassLine.test.EventLog;
 import glassLine.test.LoggedEvent;
 import transducer.TChannel;
@@ -26,6 +26,12 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     private boolean moving;
 
+    private Popup entryPopup;
+
+    private Popup exitPopup;
+
+    private String myMachine;
+
     private class MyGlass{
         public Glass glass;
         public GlassState state;
@@ -38,26 +44,23 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     }
 
-    private Sensor enterSensor;
-
-    private Sensor exitSensor;
-
     private boolean glassInQueue;
 
     public EventLog log;
 
-    public ConveyorAgent(){
+    public ConveyorAgent(String machine){
         glassOnMe = new LinkedList<MyGlass>();
+        myMachine = machine;
         moving = false;
-        enterSensor = null;
-        exitSensor = null;
+        entryPopup = null;
+        exitPopup = null;
         glassInQueue = false;
         log = new EventLog();
     }
 
-    public void setSensors(Sensor enter, Sensor exit){
-        enterSensor = enter;
-        exitSensor = exit;
+    public void setPopups(Popup enter, Popup exit){
+        entryPopup = enter;
+        exitPopup = exit;
     }
 
     public boolean getQueued(){
@@ -82,8 +85,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
      */
 
-    public void msgSensorGlassIsReady(){
-        log.add(new LoggedEvent("Received message : msgSensorGlassIsReady"));
+    public void msgGlassIsReady(){
+        log.add(new LoggedEvent("Received message : msgGlassIsReady"));
 
 
         glassInQueue = true;
@@ -91,8 +94,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     }
 
-    public void msgSensorHereIsGlass(Glass g){
-        log.add(new LoggedEvent("Received message : msgSensorHereIsGlass"));
+    public void msgHereIsGlass(Glass g){
+        log.add(new LoggedEvent("Received message : msgHereIsGlass"));
 
         glassInQueue = false;
 
@@ -102,8 +105,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     }
 
-    public void msgGlassAtEndOfConveyor(Glass g){
-        log.add(new LoggedEvent("Received message : msgGlassAtEndOfConveyor"));
+    public void msgGlassAtEndSensor(Glass g){
+        log.add(new LoggedEvent("Received message : msgGlassAtEndSensor"));
 
 
         for(MyGlass mg : glassOnMe){
@@ -115,8 +118,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     }
 
-    public void msgSensorReady(){
-        log.add(new LoggedEvent("Received message : msgSensorReady"));
+    public void msgReadyToTakeGlass(){
+        log.add(new LoggedEvent("Received message : msgReadyToTakeGlass"));
 
 
         for(MyGlass mg : glassOnMe){
@@ -138,7 +141,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
         for(MyGlass mg : glassOnMe){
             if(mg.state == GlassState.EXIT_TO_SENSOR){
-                moveGlassToSensor(mg);
+                moveGlassToPopup(mg);
                 return true;
             }
         }
@@ -177,12 +180,12 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
      */
 
-    private void moveGlassToSensor(MyGlass g){
-        log.add(new LoggedEvent("Carrying out action : moveGlassToSensor"));
+    private void moveGlassToPopup(MyGlass g){
+        log.add(new LoggedEvent("Carrying out action : moveGlassToPopup"));
 
         //doMoveGlassToSensor
 
-        exitSensor.msgHereIsGlass(g.glass);
+        exitPopup.msgHereIsGlass(g.glass);
 
         glassOnMe.remove(g);
 
@@ -196,7 +199,11 @@ public class ConveyorAgent extends Agent implements Conveyor {
     private void requestMoveGlass(MyGlass g){
         log.add(new LoggedEvent("Carrying out action : requestMoveGlass"));
 
-        exitSensor.msgGlassIsReady();
+        if(g.glass.getProcesses().contains(myMachine)){
+            exitPopup.msgGlassIsReady();
+        } else {
+            exitPopup.msgGlassNeedsThrough();
+        }
 
         g.state = GlassState.WAITING_TO_EXIT;
 
@@ -217,7 +224,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
     private void prepareToTakeGlass(){
         log.add(new LoggedEvent("Carrying out action : prepareToTakeGlass"));
 
-        enterSensor.msgReadyToTakeGlass();
+        entryPopup.msgConveyorReady();
 
         glassInQueue = false;
 
