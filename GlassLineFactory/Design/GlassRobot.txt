@@ -1,0 +1,28 @@
+class GlassRobot extends Agent{
+
+	//Data
+	List<Glass> glasses;
+	GlassSelectPanel parent;
+	ConveyorFamily entrance;
+	boolean conveyorReady
+	
+	//messages
+	msgReadyForGlass(){
+		//sent from the entrance conveyor family, telling the robot it's okay to send glass
+	}
+	
+	//Scheduler
+	if(glasses not empty){
+		if(entrance is ready for glass){
+			sendGlassToEntrance();
+			return true;
+		}
+	}
+	
+	//Actions
+	sendGlassToEntrance(){
+		entrance.msgHereIsGlass(glasses.get(0));
+		stateChanged();
+	}
+	
+}	

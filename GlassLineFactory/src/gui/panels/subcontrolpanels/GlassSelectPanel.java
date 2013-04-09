@@ -3,6 +3,7 @@ package gui.panels.subcontrolpanels;
 
 import gui.panels.ControlPanel;
 import glassLine.*;
+import glassLine.agents.GlassRobotAgent;
 
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
@@ -22,6 +23,7 @@ import javax.swing.JButton;
 @SuppressWarnings("serial")
 public class GlassSelectPanel extends JPanel implements ActionListener
 {
+	public GlassRobotAgent gRobot;
 	public int glassCount = 0;
 	/** The ControlPanel this is linked to */
 	private ControlPanel parent;
@@ -148,6 +150,10 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 	{
 		return parent;
 	}
+	
+	public void setGlassRobot(GlassRobotAgent gr){
+		gRobot = gr;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
@@ -161,7 +167,9 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 					station.add(cb.getText());
 				}
 			}
-			parent.makeGlass(new Glass(glassCount, station));
+			Glass temp = new Glass(glassCount, station);
+			parent.makeGlass(temp);
+			gRobot.addGlass(temp);
 		}
 	}
 }
