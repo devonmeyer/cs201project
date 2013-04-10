@@ -28,7 +28,7 @@ public class GlassRobotAgent extends Agent{
 		super(name);
 		
 		this.glasses = new ArrayList<Glass>();
-		this.entranceReady = true;
+		this.entranceReady = false;
 		
 		transducer = trans;
 //		transducer.register(this, TChannel.BIN);
@@ -62,7 +62,7 @@ public class GlassRobotAgent extends Agent{
 	private void sendGlassToEntrance(){
 		//entrance.msgHereIsGlass(glasses.get(0));
 		glasses.remove(0);		// remove the glass thats sent to the conveyor
-//		entranceReady = false;						//set entrance to not ready after sending glass
+		entranceReady = false;						//set entrance to not ready after sending glass
 		eventFired(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 		stateChanged();
 	}
