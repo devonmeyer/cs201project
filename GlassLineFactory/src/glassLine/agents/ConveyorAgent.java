@@ -31,6 +31,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     private String myMachine;
 
+    private int myConveyorIndex;
+
     private class MyGlass{
         public Glass glass;
         public GlassState state;
@@ -55,6 +57,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
         exitMachine = null;
         glassInQueue = false;
         log = new EventLog();
+    }
+
+    public void setConveyorIndex(int i){
+        myConveyorIndex = i;
     }
 
     public void setMachines(Machine enter, Machine exit){
@@ -140,7 +146,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
         for(MyGlass mg : glassOnMe){
             if(mg.state == GlassState.EXIT_TO_SENSOR){
-                moveGlassToPopup(mg);
+                moveGlassToMachine(mg);
                 return true;
             }
         }
@@ -179,8 +185,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
      */
 
-    private void moveGlassToPopup(MyGlass g){
-        log.add(new LoggedEvent("Carrying out action : moveGlassToPopup"));
+    private void moveGlassToMachine(MyGlass g){
+        log.add(new LoggedEvent("Carrying out action : moveGlassToMachine"));
 
         //doMoveGlassToSensor
 
@@ -190,7 +196,9 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
         if(!glassOnMe.isEmpty()){
 
-            //doStartConveyor();
+            Object args[] = new Object[myConveyorIndex];
+
+            transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
             moving = true;
         }
     }
@@ -206,7 +214,9 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
         g.state = GlassState.WAITING_TO_EXIT;
 
-        //doStopConveyor();
+        Object args[] = new Object[myConveyorIndex];
+
+        transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
         moving = false;
 
     }
@@ -216,14 +226,19 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
         moving = true;
 
-        //doStartConveyor
+
+        Object args[] = new Object[myConveyorIndex];
+
+        transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
+
+
 
     }
 
     private void prepareToTakeGlass(){
         log.add(new LoggedEvent("Carrying out action : prepareToTakeGlass"));
 
-        entryMachine.msgConveyorReady();
+        entryMachine.msgReadyToTakeGlass();
 
         glassInQueue = false;
 
