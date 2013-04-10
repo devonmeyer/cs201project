@@ -31,6 +31,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     private String myMachine;
 
+    private int myConveyorIndex;
+
     private class MyGlass{
         public Glass glass;
         public GlassState state;
@@ -55,6 +57,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
         exitMachine = null;
         glassInQueue = false;
         log = new EventLog();
+    }
+
+    public void setConveyorIndex(int i){
+        myConveyorIndex = i;
     }
 
     public void setMachines(Machine enter, Machine exit){
@@ -190,7 +196,9 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
         if(!glassOnMe.isEmpty()){
 
-            //doStartConveyor();
+            Object args[] = new Object[myConveyorIndex];
+
+            transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
             moving = true;
         }
     }
@@ -206,7 +214,9 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
         g.state = GlassState.WAITING_TO_EXIT;
 
-        //doStopConveyor();
+        Object args[] = new Object[myConveyorIndex];
+
+        transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
         moving = false;
 
     }
@@ -216,7 +226,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
         moving = true;
 
-        //doStartConveyor
+
+        Object args[] = new Object[myConveyorIndex];
+
+        transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
 
 
 
