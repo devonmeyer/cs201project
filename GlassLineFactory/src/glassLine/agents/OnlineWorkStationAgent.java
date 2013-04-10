@@ -188,7 +188,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 	public void checkIfReadyToReceive(){
 		if(glassList.size() >= capacity){
-			//precedingConveyorAgent.msgReadyForGlass();
+			precedingConveyorAgent.msgReadyToTakeGlass();
 			this.precedingAgentState = PrecedingAgentState.sending;
 		}else 
 			this.precedingAgentState = PrecedingAgentState.requestingToSend;
@@ -225,7 +225,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 	public void requestToTransferGlass(){
 
-		//followingConveyorAgent.msgGlassTransferRequest();
+		followingConveyorAgent.msgGlassIsReady();
 		this.followingAgentState = FollowingAgentState.requestSent;
 
 		stateChanged();
@@ -235,8 +235,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 	public void transferGlass(){
 
-		//followingConveyorAgent.msgHereIsGlass(this.glassList.get(0));
-		//this.glassList.remove(0);
+		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
+		this.glassList.remove(0);
 		this.glassList.get(0).state = GlassState.none;
 		this.followingAgentState = FollowingAgentState.none;
 
