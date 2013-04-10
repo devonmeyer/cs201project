@@ -9,7 +9,7 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
-public class OnlineMachineAgent extends Agent{
+public class OnlineWorkStationAgent extends Agent{
 
 	/**
 	 * This class represents an online machine.
@@ -42,7 +42,7 @@ public class OnlineMachineAgent extends Agent{
 		}
 	}
 
-	public OnlineMachineAgent(String type, int guiIndex, int capacity, ConveyorAgent preceding, ConveyorAgent following, FactoryDriver factory, Transducer transducer){
+	public OnlineWorkStationAgent(String type, int guiIndex, int capacity, ConveyorAgent preceding, ConveyorAgent following, FactoryDriver factory, Transducer transducer){
 		this.type = type;
 		this.guiIndex = guiIndex;
 		this.capacity = capacity;
