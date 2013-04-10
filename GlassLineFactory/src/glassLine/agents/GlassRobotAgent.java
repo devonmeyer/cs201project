@@ -67,7 +67,7 @@ public class GlassRobotAgent extends Agent{
 		stateChanged();
 	}
 	public void addGlass(Glass g){
-		System.out.println("Making Glass");
+//		System.out.println("Making Glass");
 		glasses.add(g);
 		stateChanged();
 	}
@@ -81,5 +81,6 @@ public class GlassRobotAgent extends Agent{
 	public void setParent(GlassSelectPanel gsp){
 		parent = gsp;
 	}
+	
 	
 }
