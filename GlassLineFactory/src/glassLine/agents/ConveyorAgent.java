@@ -140,7 +140,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
         for(MyGlass mg : glassOnMe){
             if(mg.state == GlassState.EXIT_TO_SENSOR){
-                moveGlassToPopup(mg);
+                moveGlassToMachine(mg);
                 return true;
             }
         }
@@ -179,8 +179,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
      */
 
-    private void moveGlassToPopup(MyGlass g){
-        log.add(new LoggedEvent("Carrying out action : moveGlassToPopup"));
+    private void moveGlassToMachine(MyGlass g){
+        log.add(new LoggedEvent("Carrying out action : moveGlassToMachine"));
 
         //doMoveGlassToSensor
 
@@ -218,12 +218,14 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
         //doStartConveyor
 
+
+
     }
 
     private void prepareToTakeGlass(){
         log.add(new LoggedEvent("Carrying out action : prepareToTakeGlass"));
 
-        entryMachine.msgConveyorReady();
+        entryMachine.msgReadyToTakeGlass();
 
         glassInQueue = false;
 
