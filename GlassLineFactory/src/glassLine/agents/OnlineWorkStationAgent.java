@@ -266,7 +266,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			if(channel == TChannel.BREAKOUT){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 					this.msgGlassDoneProcessing();
-				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}
 			}
@@ -274,7 +274,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			if(channel == TChannel.MANUAL_BREAKOUT){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 					this.msgGlassDoneProcessing();
-				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}
 			}
@@ -282,7 +282,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			if(channel == TChannel.CUTTER){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 					this.msgGlassDoneProcessing();
-				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}
 			}
@@ -290,7 +290,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			if(channel == TChannel.WASHER){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 					this.msgGlassDoneProcessing();
-				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}
 			}
@@ -298,7 +298,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			if(channel == TChannel.UV_LAMP){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 					this.msgGlassDoneProcessing();
-				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}
 			}
@@ -306,7 +306,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			if(channel == TChannel.OVEN){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 					this.msgGlassDoneProcessing();
-				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}
 			}
@@ -314,7 +314,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			if(channel == TChannel.PAINTER){
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 					this.msgGlassDoneProcessing();
-				else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}
 			}
