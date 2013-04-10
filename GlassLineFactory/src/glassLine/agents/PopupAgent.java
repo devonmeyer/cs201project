@@ -147,8 +147,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
     }
 
-    public void msgConveyorReady(){
-        log.add(new LoggedEvent("Received message : msgConveyorReady"));
+    public void msgReadyToTakeGlass(){
+        log.add(new LoggedEvent("Received message : msgReadyToTakeGlass"));
 
         myGlassState = GlassState.MOVE_TO_CONVEYOR;
 
