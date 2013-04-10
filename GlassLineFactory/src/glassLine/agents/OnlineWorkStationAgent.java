@@ -4,12 +4,13 @@ import java.util.List;
 
 
 import glassLine.Glass;
+import glassLine.interfaces.Machine;
 import gui.drivers.FactoryDriver;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
-public class OnlineWorkStationAgent extends Agent{
+public class OnlineWorkStationAgent extends Agent implements Machine{
 
 	/**
 	 * This class represents an online machine.
@@ -31,6 +32,8 @@ public class OnlineWorkStationAgent extends Agent{
 	private FollowingAgentState followingAgentState;
 	private ConveyorAgent precedingConveyorAgent;
 	private ConveyorAgent followingConveyorAgent;
+	private enum AgentState {processing, notProcessing}
+	private AgentState state;
 
 
 	private class MyGlass {
@@ -50,7 +53,7 @@ public class OnlineWorkStationAgent extends Agent{
 		this.followingConveyorAgent = following;
 		this.factory = factory;
 		this.transducer = transducer;
-
+		this.state = AgentState.notProcessing;
 		// Registering to the appropriate transducer channel
 		try{
 			if(type.equals("BREAKOUT"))
@@ -83,10 +86,10 @@ public class OnlineWorkStationAgent extends Agent{
 	 * @params : Glass g (instance of glass)
 	 **/
 
-	public void msgHereIsGlass(Glass g, boolean needsProcessing) {
+	public void msgHereIsGlass(Glass g) {
 		print("Receiving new piece of glass.");
 		glassList.add(new MyGlass(g));
-		if(needsProcessing)
+		if(this.state == AgentState.processing)
 			glassList.get(0).state = GlassState.needsProcessing;
 		else 
 			glassList.get(0).state = GlassState.doneProcessing;
@@ -95,22 +98,35 @@ public class OnlineWorkStationAgent extends Agent{
 		stateChanged();
 	}
 
-	/** This message is sent by the preceding ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass. 
-	 * @params : Glass g (instance of glass)
+	/** This message is sent by the preceding ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass that needs processing. 
+	 *
 	 **/
 
-	public void msgGlassTransferRequest(){
+	public void msgGlassIsReady(){
 		print("Received a glass transfer request.");
+		this.state = AgentState.processing;
 		this.precedingAgentState = PrecedingAgentState.requestingToSend;
 
 		stateChanged();
+	}
+	
+	/** This message is sent by the preceding ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass that doesn't need processing. 
+	 * 
+	 **/
+	
+	@Override
+	public void msgGlassNeedsThrough() {
+		print("Received a glass transfer request.");
+		this.state = AgentState.notProcessing;
+		this.precedingAgentState = PrecedingAgentState.requestingToSend;
+		
 	}
 
 	/** This message is sent by the following ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass. 
 	 * @params : Glass g (instance of glass)
 	 **/
 
-	public void msgReadyForGlass(){
+	public void msgReadyToTakeGlass(){
 		print("Received a confirmation that recipient is ready for glass transfer.");
 		this.followingAgentState = FollowingAgentState.readyToReceive;
 
@@ -305,4 +321,7 @@ public class OnlineWorkStationAgent extends Agent{
 
 		}
 	}
+
+	
+	
 }
