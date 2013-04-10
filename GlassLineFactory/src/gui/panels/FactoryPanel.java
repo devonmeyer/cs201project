@@ -1,7 +1,8 @@
 
 package gui.panels;
 
-import glassLine.Glass;
+import glassLine.*;
+import glassLine.agents.*;
 import gui.drivers.FactoryFrame;
 
 import javax.swing.BoxLayout;
@@ -29,6 +30,11 @@ public class FactoryPanel extends JPanel
 
 	/** Allows the control panel to communicate with the back end and give commands */
 	private Transducer transducer;
+	
+	/*
+	 * Factory Agents, Conveyor Families
+	 */
+	public GlassRobotAgent gRobot;
 
 	/**
 	 * Constructor links this panel to its frame
@@ -40,6 +46,10 @@ public class FactoryPanel extends JPanel
 		// initialize transducer
 		transducer = new Transducer();
 		transducer.startTransducer();
+		
+		//initialize the agents and other components
+		gRobot = new GlassRobotAgent(transducer, "GlassBin");
+		gRobot.startThread();
 
 		// use default layout
 		// dPanel = new DisplayPanel(this);
@@ -61,6 +71,9 @@ public class FactoryPanel extends JPanel
 
 		// initialize control panel
 		cPanel = new ControlPanel(this, transducer);
+		
+		// pass glass robot to selection panel
+		cPanel.glassSelectPanel.setGlassRobot(this.gRobot);
 
 		// initialize display panel
 		dPanel = new DisplayPanel(this, transducer);
@@ -72,6 +85,7 @@ public class FactoryPanel extends JPanel
 
 		this.add(dPanel);
 		this.add(cPanel);
+		
 	}
 
 	/**
