@@ -2,6 +2,7 @@ package glassLine.agents;
 
 import glassLine.Glass;
 import glassLine.interfaces.Conveyor;
+import glassLine.interfaces.Machine;
 import glassLine.interfaces.Popup;
 import glassLine.interfaces.Robot;
 import glassLine.test.EventLog;
@@ -16,7 +17,7 @@ import transducer.TEvent;
  * Time: 1:19 AM
  * To change this template use File | Settings | File Templates.
  */
-public class PopupAgent extends Agent implements Popup {
+public class PopupAgent extends Agent implements Popup, Machine {
 
     /*
 

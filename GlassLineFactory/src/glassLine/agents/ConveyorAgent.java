@@ -2,7 +2,7 @@ package glassLine.agents;
 
 import glassLine.Glass;
 import glassLine.interfaces.Conveyor;
-import glassLine.interfaces.Popup;
+import glassLine.interfaces.Machine;
 import glassLine.test.EventLog;
 import glassLine.test.LoggedEvent;
 import transducer.TChannel;
@@ -25,9 +25,9 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     private boolean moving;
 
-    private Popup entryPopup;
+    private Machine entryMachine;
 
-    private Popup exitPopup;
+    private Machine exitMachine;
 
     private String myMachine;
 
@@ -51,15 +51,15 @@ public class ConveyorAgent extends Agent implements Conveyor {
         glassOnMe = new LinkedList<MyGlass>();
         myMachine = machine;
         moving = false;
-        entryPopup = null;
-        exitPopup = null;
+        entryMachine = null;
+        exitMachine = null;
         glassInQueue = false;
         log = new EventLog();
     }
 
-    public void setPopups(Popup enter, Popup exit){
-        entryPopup = enter;
-        exitPopup = exit;
+    public void setMachines(Machine enter, Machine exit){
+        entryMachine = enter;
+        exitMachine = exit;
     }
 
     public boolean getQueued(){
@@ -184,7 +184,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
         //doMoveGlassToSensor
 
-        exitPopup.msgHereIsGlass(g.glass);
+        exitMachine.msgHereIsGlass(g.glass);
 
         glassOnMe.remove(g);
 
@@ -199,9 +199,9 @@ public class ConveyorAgent extends Agent implements Conveyor {
         log.add(new LoggedEvent("Carrying out action : requestMoveGlass"));
 
         if(g.glass.getProcesses().contains(myMachine)){
-            exitPopup.msgGlassIsReady();
+            exitMachine.msgGlassIsReady();
         } else {
-            exitPopup.msgGlassNeedsThrough();
+            exitMachine.msgGlassNeedsThrough();
         }
 
         g.state = GlassState.WAITING_TO_EXIT;
@@ -223,7 +223,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
     private void prepareToTakeGlass(){
         log.add(new LoggedEvent("Carrying out action : prepareToTakeGlass"));
 
-        entryPopup.msgConveyorReady();
+        entryMachine.msgConveyorReady();
 
         glassInQueue = false;
 
