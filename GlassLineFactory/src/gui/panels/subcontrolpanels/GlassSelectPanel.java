@@ -50,6 +50,10 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
+		/*
+		 * Checkboxes for each station.
+		 * Selected stations will be added to the Glass's recipe
+		 */
 		JCheckBox chckbxCutter = new JCheckBox("Cutter");
 		recipe.add(chckbxCutter);
 		GridBagConstraints gbc_chckbxCutter = new GridBagConstraints();
