@@ -274,4 +274,8 @@ public class ControlPanel extends JPanel implements TReceiver
 			){
 		parent.makeGlass(g);
 	}
+	
+	public FactoryPanel getParent(){
+		return parent;
+	}
 }
