@@ -51,8 +51,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		}
 	}
 
-	public OnlineWorkStationAgent(String name, String type, int guiIndex, int capacity, Transducer transducer, TracePanel tracePanel){
-		super(name);
+	public OnlineWorkStationAgent(String type, int guiIndex, int capacity, Transducer transducer, TracePanel tracePanel){
+		super(type);
 		this.type = type;
 		this.guiIndex = guiIndex;
 		this.capacity = capacity;
