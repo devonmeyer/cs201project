@@ -49,6 +49,7 @@ public class FactoryPanel extends JPanel
 	public OnlineWorkStationAgent uv;
 	public OnlineWorkStationAgent painter;
 	public OnlineWorkStationAgent baker;
+	public TruckAgent truck;
 	public ConveyorAgent conv0;
 	public ConveyorAgent conv1;
 	public ConveyorAgent conv2;
@@ -64,6 +65,7 @@ public class FactoryPanel extends JPanel
 	public ConveyorAgent conv12;
 	public ConveyorAgent conv13;
 	public ConveyorAgent conv14;
+	
 
 	/**
 	 * Constructor links this panel to its frame
@@ -127,15 +129,15 @@ public class FactoryPanel extends JPanel
 	{
 		gRobot = new GlassRobotAgent(transducer, cPanel.getTracePanel(),  "GlassBin");
 		cutter = new OnlineWorkStationAgent("CUTTER", 0, 1, transducer, cPanel.getTracePanel());
-		breakout = new OnlineWorkStationAgent("BREAKOUT", 1, 1, transducer, cPanel.getTracePanel());
-		mbreakout= new OnlineWorkStationAgent("MANUAL_BREAKOUT", 2, 1, transducer, cPanel.getTracePanel());
+		breakout = new OnlineWorkStationAgent("BREAKOUT", 111, 1, transducer, cPanel.getTracePanel());
+		mbreakout= new OnlineWorkStationAgent("MANUAL_BREAKOUT", 222, 1, transducer, cPanel.getTracePanel());
 		crossSeamer = new PopupAgent(transducer, 1, 1 ,2);
 		grinder = new PopupAgent(transducer, 2, 1, 2);
 		drill = new PopupAgent(transducer, 3, 1, 2);
-		washer = new OnlineWorkStationAgent("WASHER", 6, 1, transducer, cPanel.getTracePanel());
-		uv = new OnlineWorkStationAgent("UV_LAMP", 7, 1, transducer, cPanel.getTracePanel());
-		painter = new OnlineWorkStationAgent("PAINTER", 8, 1, transducer, cPanel.getTracePanel());
-		baker = new OnlineWorkStationAgent("OVEN", 9, 1, transducer, cPanel.getTracePanel());
+		washer = new OnlineWorkStationAgent("WASHER", 1, 1, transducer, cPanel.getTracePanel());
+		painter = new OnlineWorkStationAgent("PAINTER", 2, 1, transducer, cPanel.getTracePanel());
+		uv = new OnlineWorkStationAgent("UV_LAMP", 3, 1, transducer, cPanel.getTracePanel());
+		baker = new OnlineWorkStationAgent("OVEN", 4, 1, transducer, cPanel.getTracePanel());
 		conv0 = new ConveyorAgent("Cutter", transducer,0);
 		conv1 = new ConveyorAgent("SHUTTLE1", transducer,1);
 		conv2 = new ConveyorAgent("BREAKOUT", transducer,2);
@@ -151,12 +153,63 @@ public class FactoryPanel extends JPanel
 		conv12 = new ConveyorAgent("SHUTLE4", transducer,12);
 		conv13 = new ConveyorAgent("OVEN", transducer,13);
 		conv14 = new ConveyorAgent("EXIT", transducer,14);
+		truck = new TruckAgent("Truck", transducer, conv14);
 		
-		gRobot.setConveyor(conv1);
-		conv1.setMachines(gRobot, cutter);
+		gRobot.setConveyor(conv0);
+		conv0.setTwoMachines(gRobot, cutter);
+		conv1.setTwoMachines(cutter, conv2);
+		conv2.setTwoMachines(conv1, breakout);
+		conv3.setTwoMachines(breakout, mbreakout);
+		conv4.setTwoMachines(mbreakout, conv5);
+		conv5.setTwoMachines(conv6, crossSeamer);
+		conv6.setTwoMachines(crossSeamer, drill);
+		conv7.setTwoMachines(drill, grinder);
+		conv8.setTwoMachines(grinder,washer);
+		conv9.setTwoMachines(washer, conv10);
+		conv10.setTwoMachines(conv9, painter);
+		conv11.setTwoMachines(painter, uv);
+		conv12.setTwoMachines(uv, conv13);
+		conv13.setTwoMachines(conv12, baker);
+		conv14.setTwoMachines(baker,truck);
+		
+		cutter.setConveyors(conv0, conv1);
+		breakout.setConveyors(conv2, conv3);
+		mbreakout.setConveyors(conv3, conv4);
+		crossSeamer.setConveyors(conv5, conv6);
+		drill.setConveyors(conv6, conv7);
+		grinder.setConveyors(conv7, conv8);
+		washer.setConveyors(conv8, conv9);
+		painter.setConveyors(conv10, conv11);
+		uv.setConveyors(conv11, conv12);
+		baker.setConveyors(conv13, conv14);
 		
 		gRobot.startThread();
+		cutter.startThread();
+		breakout.startThread();
+		mbreakout.startThread();
+		crossSeamer.startThread();
+		drill.startThread();
+		grinder.startThread();
+		washer.startThread();
+		painter.startThread();
+		uv.startThread();
+		baker.startThread();
+		truck.startThread();
+		conv0.startThread();
 		conv1.startThread();
+		conv2.startThread();
+		conv3.startThread();
+		conv4.startThread();
+		conv5.startThread();
+		conv6.startThread();
+		conv7.startThread();
+		conv8.startThread();
+		conv9.startThread();
+		conv10.startThread();
+		conv11.startThread();
+		conv12.startThread();
+		conv13.startThread();
+		conv14.startThread();
 
 		System.out.println("Back end initialization finished.");
 	}
