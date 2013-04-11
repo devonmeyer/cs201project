@@ -52,27 +52,28 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
     private int myPopupIndex;
 
+    private int myTopRobotIndex;
+
+    private int myBottomRobotIndex;
+
+    private TChannel myMachineChannel;
+
     private Transducer transducer;
 
-    private Semaphore popupAnimation;
-
-    private Semaphore robotAnimation;
-
-    private Semaphore conveyorAnimation;
+    private Semaphore animation;
 
     public EventLog log;
 
 
-    public PopupAgent(){
+    public PopupAgent(Transducer t){
         currentGlass = null;
         popupEngaged = false;
         conveyorGlassState = GlassState.NONE;
         myGlassState = GlassState.NONE;
         robotTopGlassState = GlassState.NONE;
         robotBottomGlassState = GlassState.NONE;
-        popupAnimation = new Semaphore(0);
-        robotAnimation = new Semaphore(0);
-        conveyorAnimation = new Semaphore(0);
+        animation = new Semaphore(0);
+        transducer = t;
 
         log = new EventLog();
 
@@ -94,6 +95,21 @@ public class PopupAgent extends Agent implements Popup, Machine {
     public void setRobots(Robot t, Robot b){
         topRobot = t;
         bottomRobot = b;
+    }
+
+    public void setRobotIndexes(int t, int b){
+        myTopRobotIndex = t;
+
+        myBottomRobotIndex = b;
+
+    }
+
+    public void setMachineChannel(TChannel m){
+
+        myMachineChannel = m;
+
+        transducer.register(this, m);
+
     }
 
     public boolean getConveyorGlassGoingToRobot(){
@@ -289,14 +305,16 @@ public class PopupAgent extends Agent implements Popup, Machine {
     private void moveMyGlassToRobot(){
         log.add(new LoggedEvent("Carrying out action : moveMyGlassToRobot"));
 
+        Object args[];
+
         if(!popupEngaged){
 
-            Object args[] = new Object[myPopupIndex];
+            args = new Object[myPopupIndex];
 
             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 
             try {
-                popupAnimation.acquire();
+                animation.acquire();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -309,20 +327,36 @@ public class PopupAgent extends Agent implements Popup, Machine {
         //doMoveGlassToRobot
 
         if(myGlassState == GlassState.MOVE_TO_TOP_ROBOT){
+            args = new Object[myTopRobotIndex];
+            transducer.fireEvent(myMachineChannel, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
+
+            try {
+                animation.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             topRobot.msgPopupHereIsGlass(currentGlass);
+            robotTopGlassState = GlassState.PROCESSING;
+
         } else {
+
+            args = new Object[myBottomRobotIndex];
+            transducer.fireEvent(myMachineChannel, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
+
+            try {
+                animation.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             bottomRobot.msgPopupHereIsGlass(currentGlass);
+            robotBottomGlassState = GlassState.PROCESSING;
+
         }
 
 
         currentGlass = null;
-
-        if(myGlassState == GlassState.MOVE_TO_TOP_ROBOT){
-            robotTopGlassState = GlassState.PROCESSING;
-        } else {
-            robotBottomGlassState = GlassState.PROCESSING;
-        }
-
         myGlassState = GlassState.NONE;
 
     }
@@ -337,7 +371,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
 
             try {
-                popupAnimation.acquire();
+                animation.acquire();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -349,7 +383,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
         transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
 
         try {
-            conveyorAnimation.acquire();
+            animation.acquire();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -373,7 +407,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 
             try {
-                popupAnimation.acquire();
+                animation.acquire();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -403,7 +437,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
 
             try {
-                popupAnimation.acquire();
+                animation.acquire();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -431,6 +465,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
     */
 
     public void eventFired(TChannel channel, TEvent event, Object[] args){
+
+
 
     }
 
