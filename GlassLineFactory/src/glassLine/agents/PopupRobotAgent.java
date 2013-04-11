@@ -13,8 +13,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 
 	
 	private List<MyGlass> myglasses = new ArrayList<MyGlass>();
-	
-	private enum GlassState{processing, processed};
+	private enum GlassState{processing, processed, removing};
 	
 	public class MyGlass{
 		private Glass glass;
@@ -27,7 +26,6 @@ public class PopupRobotAgent extends Agent implements Robot{
 	}
 	
 	private PopupAgent Popup;
-	
 	private enum PopupState{none, glassready, popupready, requested, robotready, notified};
 	private PopupState pstate = PopupState.none;
 	
@@ -77,6 +75,10 @@ public class PopupRobotAgent extends Agent implements Robot{
 		myglasses.get(0).gstate = GlassState.processed;
 		stateChanged();
 	}
+	//message that the animation is removing glass
+	public void msgRemoveGlass(){
+		myglasses.get(0).gstate = GlassState.removing;
+	}
 
 	/**SCHEDULER**/
 	public boolean pickAndExecuteAnAction() {
@@ -99,6 +101,11 @@ public class PopupRobotAgent extends Agent implements Robot{
 		//if the robot is ready to receive glass
 		if(pstate == PopupState.robotready){
 			notifyPopupThatRobotIsReady();
+			return true;
+		}
+		//if the robot is removing the glass
+		if(myglasses != null && myglasses.get(0).gstate == GlassState.removing){
+			removeGlass();
 			return true;
 		}
 		
@@ -127,11 +134,17 @@ public class PopupRobotAgent extends Agent implements Robot{
 		pstate = PopupState.requested;
 		stateChanged();
 	}
-	//gives glass to popup
+	//fires animation to remove glass
 	private void giveGlassToPopup(){
 		Popup.msgRobotHereIsGlass(myglasses.get(0).glass, this.isTop);
-		myglasses.remove(0);
-		pstate = PopupState.robotready;
+		Object args[] = new Object[1];
+		args[0] = this.guiIndex;
+		if(type.equals("DRILL"))
+			this.transducer.fireEvent(TChannel.DRILL, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("CROSS_SEAMER"))
+			this.transducer.fireEvent(TChannel.CROSS_SEAMER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("GRINDER"))
+			this.transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
 		stateChanged();
 	}
 	//notifies the popup that the robot is ready to take glass
@@ -140,7 +153,13 @@ public class PopupRobotAgent extends Agent implements Robot{
 		pstate = PopupState.notified;
 		stateChanged();	
 	}
-
+	//removes the glass from the robot
+	private void removeGlass(){
+		myglasses.remove(0);
+		pstate = PopupState.robotready;
+		stateChanged();
+	}
+	
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if(type.equals("DRILL"))
 		{
@@ -149,6 +168,9 @@ public class PopupRobotAgent extends Agent implements Robot{
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 					this.msgGlassDoneProcessing();
 			}
+			else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
+				msgRemoveGlass();
+			}
 		}
 		else if(type.equals("GRINDER"))
 		{
@@ -156,6 +178,8 @@ public class PopupRobotAgent extends Agent implements Robot{
 			{
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 					this.msgGlassDoneProcessing();
+			}else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
+				msgRemoveGlass();
 			}
 		}
 		else if(type.equals("CROSS_SEAMER"))
@@ -164,6 +188,9 @@ public class PopupRobotAgent extends Agent implements Robot{
 			{
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 					this.msgGlassDoneProcessing();
+			}
+			else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
+				msgRemoveGlass();
 			}
 		}
 		
