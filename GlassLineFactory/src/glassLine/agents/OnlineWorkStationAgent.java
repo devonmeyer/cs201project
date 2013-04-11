@@ -328,7 +328,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		}
 	}
 	
-	public void setConveyorAgents(ConveyorAgent preceding, ConveyorAgent following){
+	public void setConveyors(ConveyorAgent preceding, ConveyorAgent following){
 		this.precedingConveyorAgent = preceding;
 		this.followingConveyorAgent = following;
 	}
