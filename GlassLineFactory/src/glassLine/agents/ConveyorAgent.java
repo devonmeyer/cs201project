@@ -9,6 +9,7 @@ import transducer.TChannel;
 import transducer.TEvent;
 
 import java.util.LinkedList;
+import java.util.concurrent.Semaphore;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,6 +34,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     private int myConveyorIndex;
 
+    private Semaphore movingToMachine;
+
     private class MyGlass{
         public Glass glass;
         public GlassState state;
@@ -51,6 +54,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     public ConveyorAgent(String machine){
         glassOnMe = new LinkedList<MyGlass>();
+        movingToMachine = new Semaphore(0);
         myMachine = machine;
         moving = false;
         entryMachine = null;
@@ -188,18 +192,26 @@ public class ConveyorAgent extends Agent implements Conveyor {
     private void moveGlassToMachine(MyGlass g){
         log.add(new LoggedEvent("Carrying out action : moveGlassToMachine"));
 
-        //doMoveGlassToSensor
+        Object args[] = new Object[myConveyorIndex];
+
+        transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
+        moving = true;
+
+        try {
+            movingToMachine.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
 
         exitMachine.msgHereIsGlass(g.glass);
 
         glassOnMe.remove(g);
 
-        if(!glassOnMe.isEmpty()){
-
-            Object args[] = new Object[myConveyorIndex];
-
-            transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
-            moving = true;
+        if(glassOnMe.isEmpty()){
+            transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
+            moving = false;
         }
     }
 
@@ -230,6 +242,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
         Object args[] = new Object[myConveyorIndex];
 
         transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
+        moving = true;
 
 
 
