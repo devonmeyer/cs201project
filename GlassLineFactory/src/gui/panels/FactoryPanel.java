@@ -46,10 +46,6 @@ public class FactoryPanel extends JPanel
 		// initialize transducer
 		transducer = new Transducer();
 		transducer.startTransducer();
-		
-		// initialize the agents and other components
-		gRobot = new GlassRobotAgent(transducer, "GlassBin");
-		gRobot.startThread();
 
 		// use default layout
 		// dPanel = new DisplayPanel(this);
@@ -59,6 +55,13 @@ public class FactoryPanel extends JPanel
 		// initialize and run
 		this.initialize();
 		this.initializeBackEnd();
+		
+		// initialize the agents and other components
+		gRobot = new GlassRobotAgent(transducer, cPanel.getTracePanel(),  "GlassBin");
+		gRobot.startThread();
+		
+		// pass glass robot to selection panel
+		cPanel.glassSelectPanel.setGlassRobot(this.gRobot);
 	}
 
 	/**
@@ -71,9 +74,6 @@ public class FactoryPanel extends JPanel
 
 		// initialize control panel
 		cPanel = new ControlPanel(this, transducer);
-		
-		// pass glass robot to selection panel
-		cPanel.glassSelectPanel.setGlassRobot(this.gRobot);
 
 		// initialize display panel
 		dPanel = new DisplayPanel(this, transducer);
