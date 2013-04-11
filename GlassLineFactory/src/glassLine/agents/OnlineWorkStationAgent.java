@@ -2,10 +2,14 @@ package glassLine.agents;
 
 import java.util.List;
 
+import javax.swing.JTextArea;
+
 
 import glassLine.Glass;
 import glassLine.interfaces.Machine;
 import gui.drivers.FactoryDriver;
+import gui.panels.ControlPanel;
+import gui.panels.subcontrolpanels.TracePanel;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -19,7 +23,6 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 */
 
 	private String type;
-	private FactoryDriver factory;
 
 	private int guiIndex;  // for communication with GUI through transducer
 	private int capacity;
@@ -34,6 +37,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	private ConveyorAgent followingConveyorAgent;
 	private enum AgentState {processing, notProcessing}
 	private AgentState state;
+	
+	
 
 
 	private class MyGlass {
@@ -46,15 +51,16 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		}
 	}
 
-	public OnlineWorkStationAgent(String type, int guiIndex, int capacity, ConveyorAgent preceding, ConveyorAgent following, FactoryDriver factory, Transducer transducer){
+	public OnlineWorkStationAgent(String type, int guiIndex, int capacity, ConveyorAgent preceding, ConveyorAgent following, Transducer transducer, TracePanel tracePanel){
 		this.type = type;
 		this.guiIndex = guiIndex;
 		this.capacity = capacity;
 		this.precedingConveyorAgent = preceding;
 		this.followingConveyorAgent = following;
-		this.factory = factory;
 		this.transducer = transducer;
 		this.state = AgentState.notProcessing;
+		this.tracePanel = tracePanel;
+	
 		// Registering to the appropriate transducer channel
 		try{
 			if(type.equals("BREAKOUT"))
@@ -322,6 +328,9 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 		}
 	}
+	
+	
+	
 
 	
 	
