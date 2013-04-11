@@ -31,10 +31,15 @@ public class FactoryPanel extends JPanel
 	/** Allows the control panel to communicate with the back end and give commands */
 	private Transducer transducer;
 	
+	/** agent counter */
+	int agentNumber = 0;
+	
 	/*
 	 * Factory Agents, Conveyor Families
 	 */
 	public GlassRobotAgent gRobot;
+	public OnlineWorkStationAgent()
+	public ConveyorAgent conv1;
 
 	/**
 	 * Constructor links this panel to its frame
@@ -57,8 +62,7 @@ public class FactoryPanel extends JPanel
 		this.initializeBackEnd();
 		
 		// initialize the agents and other components
-		gRobot = new GlassRobotAgent(transducer, cPanel.getTracePanel(),  "GlassBin");
-		gRobot.startThread();
+		this.startAgents();
 		
 		// pass glass robot to selection panel
 		cPanel.glassSelectPanel.setGlassRobot(this.gRobot);
@@ -86,6 +90,17 @@ public class FactoryPanel extends JPanel
 		this.add(dPanel);
 		this.add(cPanel);
 		
+	}
+	
+	private void startAgents(){
+		gRobot = new GlassRobotAgent(transducer, cPanel.getTracePanel(),  "GlassBin");
+		conv1 = new ConveyorAgent("Cutter", transducer);
+		
+		
+		gRobot.setConveyor(conv1);
+		
+		gRobot.startThread();
+		conv1.startThread();
 	}
 
 	/**

@@ -18,9 +18,10 @@ public class GlassRobotAgent extends Agent{
 	 */
 	List<Glass> glasses;
 	GlassSelectPanel parent;
-	//ConveyorFamily entrance;
+	ConveyorAgent entrance;
 	
-	boolean entranceReady;
+	enum State {Ready, Requested, NotReady};
+	State state;
 	
 	/** Constructor ****/
 	public GlassRobotAgent(Transducer trans, TracePanel tp, String name){
@@ -28,7 +29,7 @@ public class GlassRobotAgent extends Agent{
 		super(name);
 		
 		this.glasses = new ArrayList<Glass>();
-		this.entranceReady = true;
+		this.state = State.NotReady;
 		
 		transducer = trans;
 		tracePanel = tp;
@@ -38,7 +39,7 @@ public class GlassRobotAgent extends Agent{
 	
 	/** Messages *******************/
 	public void msgReadyForGlass(){
-		entranceReady = true;
+		state = State.Ready;
 		stateChanged();
 	}
 	
@@ -46,7 +47,11 @@ public class GlassRobotAgent extends Agent{
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		if(!glasses.isEmpty()){
-			if(entranceReady){
+			if(state == State.NotReady){
+				requestSend();
+				return true;
+			}
+			else if(state == State.Ready){
 				sendGlassToEntrance();
 				return true;
 			}
@@ -57,13 +62,17 @@ public class GlassRobotAgent extends Agent{
 
 	/** Actions *********************/
 	
+	private void requestSend(){
+		entrance.msgGlassIsReady();
+		stateChanged();
+	}
 	/*
 	 * Send the first glass in the list to the entrance conveyor 
 	 */
 	private void sendGlassToEntrance(){
-		//entrance.msgHereIsGlass(glasses.get(0));
+		entrance.msgHereIsGlass(glasses.get(0));
 		glasses.remove(0);		// remove the glass thats sent to the conveyor
-		entranceReady = false;						//set entrance to not ready after sending glass
+		state = State.NotReady;						//set entrance to not ready after sending glass
 		transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 		stateChanged();
 	}
@@ -82,6 +91,8 @@ public class GlassRobotAgent extends Agent{
 	public void setParent(GlassSelectPanel gsp){
 		parent = gsp;
 	}
-	
+	public void setConveyor(ConveyorAgent c){
+		entrance = c;
+	}
 	
 }

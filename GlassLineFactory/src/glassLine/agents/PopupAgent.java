@@ -65,7 +65,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
     public EventLog log;
 
 
-    public PopupAgent(Transducer t){
+    public PopupAgent(Transducer t, int popupIndex, int topRobotIndex, int bottomRobotIndex){
+        super("PopupAgent");
         currentGlass = null;
         popupEngaged = false;
         conveyorGlassState = GlassState.NONE;
@@ -75,18 +76,16 @@ public class PopupAgent extends Agent implements Popup, Machine {
         animation = new Semaphore(0);
         transducer = t;
 
+        myPopupIndex = popupIndex;
+
+        myTopRobotIndex = topRobotIndex;
+
+        myBottomRobotIndex = bottomRobotIndex;
+
         transducer.register(this, TChannel.POPUP);
 
         log = new EventLog();
 
-    }
-
-    public void setPopupIndex(int p){
-        myPopupIndex = p;
-    }
-
-    public void setTransducer(Transducer t){
-        transducer = t;
     }
 
     public void setConveyors(Conveyor ent, Conveyor ex){
@@ -97,13 +96,6 @@ public class PopupAgent extends Agent implements Popup, Machine {
     public void setRobots(Robot t, Robot b){
         topRobot = t;
         bottomRobot = b;
-    }
-
-    public void setRobotIndexes(int t, int b){
-        myTopRobotIndex = t;
-
-        myBottomRobotIndex = b;
-
     }
 
     public void setMachineChannel(TChannel m){
