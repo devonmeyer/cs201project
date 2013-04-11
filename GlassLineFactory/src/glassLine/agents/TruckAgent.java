@@ -1,11 +1,12 @@
 package glassLine.agents;
 
 import glassLine.Glass;
+import glassLine.interfaces.Machine;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
-public class TruckAgent extends Agent {
+public class TruckAgent extends Agent implements Machine {
 
 	private Glass glass;
 	
@@ -48,9 +49,18 @@ public class TruckAgent extends Agent {
 		this.tstate = TruckState.loaded;
 		stateChanged();
 	}
+
+	public void msgGlassNeedsThrough() {
+	
+	}
+
+	public void msgReadyToTakeGlass() {
+		
+	}
 	
 	/**SCHEDULER**/
 	public boolean pickAndExecuteAnAction() {
+		
 		if(glass == null && cstate == ConveyorState.ready){
 			receiveGlass();
 			return true;
@@ -58,7 +68,6 @@ public class TruckAgent extends Agent {
 		if(glass != null && cstate == ConveyorState.transferred && tstate == TruckState.loaded){
 			processGlass();
 		}
-		
 		
 		return false;
 	}
