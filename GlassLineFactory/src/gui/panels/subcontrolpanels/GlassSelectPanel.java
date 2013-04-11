@@ -41,6 +41,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 	List<JCheckBox> recipe;
 	
 	List<JButton> glassList;
+	List<Glass>	glasses;
 	
 	JScrollPane scrollPane;
 	private JPanel view = new JPanel();
@@ -65,7 +66,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		 * Checkboxes for each station.
 		 * Selected stations will be added to the Glass's recipe
 		 */
-		JCheckBox chckbxCutter = new JCheckBox("Cutter");
+		JCheckBox chckbxCutter = new JCheckBox("Cut ");
 		recipe.add(chckbxCutter);
 		GridBagConstraints gbc_chckbxCutter = new GridBagConstraints();
 		gbc_chckbxCutter.insets = new Insets(0, 0, 5, 5);
@@ -74,7 +75,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		add(chckbxCutter, gbc_chckbxCutter);
 		chckbxCutter.setHorizontalAlignment(SwingConstants.LEFT);
 		
-		JCheckBox chckbxBreakout = new JCheckBox("BreakOut");
+		JCheckBox chckbxBreakout = new JCheckBox("BO  ");
 		recipe.add(chckbxBreakout);
 		GridBagConstraints gbc_chckbxBreakout = new GridBagConstraints();
 		gbc_chckbxBreakout.insets = new Insets(0, 0, 5, 5);
@@ -83,7 +84,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		add(chckbxBreakout, gbc_chckbxBreakout);
 		chckbxBreakout.setHorizontalAlignment(SwingConstants.RIGHT);
 		
-		JCheckBox chckbxManualBo = new JCheckBox("Manual BO");
+		JCheckBox chckbxManualBo = new JCheckBox("MBO ");
 		recipe.add(chckbxManualBo);
 		GridBagConstraints gbc_chckbxManualBo = new GridBagConstraints();
 		gbc_chckbxManualBo.insets = new Insets(0, 0, 5, 5);
@@ -93,7 +94,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		chckbxManualBo.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 				
-		JCheckBox chckbxCrossseamer = new JCheckBox("CrossSeamer");
+		JCheckBox chckbxCrossseamer = new JCheckBox("Seam");
 		recipe.add(chckbxCrossseamer);
 		GridBagConstraints gbc_chckbxCrossseamer = new GridBagConstraints();
 		gbc_chckbxCrossseamer.insets = new Insets(0, 0, 5, 5);
@@ -112,7 +113,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		add(chckbxDrill, gbc_chckbxDrill);
 		chckbxDrill.setHorizontalAlignment(SwingConstants.LEFT);
 		
-		JCheckBox chckbxGrinder = new JCheckBox("Grinder");
+		JCheckBox chckbxGrinder = new JCheckBox("Grind");
 		recipe.add(chckbxGrinder);
 		GridBagConstraints gbc_chckbxGrinder = new GridBagConstraints();
 		gbc_chckbxGrinder.insets = new Insets(0, 0, 5, 5);
@@ -121,7 +122,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		add(chckbxGrinder, gbc_chckbxGrinder);
 		chckbxGrinder.setHorizontalAlignment(SwingConstants.LEFT);
 		
-		JCheckBox chckbxWasher = new JCheckBox("Washer");
+		JCheckBox chckbxWasher = new JCheckBox("Wash");
 		recipe.add(chckbxWasher);
 		GridBagConstraints gbc_chckbxWasher = new GridBagConstraints();
 		gbc_chckbxWasher.insets = new Insets(0, 0, 5, 5);
@@ -181,6 +182,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		scrollPane.setViewportView(view);
 		add(scrollPane, gbc_scrollPane);
 		glassList = new ArrayList<JButton>();
+		glasses = new ArrayList<Glass>();
 		
 		parent = cp;
 		
@@ -215,8 +217,8 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 			for(int i=0; i < glassList.size(); i++){
 				JButton temp = glassList.get(i);
 
-		//		if(ae.getSource() == temp)
-		//		    parent.getGlassInfoPanel().showInfo(type, temp.getText());		
+				if(ae.getSource() == temp)
+				    parent.getGlassInfoPanel().updateGlassInfo(glasses.get(i));		
 			}  
 		}
 	}
@@ -242,6 +244,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		glass.addActionListener(this);
 		
 		this.view.add(glass);
+		this.glasses.add(temp);
 		this.glassList.add(glass);
 		validate();
 	}
