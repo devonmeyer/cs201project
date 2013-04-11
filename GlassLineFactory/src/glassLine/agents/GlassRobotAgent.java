@@ -44,6 +44,12 @@ public class GlassRobotAgent extends Agent implements Machine{
 		stateChanged();
 	}
 	
+	@Override
+	public void msgReadyToTakeGlass() {
+		state = State.Ready;
+		stateChanged();
+	}
+	
 	/** Scheduler *******************/
 	@Override
 	public boolean pickAndExecuteAnAction() {
@@ -65,12 +71,14 @@ public class GlassRobotAgent extends Agent implements Machine{
 	
 	private void requestSend(){
 		entrance.msgGlassIsReady();
+		state = State.Requested;
 		stateChanged();
 	}
 	/*
 	 * Send the first glass in the list to the entrance conveyor 
 	 */
 	private void sendGlassToEntrance(){
+		System.out.println("sending glass to conveyor");
 		entrance.msgHereIsGlass(glasses.get(0));
 		glasses.remove(0);		// remove the glass thats sent to the conveyor
 		state = State.NotReady;						//set entrance to not ready after sending glass
@@ -110,12 +118,6 @@ public class GlassRobotAgent extends Agent implements Machine{
 
 	@Override
 	public void msgHereIsGlass(Glass g) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void msgReadyToTakeGlass() {
 		// TODO Auto-generated method stub
 		
 	}
