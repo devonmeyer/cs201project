@@ -47,7 +47,7 @@ public class FactoryPanel extends JPanel
 		transducer = new Transducer();
 		transducer.startTransducer();
 		
-		//initialize the agents and other components
+		// initialize the agents and other components
 		gRobot = new GlassRobotAgent(transducer, "GlassBin");
 		gRobot.startThread();
 
