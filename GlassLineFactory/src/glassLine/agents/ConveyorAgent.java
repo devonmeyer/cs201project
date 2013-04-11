@@ -108,15 +108,17 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     }
 
-    public void setOneMachineBeginConveyor(Machine exit){
+    public void setOneMachineWithGRA(Machine glassRobotAgent, Machine exit){
         myType = ConveyorType.BEGIN;
+        entryMachine = glassRobotAgent;
         exitMachine = exit;
 
     }
 
-    public void setOneMachineEndConveyor(Machine enter){
+    public void setOneMachineWithTruck(Machine enter, Machine truck){
         myType = ConveyorType.END;
         entryMachine = enter;
+        exitMachine = truck;
 
     }
 
@@ -255,7 +257,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
         if(myType == ConveyorType.BEGIN){
             exitMachine.msgHereIsGlass(g.glass);
         } else if(myType == ConveyorType.END) {
-//          truck.msgHereIsGlass(g.glass);
+            exitMachine.msgHereIsGlass(g.glass);
         } else if(myType == ConveyorType.TWO_MACHINES){
             exitMachine.msgHereIsGlass(g.glass);
         } else if(myType == ConveyorType.SHUTTLE_ENTRY){
@@ -274,16 +276,18 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     private void requestMoveGlass(MyGlass g){
         log.add(new LoggedEvent("Carrying out action : requestMoveGlass"));
-        if(myType != ConveyorType.END && myType != ConveyorType.SHUTTLE_EXIT){
-            if(g.glass.getProcesses().contains(myMachine)){
+        if(myType != ConveyorType.SHUTTLE_EXIT){
+            if(myType == ConveyorType.END){
                 exitMachine.msgGlassIsReady();
             } else {
-                exitMachine.msgGlassNeedsThrough();
+                if(g.glass.getProcesses().contains(myMachine)){
+                    exitMachine.msgGlassIsReady();
+                } else {
+                    exitMachine.msgGlassNeedsThrough();
+                }
             }
-        } else if(myType == ConveyorType.SHUTTLE_EXIT) {
-            conveyor.msgGlassIsReady();
         } else {
-//          truck.msgGlassIsReady();
+            conveyor.msgGlassIsReady();
         }
 
         g.state = GlassState.WAITING_TO_EXIT;
