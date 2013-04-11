@@ -59,7 +59,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     public EventLog log;
 
-    public ConveyorAgent(String machine, Transducer t){
+    public ConveyorAgent(String machine, Transducer t, int index){
 
         super("ConveyorAgent");
 
@@ -72,16 +72,13 @@ public class ConveyorAgent extends Agent implements Conveyor {
         glassInQueue = false;
         log = new EventLog();
         transducer = t;
+        myConveyorIndex = index;
 
         //Register for channels
 
         transducer.register(this, TChannel.SENSOR);
 
 
-    }
-
-    public void setConveyorIndex(int i){
-        myConveyorIndex = i;
     }
 
     public void setMachines(Machine enter, Machine exit){
