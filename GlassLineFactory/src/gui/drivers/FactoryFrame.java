@@ -55,7 +55,8 @@ public class FactoryFrame extends JFrame
 	public List<Glass> glasses;
 
 	/**
-	 * Creates a new FactoryFrame, initializes the parts, and
+	 * Creates a new FactoryFrame, initializes the parts, andest
+	 * 
 	 * displays both panels
 	 */
 	public FactoryFrame()

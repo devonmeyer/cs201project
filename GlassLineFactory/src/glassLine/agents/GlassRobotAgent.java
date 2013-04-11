@@ -4,7 +4,7 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import glassLine.*;
-import gui.panels.subcontrolpanels.GlassSelectPanel;
+import gui.panels.subcontrolpanels.*;
 
 import java.util.*;
 
@@ -23,14 +23,15 @@ public class GlassRobotAgent extends Agent{
 	boolean entranceReady;
 	
 	/** Constructor ****/
-	public GlassRobotAgent(Transducer trans, String name){
+	public GlassRobotAgent(Transducer trans, TracePanel tp, String name){
 		
 		super(name);
 		
 		this.glasses = new ArrayList<Glass>();
-		this.entranceReady = false;
+		this.entranceReady = true;
 		
 		transducer = trans;
+		tracePanel = tp;
 //		transducer.register(this, TChannel.BIN);
 		
 	}
@@ -63,17 +64,17 @@ public class GlassRobotAgent extends Agent{
 		//entrance.msgHereIsGlass(glasses.get(0));
 		glasses.remove(0);		// remove the glass thats sent to the conveyor
 		entranceReady = false;						//set entrance to not ready after sending glass
-		eventFired(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 		stateChanged();
 	}
 	public void addGlass(Glass g){
 //		System.out.println("Making Glass");
+		print("A new piece of glass is made\n");
 		glasses.add(g);
 		stateChanged();
 	}
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		transducer.fireEvent(channel, event, null);
 		stateChanged();
 	}
 
