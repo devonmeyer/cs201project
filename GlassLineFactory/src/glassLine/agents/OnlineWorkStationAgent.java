@@ -1,6 +1,6 @@
 package glassLine.agents;
 
-import java.util.List;
+import java.util.*;
 
 import javax.swing.JTextArea;
 
@@ -83,6 +83,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		}
 		this.precedingAgentState = PrecedingAgentState.none;
 		this.followingAgentState = FollowingAgentState.none;
+		this.glassList = new ArrayList<MyGlass>();
 
 	}
 
