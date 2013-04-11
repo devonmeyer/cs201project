@@ -4,11 +4,12 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import glassLine.*;
+import glassLine.interfaces.Machine;
 import gui.panels.subcontrolpanels.*;
 
 import java.util.*;
 
-public class GlassRobotAgent extends Agent{
+public class GlassRobotAgent extends Agent implements Machine{
 	
 	/** DATA *******************/
 	/*
@@ -93,6 +94,30 @@ public class GlassRobotAgent extends Agent{
 	}
 	public void setConveyor(ConveyorAgent c){
 		entrance = c;
+	}
+
+	@Override
+	public void msgGlassIsReady() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgGlassNeedsThrough() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgHereIsGlass(Glass g) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgReadyToTakeGlass() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

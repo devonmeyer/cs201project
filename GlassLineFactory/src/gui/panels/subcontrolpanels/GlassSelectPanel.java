@@ -24,7 +24,7 @@ import java.util.*;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
-
+import glassLine.interfaces.*;
 /**
  * The GlassSelectPanel class contains buttons allowing the user to select what
  * type of glass to produce.
