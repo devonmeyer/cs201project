@@ -32,7 +32,8 @@ public class PopupRobotAgent extends Agent implements Robot{
 	private String type;
 	private int guiIndex;
 	private boolean isTop;
-	public PopupRobotAgent(String type, int guiIndex, boolean isTop, PopupAgent popup, Transducer transducer){
+	public PopupRobotAgent(String name, String type, int guiIndex, boolean isTop, PopupAgent popup, Transducer transducer){
+		super(name);
 		this.type = type;
 		this.guiIndex = guiIndex;
 		this.isTop = isTop;
