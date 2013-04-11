@@ -54,7 +54,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	public OnlineWorkStationAgent(String type, int guiIndex, int capacity, Transducer transducer, TracePanel tracePanel){
 		super(type);
 		this.type = type;
-		this.guiIndex = guiIndex;
+		
 		this.capacity = capacity;
 		this.transducer = transducer;
 		this.state = AgentState.notProcessing;
@@ -335,6 +335,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	public void setFollowingAgentState(ConveyorAgent conveyor){
 		this.followingConveyorAgent = conveyor;
 	}
+	
 
 	
 	
