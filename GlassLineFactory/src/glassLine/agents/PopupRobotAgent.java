@@ -33,9 +33,11 @@ public class PopupRobotAgent extends Agent implements Robot{
 	
 	private String type;
 	private int guiIndex;
-	public PopupRobotAgent(String type, int guiIndex, PopupAgent popup, Transducer transducer){
+	private boolean isTop;
+	public PopupRobotAgent(String type, int guiIndex, boolean isTop, PopupAgent popup, Transducer transducer){
 		this.type = type;
 		this.guiIndex = guiIndex;
+		this.isTop = isTop;
 		this.Popup = popup;
 		this.transducer = transducer;
 		
@@ -121,20 +123,20 @@ public class PopupRobotAgent extends Agent implements Robot{
 	}
 	//requests permission to transfer glass to popup
 	private void requestPopup(){
-		Popup.msgRobotGlassIsReady();
+		Popup.msgRobotGlassIsReady(this.isTop);
 		pstate = PopupState.requested;
 		stateChanged();
 	}
 	//gives glass to popup
 	private void giveGlassToPopup(){
-		Popup.msgRobotHereIsGlass(myglasses.get(0).glass);
+		Popup.msgRobotHereIsGlass(myglasses.get(0).glass, this.isTop);
 		myglasses.remove(0);
 		pstate = PopupState.robotready;
 		stateChanged();
 	}
 	//notifies the popup that the robot is ready to take glass
 	private void notifyPopupThatRobotIsReady(){
-		Popup.msgRobotReady();
+		Popup.msgRobotReady(this.isTop);
 		pstate = PopupState.notified;
 		stateChanged();	
 	}

@@ -7,6 +7,8 @@ public class Glass {
 	 * This class represents a piece of glass being processed by the factory.
 	 */
 	private int ID;    
+	
+	
 	private List<String> processes; // This contains the list of processes to be
 									// performed on glass
 	
