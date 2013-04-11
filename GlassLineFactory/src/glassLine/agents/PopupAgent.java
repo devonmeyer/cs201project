@@ -75,6 +75,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
         animation = new Semaphore(0);
         transducer = t;
 
+        transducer.register(this, TChannel.POPUP);
+
         log = new EventLog();
 
     }
@@ -466,9 +468,36 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
     public void eventFired(TChannel channel, TEvent event, Object[] args){
 
+        if(channel == TChannel.POPUP){
+            if(event == TEvent.POPUP_GUI_LOAD_FINISHED)  {
+
+                animation.release();
+
+            } else if(event == TEvent.POPUP_GUI_RELEASE_FINISHED){
+
+                animation.release();
+
+            } else if(event == TEvent.POPUP_GUI_MOVED_UP){
+
+                animation.release();
+
+            } else if(event == TEvent.POPUP_GUI_MOVED_DOWN){
+
+                animation.release();
+
+            }
+        } else if(channel == myMachineChannel){
+
+            if(event == TEvent.WORKSTATION_LOAD_FINISHED){
+
+                animation.release();
+
+            }
 
 
+        }
     }
+
 
 
 }
