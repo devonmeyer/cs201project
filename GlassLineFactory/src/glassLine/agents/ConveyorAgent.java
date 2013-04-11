@@ -60,6 +60,9 @@ public class ConveyorAgent extends Agent implements Conveyor {
     public EventLog log;
 
     public ConveyorAgent(String machine, Transducer t){
+
+        super("ConveyorAgent");
+
         glassOnMe = new LinkedList<MyGlass>();
         movingToMachine = new Semaphore(0);
         myMachine = machine;

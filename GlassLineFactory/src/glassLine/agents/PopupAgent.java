@@ -66,6 +66,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
 
     public PopupAgent(Transducer t){
+        super("PopupAgent");
         currentGlass = null;
         popupEngaged = false;
         conveyorGlassState = GlassState.NONE;
