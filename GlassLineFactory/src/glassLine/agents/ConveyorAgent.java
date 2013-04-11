@@ -43,6 +43,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     private Semaphore movingToMachine;
 
+    private Conveyor conveyorAfterShuttle;
+
+    boolean hasExitMachine;
+
     private class MyGlass{
         public Glass glass;
         public GlassState state;
@@ -69,6 +73,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
         moving = false;
         entryMachine = null;
         exitMachine = null;
+        conveyorAfterShuttle = null;
         glassInQueue = false;
         log = new EventLog();
         transducer = t;
@@ -81,9 +86,16 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     }
 
-    public void setMachines(Machine enter, Machine exit){
+    public void setTwoMachines(Machine enter, Machine exit){
+        hasExitMachine = true;
         entryMachine = enter;
         exitMachine = exit;
+    }
+
+    public void setOneMachine(Machine enter, Conveyor c){
+        hasExitMachine = false;
+        entryMachine = enter;
+        conveyorAfterShuttle = c;
     }
 
     public boolean getQueued(){
@@ -218,8 +230,11 @@ public class ConveyorAgent extends Agent implements Conveyor {
         }
 
 
-
-        exitMachine.msgHereIsGlass(g.glass);
+        if(hasExitMachine){
+            exitMachine.msgHereIsGlass(g.glass);
+        } else {
+            conveyorAfterShuttle.msgHereIsGlass(g.glass);
+        }
 
         glassOnMe.remove(g);
 
@@ -231,11 +246,14 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     private void requestMoveGlass(MyGlass g){
         log.add(new LoggedEvent("Carrying out action : requestMoveGlass"));
-
-        if(g.glass.getProcesses().contains(myMachine)){
-            exitMachine.msgGlassIsReady();
+        if(hasExitMachine){
+            if(g.glass.getProcesses().contains(myMachine)){
+                exitMachine.msgGlassIsReady();
+            } else {
+                exitMachine.msgGlassNeedsThrough();
+            }
         } else {
-            exitMachine.msgGlassNeedsThrough();
+            conveyorAfterShuttle.msgGlassIsReady();
         }
 
         g.state = GlassState.WAITING_TO_EXIT;
