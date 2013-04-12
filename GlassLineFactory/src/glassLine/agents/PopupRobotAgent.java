@@ -180,27 +180,18 @@ public class PopupRobotAgent extends Agent implements Robot{
 		myglass.gstate = GlassState.processing;
 		if(type.equals("DRILL")){
 			this.transducer.fireEvent(TChannel.DRILL, TEvent.WORKSTATION_DO_ACTION, args); 
-			try {
-				animation.acquire();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
 		else if (type.equals("GRINDER")){
 			this.transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_DO_ACTION, args); 
-			try {
-				animation.acquire();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
 		else if (type.equals("CROSS_SEAMER")){
 			this.transducer.fireEvent(TChannel.CROSS_SEAMER, TEvent.WORKSTATION_DO_ACTION, args); 
-			try {
-				animation.acquire();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		}
+		
+		try {
+			animation.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 
 		//		stateChanged();
@@ -231,7 +222,8 @@ public class PopupRobotAgent extends Agent implements Robot{
 		else if (type.equals("CROSS_SEAMER"))
 			this.transducer.fireEvent(TChannel.CROSS_SEAMER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
 		else if (type.equals("GRINDER"))
-			this.transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+			this.transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_RELEASE_GLASS, args);
+		System.out.println("Acquiring");
 		try {
 			animation.acquire();
 		} catch (InterruptedException e) {
@@ -276,6 +268,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 			{
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED){
 					if((Integer) args[0] == this.guiIndex){
+						System.out.println("Sem released");
 						animation.release();
 					}
 				}
@@ -300,6 +293,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 						rstate = RobotState.ready;
 					}
 				}
+//				animation.release();
 			}
 		}
 		else if(type.equals("CROSS_SEAMER"))
@@ -316,6 +310,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 						rstate = RobotState.ready;
 					}
 				}
+				animation.release();
 			}
 
 		}
