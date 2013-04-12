@@ -46,6 +46,7 @@ public class GlassRobotAgent extends Agent implements Machine{
 	
 	@Override
 	public void msgReadyToTakeGlass() {
+		print("Conveyor " + entrance.getConveyorIndex() +" is ready to take glass\n");
 		state = State.Ready;
 		stateChanged();
 	}
@@ -78,7 +79,7 @@ public class GlassRobotAgent extends Agent implements Machine{
 	 * Send the first glass in the list to the entrance conveyor 
 	 */
 	private void sendGlassToEntrance(){
-		System.out.println("sending glass to conveyor");
+		print("sending glass to conveyor " + entrance.getConveyorIndex() +"\n");
 		entrance.msgHereIsGlass(glasses.get(0));
 		glasses.remove(0);		// remove the glass thats sent to the conveyor
 		state = State.NotReady;						//set entrance to not ready after sending glass

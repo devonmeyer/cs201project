@@ -45,6 +45,12 @@ public class FactoryPanel extends JPanel
 	public PopupAgent crossSeamer;
 	public PopupAgent grinder;
 	public PopupAgent drill;
+	public PopupRobotAgent csRobot1;
+	public PopupRobotAgent csRobot2;
+	public PopupRobotAgent dRobot1;
+	public PopupRobotAgent dRobot2;
+	public PopupRobotAgent gRobot1;
+	public PopupRobotAgent gRobot2;
 	public OnlineWorkStationAgent washer;
 	public OnlineWorkStationAgent uv;
 	public OnlineWorkStationAgent painter;
@@ -132,8 +138,15 @@ public class FactoryPanel extends JPanel
 		breakout = new OnlineWorkStationAgent("BREAKOUT", 111, 1, transducer, cPanel.getTracePanel());
 		mbreakout= new OnlineWorkStationAgent("MANUAL_BREAKOUT", 222, 1, transducer, cPanel.getTracePanel());
 		crossSeamer = new PopupAgent(transducer, 1, 1 ,2);
-		grinder = new PopupAgent(transducer, 2, 1, 2);
+		csRobot1 = new PopupRobotAgent("CROSS_SEAMER",1,true,crossSeamer,transducer);
+		csRobot2 = new PopupRobotAgent("CROSS_SEAMER",2,false,crossSeamer,transducer);
 		drill = new PopupAgent(transducer, 3, 1, 2);
+		dRobot1 = new PopupRobotAgent("DRILL",1,true,drill,transducer);
+		dRobot2 = new PopupRobotAgent("DRILL",2,false,drill,transducer);
+		grinder = new PopupAgent(transducer, 2, 1, 2);
+		gRobot1 = new PopupRobotAgent("GRINDER",1,true,grinder,transducer);
+		gRobot2 = new PopupRobotAgent("GRINDER",2,false,grinder,transducer);
+		
 		washer = new OnlineWorkStationAgent("WASHER", 1, 1, transducer, cPanel.getTracePanel());
 		painter = new OnlineWorkStationAgent("PAINTER", 2, 1, transducer, cPanel.getTracePanel());
 		uv = new OnlineWorkStationAgent("UV_LAMP", 3, 1, transducer, cPanel.getTracePanel());
@@ -188,8 +201,14 @@ public class FactoryPanel extends JPanel
 		breakout.startThread();
 		mbreakout.startThread();
 		crossSeamer.startThread();
+		csRobot1.startThread();
+		csRobot2.startThread();
 		drill.startThread();
+		dRobot1.startThread();
+		dRobot2.startThread();
 		grinder.startThread();
+		gRobot1.startThread();
+		gRobot2.startThread();
 		washer.startThread();
 		painter.startThread();
 		uv.startThread();
