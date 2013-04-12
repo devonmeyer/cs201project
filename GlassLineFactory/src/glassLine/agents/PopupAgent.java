@@ -134,7 +134,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     */
 
     public void msgGlassIsReady(){
-        print("Received message : msgGlassIsReady");
+        print("Popup"+myPopupIndex+"Received message : msgGlassIsReady");
 
         conveyorGlassState = GlassState.NEEDS_ROBOT;
         stateChanged();
@@ -142,7 +142,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgGlassNeedsThrough(){
-        print("Received message : msgGlassNeedsThrough");
+        print("Popup"+myPopupIndex+"Received message : msgGlassNeedsThrough");
 
         conveyorGlassState = GlassState.NEEDS_THROUGH;
         stateChanged();
@@ -150,7 +150,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgRobotGlassIsReady(boolean isTop){
-        print("Received message : msgRobotGlassIsReady");
+        print("Popup"+myPopupIndex+"Received message : msgRobotGlassIsReady");
 
         if(isTop){
             robotTopGlassState = GlassState.NEEDS_THROUGH;
@@ -164,7 +164,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgHereIsGlass(Glass g){
-        print("Received message : msgHereIsGlass");
+        print("Popup"+myPopupIndex+"Received message : msgHereIsGlass");
 
         currentGlass = g;
 
@@ -180,7 +180,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgRobotHereIsGlass(Glass g, boolean isTop){
-        print("Received message : msgRobotHereIsGlass");
+        print("Popup"+myPopupIndex+"Received message : msgRobotHereIsGlass");
 
         currentGlass = g;
         myGlassState = GlassState.NEEDS_THROUGH;
@@ -197,7 +197,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgRobotReady(boolean isTop){
-        print("Received message : msgRobotReady");
+        print("Popup"+myPopupIndex+" Received message : msgRobotReady");
 
         if(isTop){
             robotTopGlassState = GlassState.MOVE_TO_TOP_ROBOT;
@@ -209,7 +209,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgReadyToTakeGlass(){
-        print("Received message : msgReadyToTakeGlass");
+        print("Popup"+myPopupIndex+"Received message : msgReadyToTakeGlass");
 
         myGlassState = GlassState.MOVE_TO_CONVEYOR;
         
@@ -287,7 +287,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
     private void readyMoveToConveyor(){
 
-        print("Carrying out action : readyMoveToConveyor");
+        print("Popup"+myPopupIndex+"Carrying out action : readyMoveToConveyor");
 
         exitConveyor.msgGlassIsReady();
         myGlassState = GlassState.WAITING;
@@ -295,7 +295,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     private void readyMoveToRobot(){
-        print("Carrying out action : readyMoveToRobot");
+        print("Popup"+myPopupIndex+"Carrying out action : readyMoveToRobot");
         if(robotTopGlassState != GlassState.NONE){
             topRobot.msgPopupGlassIsReady();
         } else {
@@ -306,7 +306,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     private void moveMyGlassToRobot(){
-        print("Carrying out action : moveMyGlassToRobot");
+        print("Popup"+myPopupIndex+"Carrying out action : moveMyGlassToRobot");
 
         Object args[];
 
@@ -369,7 +369,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     private void moveMyGlassToConveyor() {
-        print("Carrying out action : moveMyGlassToConveyor");
+        print("Popup"+myPopupIndex+"Carrying out action : moveMyGlassToConveyor");
         Object[] args = new Object[1];
         args[0] = myPopupIndex;
 
@@ -386,9 +386,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
             popupEngaged = false;
 
         }
-        print("Got to 1");
         transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
-        print("Got to 2");
         try {
             animation.acquire();
         } catch (InterruptedException e) {
@@ -404,7 +402,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     private void readyMoveFromRobot(){
-        print("Carrying out action : readyMoveFromRobot");
+        print("Popup"+myPopupIndex+"Carrying out action : readyMoveFromRobot");
 
 
         if(!popupEngaged){
@@ -435,7 +433,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     private void readyMoveFromConveyor(){
-        print("Carrying out action : readyMoveFromSensor");
+        print("Popup"+myPopupIndex+"Carrying out action : readyMoveFromSensor");
 
         if(popupEngaged){
             Object[] args = new Object[1];
