@@ -125,7 +125,11 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
      */
 
     public void msgGlassNeedsThrough(){
+        print("Received message : msgGlassNeedsThrough\n");
 
+
+        glassInQueue = true;
+        stateChanged();
     }
 
     public void msgGlassIsReady(){
