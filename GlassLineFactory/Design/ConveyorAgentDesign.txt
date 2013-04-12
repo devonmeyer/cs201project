@@ -1,0 +1,133 @@
+ConveyorAgent Design
+
+## Data
+    enum GlassState {MID_CONVEYOR, END_CONVEYOR, WAITING_TO_EXIT, EXIT_TO_SENSOR }
+    LinkedList<MyGlass> glassOnMe;
+    boolean moving;
+    Machine entryMachine;
+    Machine exitMachine;
+    String myMachine;
+    int myConveyorIndex;
+    int myEntrySensorIndex;
+    int myExitSensorIndex;
+    Semaphore movingToMachine;
+
+    class MyGlass{
+        Glass glass;
+        GlassState state;
+
+        MyGlass(Glass g){
+            g;
+            GlassState=MID_CONVEYOR;
+        }
+    }
+
+    boolean glassInQueue;
+
+    ConveyorAgent(String machine, Transducer t){
+        glassOnMe = new LinkedList<MyGlass>();
+        movingToMachine = new Semaphore(0);
+        myMachine = machine;
+        moving = false;
+        entryMachine = null;
+        exitMachine = null;
+        glassInQueue = false;
+    }
+
+## Messages
+
+    msgGlassIsReady(){
+        glassInQueue = true;
+    }
+
+    msgHereIsGlass(Glass g){
+        glassInQueue = false;
+        glassOnMe.add(new MyGlass(g));
+    }
+
+    msgGlassAtEndSensor(Glass g){
+        for(MyGlass mg : glassOnMe){
+            if(mg.glass == g){
+                mg.state = END_CONVEYOR;
+            }
+        }
+    }
+
+    msgReadyToTakeGlass(){
+        for(MyGlass mg : glassOnMe){
+            if(mg.state == WAITING_TO_EXIT){
+                mg.state = EXIT_TO_SENSOR;
+            }
+        }
+    }
+
+#Scheduler
+
+        for(MyGlass mg : glassOnMe){
+            if(mg.state == EXIT_TO_SENSOR){
+                moveGlassToMachine(mg);
+            }
+        }
+        for(MyGlass mg : glassOnMe){
+            if(mg.state == GlassState.END_CONVEYOR){
+                requestMoveGlass(mg);
+            }
+        }
+        if(!moving){
+            for(MyGlass mg : glassOnMe){
+                if(mg.state == GlassState.MID_CONVEYOR){
+                    startConveyor();
+                }
+            }
+        }
+        if(glassInQueue){
+            boolean canTakeGlass = true;
+            for(MyGlass mg : glassOnMe){
+                if(mg.state == GlassState.WAITING_TO_EXIT){
+                    canTakeGlass = false;
+                }
+            }
+            if(canTakeGlass){
+                prepareToTakeGlass();
+            }
+        }
+    }
+
+## Actions
+
+    moveGlassToMachine(MyGlass g){
+        Object args[] = new Object[myConveyorIndex];
+        moving = true;
+
+        try {
+            movingToMachine.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        exitMachine.msgHereIsGlass(g.glass);
+        glassOnMe.remove(g);
+        if(glassOnMe.isEmpty())
+            moving = false;
+    }
+
+    requestMoveGlass(MyGlass g){
+        if(g.glass.getProcesses().contains(myMachine)){
+            exitMachine.msgGlassIsReady();
+        } else {
+            exitMachine.msgGlassNeedsThrough();
+        }
+        g.state = GlassState.WAITING_TO_EXIT;
+        Object args[] = new Object[myConveyorIndex];
+        moving = false;
+    }
+
+    private void startConveyor(){
+        moving = true;
+        Object args[] = new Object[myConveyorIndex];
+        moving = true;
+    }
+
+    prepareToTakeGlass(){
+        entryMachine.msgReadyToTakeGlass();
+        glassInQueue = false;
+    }
