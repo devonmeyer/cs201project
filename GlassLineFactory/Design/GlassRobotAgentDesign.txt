@@ -1,0 +1,41 @@
+GlassRobotAgent Design
+
+## Data
+
+	List<Glass> glasses;
+	GlassSelectPanel parent;
+
+	boolean entranceReady;
+
+	GlassRobotAgent(Transducer trans, TracePanel tp, String name){
+		this.glasses = new ArrayList<Glass>();
+		this.entranceReady = true;
+		
+		transducer = trans;
+		tracePanel = tp;
+	}
+	
+## Messages
+
+	msgReadyForGlass(){
+		entranceReady = true;
+	}
+	
+## Scheduler
+
+	if there exists a glass in glasses{
+		if(entranceReady)
+			sendGlassToEntrance();
+	}
+
+
+## Actions
+	
+	//Send the first glass in the list to the entrance conveyor 
+	sendGlassToEntrance(){
+		glasses.remove(0);
+		entranceReady = false;
+	}
+	addGlass(Glass g){
+		glasses.add(g);
+	}

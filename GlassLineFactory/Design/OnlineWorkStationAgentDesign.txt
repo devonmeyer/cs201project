@@ -1,0 +1,140 @@
+OnlineWorkStationAgent Design
+
+## Data
+
+	String type
+
+	int guiIndex
+	int capacity
+	List<MyGlass> glassList 
+
+	enum PrecedingAgentState {none, requestingToSend, sending}
+	enum FollowingAgentState {none, requestSent, readyToReceive}
+	enum GlassState {none, needsProcessing, doneProcessing}
+	PrecedingAgentState precedingAgentState
+	FollowingAgentState followingAgentState
+	ConveyorAgent precedingConveyorAgent
+	ConveyorAgent followingConveyorAgent
+	enum AgentState {processing, notProcessing}
+	AgentState state
+
+	class MyGlass {
+		Glass g
+		GlassState state
+
+		MyGlass(Glass g){
+			g;
+			GlassState.none
+		}
+	}
+
+	OnlineWorkStationAgent(String type, int guiIndex, int capacity, ConveyorAgent preceding, ConveyorAgent following, Transducer transducer, TracePanel tracePanel){
+		type 
+		guiIndex
+		capacity
+		precedingConveyorAgent
+		following
+		transducer
+ 		AgentState=notProcessing
+		tracePanel
+	}
+
+## Messages
+
+	// This message is sent by the preceding ConveyorAgent or by a RobotAgent transferring a piece of glass. 
+	msgHereIsGlass(Glass g) {
+		glassList.add(new MyGlass(g));
+		PrecedingAgentState=none;
+	}
+
+	// This message is sent by the preceding ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass that needs processing. 
+	msgGlassIsReady(){
+		AgentState=processing;
+		PrecedingAgentState=requestingToSend;
+	}
+	
+	// This message is sent by the preceding ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass that doesn't need processing. 
+	msgGlassNeedsThrough() {
+		AgentState=notProcessing;
+		PrecedingAgentState=requestingToSend;	
+	}
+
+	// This message is sent by the following ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass. 
+	msgReadyToTakeGlass(){
+		FollowingAgentState=readyToReceive;
+	}
+	
+	// This message is sent when the processing animation is done.
+	msgGlassDoneProcessing(){
+		GlassState=doneProcessing;
+	}
+		
+	// This message is sent when the transfer animation is done.
+	msgGlassRemoved(){
+		glassList.remove(0);
+	}
+	
+## Scheduler
+	// If the preceding conveyor agent is requesting to send a piece of glass, check if ready.
+	if(PrecedingAgentState=requestingToSend)
+		checkIfReadyToReceive();
+
+	// If a piece of glass needs to be processed or transferred.
+	if(!glassList.isEmpty()){
+		if(GlassState=needsProcessing)
+			processGlass();
+		else if (GlassState=doneProcessing ){
+			if(FollowingAgentState=none)
+				requestToTransferGlass();
+			else if (FollowingAgentState=readyToReceive)
+				transferGlass();
+		}
+	}
+
+		return false;
+	}
+
+## Actions
+
+	//This action checks if the machine is ready to receive a piece of glass. 
+	checkIfReadyToReceive(){
+		if(glassList.size() >= capacity){
+			precedingConveyorAgent.msgReadyToTakeGlass();
+			PrecedingAgentState=sending;
+		}else 
+			PrecedingAgentState=requestingToSend;
+	}
+
+	//This action fires an event on the transducer to perform the animation.
+	processGlass(){
+		Object args[] = new Object[1];
+		args[0] = this.guiIndex;
+		if(type.equals("BREAKOUT"))
+			this.transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("MANUAL_BREAKOUT"))
+			this.transducer.fireEvent(TChannel.MANUAL_BREAKOUT, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("CUTTER"))
+			this.transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("WASHER"))
+			this.transducer.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("UV_LAMP"))
+			this.transducer.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("OVEN"))
+			this.transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("PAINTER"))
+			this.transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_DO_ACTION, args); 
+	}
+
+	//This action sends a message to the following ConveyorAgent requesting to transfer a piece of glass.
+	requestToTransferGlass(){
+		followingConveyorAgent.msgGlassIsReady();
+		FollowingAgentState=requestSent;
+	}
+
+	//This action sends a message to the following ConveyorAgent transferring a piece of glass.
+	transferGlass(){
+		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
+		this.glassList.remove(0);
+		GlassState=none;
+		FollowingAgentState=none; 
+	}

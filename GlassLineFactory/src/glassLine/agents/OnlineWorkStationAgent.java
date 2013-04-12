@@ -1,6 +1,6 @@
 package glassLine.agents;
 
-import java.util.List;
+import java.util.*;
 
 import javax.swing.JTextArea;
 
@@ -54,7 +54,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	public OnlineWorkStationAgent(String type, int guiIndex, int capacity, Transducer transducer, TracePanel tracePanel){
 		super(type);
 		this.type = type;
-		this.guiIndex = guiIndex;
+		
 		this.capacity = capacity;
 		this.transducer = transducer;
 		this.state = AgentState.notProcessing;
@@ -83,6 +83,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		}
 		this.precedingAgentState = PrecedingAgentState.none;
 		this.followingAgentState = FollowingAgentState.none;
+		this.glassList = new ArrayList<MyGlass>();
 
 	}
 
@@ -93,7 +94,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 
 	public void msgHereIsGlass(Glass g) {
-		print("Receiving new piece of glass.");
+		print("Receiving new piece of glass from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n" );
 		glassList.add(new MyGlass(g));
 		if(this.state == AgentState.processing)
 			glassList.get(0).state = GlassState.needsProcessing;
@@ -109,7 +110,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 
 	public void msgGlassIsReady(){
-		print("Received a glass transfer request.");
+		print("Received a glass transfer request from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n");
+
 		this.state = AgentState.processing;
 		this.precedingAgentState = PrecedingAgentState.requestingToSend;
 
@@ -122,10 +124,12 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	
 	@Override
 	public void msgGlassNeedsThrough() {
-		print("Received a glass transfer request.");
+		print("Received a glass transfer request from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n");
+
 		this.state = AgentState.notProcessing;
 		this.precedingAgentState = PrecedingAgentState.requestingToSend;
 		
+		stateChanged();
 	}
 
 	/** This message is sent by the following ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass. 
@@ -133,7 +137,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 
 	public void msgReadyToTakeGlass(){
-		print("Received a confirmation that recipient is ready for glass transfer.");
+		print("Received a confirmation that recipient is ready for glass transfer from Conveyor " + followingConveyorAgent.getConveyorIndex() + ".\n");
+		System.out.println("Received a confirmation that recipient is ready for glass transfer.");
 		this.followingAgentState = FollowingAgentState.readyToReceive;
 
 		stateChanged();
@@ -143,6 +148,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 *
 	 **/
 	public void msgGlassDoneProcessing(){
+		print("Received a confirmation that glass is done processing.\n");
+		
 		this.glassList.get(0).state = GlassState.doneProcessing;
 		stateChanged();
 	}
@@ -328,13 +335,12 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		}
 	}
 	
-	public void setPrecedingAgentState(ConveyorAgent conveyor){
-		this.precedingConveyorAgent = conveyor;
+	public void setConveyors(ConveyorAgent preceding, ConveyorAgent following){
+		this.precedingConveyorAgent = preceding;
+		this.followingConveyorAgent = following;
 	}
 	
-	public void setFollowingAgentState(ConveyorAgent conveyor){
-		this.followingConveyorAgent = conveyor;
-	}
+
 
 	
 	

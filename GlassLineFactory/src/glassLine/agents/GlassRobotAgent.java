@@ -4,11 +4,12 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import glassLine.*;
+import glassLine.interfaces.Machine;
 import gui.panels.subcontrolpanels.*;
 
 import java.util.*;
 
-public class GlassRobotAgent extends Agent{
+public class GlassRobotAgent extends Agent implements Machine{
 	
 	/** DATA *******************/
 	/*
@@ -43,6 +44,13 @@ public class GlassRobotAgent extends Agent{
 		stateChanged();
 	}
 	
+	@Override
+	public void msgReadyToTakeGlass() {
+		print("Conveyor " + entrance.getConveyorIndex() +" is ready to take glass\n");
+		state = State.Ready;
+		stateChanged();
+	}
+	
 	/** Scheduler *******************/
 	@Override
 	public boolean pickAndExecuteAnAction() {
@@ -64,12 +72,14 @@ public class GlassRobotAgent extends Agent{
 	
 	private void requestSend(){
 		entrance.msgGlassIsReady();
+		state = State.Requested;
 		stateChanged();
 	}
 	/*
 	 * Send the first glass in the list to the entrance conveyor 
 	 */
 	private void sendGlassToEntrance(){
+		print("sending glass to conveyor " + entrance.getConveyorIndex() +"\n");
 		entrance.msgHereIsGlass(glasses.get(0));
 		glasses.remove(0);		// remove the glass thats sent to the conveyor
 		state = State.NotReady;						//set entrance to not ready after sending glass
@@ -93,6 +103,24 @@ public class GlassRobotAgent extends Agent{
 	}
 	public void setConveyor(ConveyorAgent c){
 		entrance = c;
+	}
+
+	@Override
+	public void msgGlassIsReady() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgGlassNeedsThrough() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgHereIsGlass(Glass g) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

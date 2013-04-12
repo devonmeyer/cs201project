@@ -4,7 +4,7 @@ import glassLine.Glass;
 import glassLine.interfaces.Conveyor;
 import glassLine.interfaces.Machine;
 import glassLine.test.EventLog;
-import glassLine.test.LoggedEvent;
+import gui.panels.subcontrolpanels.TracePanel;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -19,7 +19,7 @@ import java.util.concurrent.Semaphore;
  * Time: 12:52 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ConveyorAgent extends Agent implements Conveyor {
+public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
     enum GlassState {MID_CONVEYOR, END_CONVEYOR, WAITING_TO_EXIT, EXIT_TO_SENSOR }
 
@@ -43,12 +43,6 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     private Semaphore movingToMachine;
 
-    private Conveyor conveyor;
-
-    private enum ConveyorType {TWO_MACHINES, SHUTTLE_ENTRY, SHUTTLE_EXIT, BEGIN, END }
-
-    private ConveyorType myType;
-
     private class MyGlass{
         public Glass glass;
         public GlassState state;
@@ -65,9 +59,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
     public EventLog log;
 
-    public ConveyorAgent(String machine, Transducer t, int index){
-
+    public ConveyorAgent(String machine, Transducer t, int index, TracePanel tp){
         super("ConveyorAgent");
+
+        tracePanel = tp;
 
         glassOnMe = new LinkedList<MyGlass>();
         movingToMachine = new Semaphore(0);
@@ -75,12 +70,18 @@ public class ConveyorAgent extends Agent implements Conveyor {
         moving = false;
         entryMachine = null;
         exitMachine = null;
-        conveyor = null;
+
+        myConveyorIndex = index;
+
+
+        myEntrySensorIndex = myConveyorIndex*2;
+        myExitSensorIndex = myConveyorIndex*2 + 1;
+
+
         glassInQueue = false;
         log = new EventLog();
         transducer = t;
-        myConveyorIndex = index;
-        myType = null;
+
 
         //Register for channels
 
@@ -90,35 +91,11 @@ public class ConveyorAgent extends Agent implements Conveyor {
     }
 
     public void setTwoMachines(Machine enter, Machine exit){
-        myType = ConveyorType.TWO_MACHINES;
         entryMachine = enter;
         exitMachine = exit;
     }
 
-    public void setOneMachineExitShuttle(Machine enter, Conveyor c){
-        myType = ConveyorType.SHUTTLE_EXIT;
-        entryMachine = enter;
-        conveyor = c;
-    }
 
-    public void setOneMachineEntryShuttle(Conveyor c, Machine exit){
-        myType = ConveyorType.SHUTTLE_ENTRY;
-        conveyor = c;
-        exitMachine = exit;
-
-    }
-
-    public void setOneMachineBeginConveyor(Machine exit){
-        myType = ConveyorType.BEGIN;
-        exitMachine = exit;
-
-    }
-
-    public void setOneMachineEndConveyor(Machine enter){
-        myType = ConveyorType.END;
-        entryMachine = enter;
-
-    }
 
     public boolean getQueued(){
 
@@ -136,14 +113,23 @@ public class ConveyorAgent extends Agent implements Conveyor {
         return glassOnMe.size();
     }
 
+    public int getConveyorIndex(){
+
+        return myConveyorIndex;
+    }
+
     /*
 
     Messaging
 
      */
 
+    public void msgGlassNeedsThrough(){
+
+    }
+
     public void msgGlassIsReady(){
-        log.add(new LoggedEvent("Received message : msgGlassIsReady"));
+        print("Received message : msgGlassIsReady\n");
 
 
         glassInQueue = true;
@@ -152,7 +138,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
     }
 
     public void msgHereIsGlass(Glass g){
-        log.add(new LoggedEvent("Received message : msgHereIsGlass"));
+        print("Received message : msgHereIsGlass\n");
 
         glassInQueue = false;
 
@@ -163,7 +149,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
     }
 
     public void msgGlassAtEndSensor(Glass g){
-        log.add(new LoggedEvent("Received message : msgGlassAtEndSensor"));
+        print("Received message : msgGlassAtEndSensor\n");
 
 
         for(MyGlass mg : glassOnMe){
@@ -176,7 +162,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
     }
 
     public void msgReadyToTakeGlass(){
-        log.add(new LoggedEvent("Received message : msgReadyToTakeGlass"));
+        print("Received message : msgReadyToTakeGlass\n");
 
 
         for(MyGlass mg : glassOnMe){
@@ -238,9 +224,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
      */
 
     private void moveGlassToMachine(MyGlass g){
-        log.add(new LoggedEvent("Carrying out action : moveGlassToMachine"));
+        print("Carrying out action : moveGlassToMachine");
 
-        Object args[] = new Object[myConveyorIndex];
+        Object args[] = new Object[1];
+        args[0] = myConveyorIndex;
 
         transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
         moving = true;
@@ -252,17 +239,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
         }
 
 
-        if(myType == ConveyorType.BEGIN){
-            exitMachine.msgHereIsGlass(g.glass);
-        } else if(myType == ConveyorType.END) {
-//          truck.msgHereIsGlass(g.glass);
-        } else if(myType == ConveyorType.TWO_MACHINES){
-            exitMachine.msgHereIsGlass(g.glass);
-        } else if(myType == ConveyorType.SHUTTLE_ENTRY){
-            exitMachine.msgHereIsGlass(g.glass);
-        } else if(myType == ConveyorType.SHUTTLE_EXIT){
-            conveyor.msgHereIsGlass(g.glass);
-        }
+        exitMachine.msgHereIsGlass(g.glass);
 
         glassOnMe.remove(g);
 
@@ -273,22 +250,19 @@ public class ConveyorAgent extends Agent implements Conveyor {
     }
 
     private void requestMoveGlass(MyGlass g){
-        log.add(new LoggedEvent("Carrying out action : requestMoveGlass"));
-        if(myType != ConveyorType.END && myType != ConveyorType.SHUTTLE_EXIT){
-            if(g.glass.getProcesses().contains(myMachine)){
-                exitMachine.msgGlassIsReady();
-            } else {
-                exitMachine.msgGlassNeedsThrough();
-            }
-        } else if(myType == ConveyorType.SHUTTLE_EXIT) {
-            conveyor.msgGlassIsReady();
+        print("Carrying out action : requestMoveGlass");
+
+        if(!g.glass.getProcesses().contains(myMachine)){
+            exitMachine.msgGlassNeedsThrough();
         } else {
-//          truck.msgGlassIsReady();
+            exitMachine.msgGlassIsReady();
         }
+
 
         g.state = GlassState.WAITING_TO_EXIT;
 
-        Object args[] = new Object[myConveyorIndex];
+        Object args[] = new Object[1];
+        args[0] = myConveyorIndex;
 
         transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
         moving = false;
@@ -296,12 +270,13 @@ public class ConveyorAgent extends Agent implements Conveyor {
     }
 
     private void startConveyor(){
-        log.add(new LoggedEvent("Carrying out action : startConveyor"));
+        print("Carrying out action : startConveyor");
 
         moving = true;
 
 
-        Object args[] = new Object[myConveyorIndex];
+        Object args[] = new Object[1];
+        args[0] = myConveyorIndex;
 
         transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
         moving = true;
@@ -311,20 +286,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
     }
 
     private void prepareToTakeGlass(){
-        log.add(new LoggedEvent("Carrying out action : prepareToTakeGlass"));
-
-
-        if(myType == ConveyorType.BEGIN){
-            entryMachine.msgReadyToTakeGlass();
-        } else if(myType == ConveyorType.END) {
-            entryMachine.msgReadyToTakeGlass();
-        } else if(myType == ConveyorType.TWO_MACHINES){
-            entryMachine.msgReadyToTakeGlass();
-        } else if(myType == ConveyorType.SHUTTLE_ENTRY){
-            conveyor.msgReadyToTakeGlass();
-        } else if(myType == ConveyorType.SHUTTLE_EXIT){
-            entryMachine.msgReadyToTakeGlass();
-        }
+        print("Carrying out action : prepareToTakeGlass");
 
         entryMachine.msgReadyToTakeGlass();
 

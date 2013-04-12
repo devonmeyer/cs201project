@@ -6,7 +6,6 @@ import glassLine.interfaces.Machine;
 import glassLine.interfaces.Popup;
 import glassLine.interfaces.Robot;
 import glassLine.test.EventLog;
-import glassLine.test.LoggedEvent;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -132,7 +131,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     */
 
     public void msgGlassIsReady(){
-        log.add(new LoggedEvent("Received message : msgGlassIsReady"));
+        print("Received message : msgGlassIsReady");
 
         conveyorGlassState = GlassState.NEEDS_ROBOT;
         stateChanged();
@@ -140,7 +139,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgGlassNeedsThrough(){
-        log.add(new LoggedEvent("Received message : msgGlassNeedsThrough"));
+        print("Received message : msgGlassNeedsThrough");
 
         conveyorGlassState = GlassState.NEEDS_THROUGH;
         stateChanged();
@@ -148,7 +147,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgRobotGlassIsReady(boolean isTop){
-        log.add(new LoggedEvent("Received message : msgRobotGlassIsReady"));
+        print("Received message : msgRobotGlassIsReady");
 
         if(isTop){
             robotTopGlassState = GlassState.NEEDS_THROUGH;
@@ -160,7 +159,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgHereIsGlass(Glass g){
-        log.add(new LoggedEvent("Received message : msgHereIsGlass"));
+        print("Received message : msgHereIsGlass");
 
         currentGlass = g;
 
@@ -176,7 +175,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgRobotHereIsGlass(Glass g, boolean isTop){
-        log.add(new LoggedEvent("Received message : msgRobotHereIsGlass"));
+        print("Received message : msgRobotHereIsGlass");
 
         currentGlass = g;
         myGlassState = GlassState.NEEDS_THROUGH;
@@ -193,7 +192,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgRobotReady(boolean isTop){
-        log.add(new LoggedEvent("Received message : msgRobotReady"));
+        print("Received message : msgRobotReady");
 
         if(isTop){
             robotTopGlassState = GlassState.MOVE_TO_TOP_ROBOT;
@@ -203,7 +202,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     public void msgReadyToTakeGlass(){
-        log.add(new LoggedEvent("Received message : msgReadyToTakeGlass"));
+        print("Received message : msgReadyToTakeGlass");
 
         myGlassState = GlassState.MOVE_TO_CONVEYOR;
 
@@ -278,7 +277,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     */
 
     private void readyMoveToConveyor(){
-        log.add(new LoggedEvent("Carrying out action : readyMoveToConveyor"));
+        print("Carrying out action : readyMoveToConveyor");
 
         exitConveyor.msgGlassIsReady();
         myGlassState = GlassState.WAITING;
@@ -286,7 +285,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     private void readyMoveToRobot(){
-        log.add(new LoggedEvent("Carrying out action : readyMoveToRobot"));
+        print("Carrying out action : readyMoveToRobot");
         if(robotTopGlassState != GlassState.NONE){
             topRobot.msgPopupGlassIsReady();
         } else {
@@ -297,13 +296,13 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     private void moveMyGlassToRobot(){
-        log.add(new LoggedEvent("Carrying out action : moveMyGlassToRobot"));
+        print("Carrying out action : moveMyGlassToRobot");
 
         Object args[];
 
         if(!popupEngaged){
-
-            args = new Object[myPopupIndex];
+            args = new Object[1];
+            args[0] = myPopupIndex;
 
             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 
@@ -321,7 +320,9 @@ public class PopupAgent extends Agent implements Popup, Machine {
         //doMoveGlassToRobot
 
         if(myGlassState == GlassState.MOVE_TO_TOP_ROBOT){
-            args = new Object[myTopRobotIndex];
+            args = new Object[1];
+            args[0] = myTopRobotIndex;
+
             transducer.fireEvent(myMachineChannel, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
 
             try {
@@ -335,7 +336,9 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
         } else {
 
-            args = new Object[myBottomRobotIndex];
+            args = new Object[1];
+            args[0] = myBottomRobotIndex;
+
             transducer.fireEvent(myMachineChannel, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
 
             try {
@@ -356,9 +359,9 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     private void moveMyGlassToConveyor() {
-        log.add(new LoggedEvent("Carrying out action : moveMyGlassToConveyor"));
-
-        Object args[] = new Object[myPopupIndex];
+        print("Carrying out action : moveMyGlassToConveyor");
+        Object[] args = new Object[1];
+        args[0] = myPopupIndex;
 
         if(popupEngaged){
 
@@ -391,12 +394,12 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     private void readyMoveFromRobot(){
-        log.add(new LoggedEvent("Carrying out action : readyMoveFromRobot"));
+        print("Carrying out action : readyMoveFromRobot");
 
 
         if(!popupEngaged){
-
-            Object args[] = new Object[myPopupIndex];
+            Object[] args = new Object[1];
+            args[0] = myPopupIndex;
 
             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 
@@ -422,11 +425,11 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
 
     private void readyMoveFromConveyor(){
-        log.add(new LoggedEvent("Carrying out action : readyMoveFromSensor"));
+        print("Carrying out action : readyMoveFromSensor");
 
         if(popupEngaged){
-
-            Object args[] = new Object[myPopupIndex];
+            Object[] args = new Object[1];
+            args[0] = myPopupIndex;
 
             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
 

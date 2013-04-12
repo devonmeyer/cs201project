@@ -17,7 +17,8 @@ public class TruckAgent extends Agent implements Machine {
 	private enum TruckState{loading, emptying, loaded, none};
 	private TruckState tstate;
 	
-	public TruckAgent(Transducer transducer, ConveyorAgent conveyor){
+	public TruckAgent(String name, Transducer transducer, ConveyorAgent conveyor){
+		super(name);
 		this.transducer = transducer;
 		this.conveyor = conveyor;
 		this.tstate = TruckState.none;
