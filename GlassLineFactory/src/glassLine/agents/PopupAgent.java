@@ -154,6 +154,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
         } else {
             robotBottomGlassState = GlassState.NEEDS_THROUGH;
         }
+        
+        stateChanged();
 
 
     }
@@ -199,12 +201,16 @@ public class PopupAgent extends Agent implements Popup, Machine {
         } else {
             robotBottomGlassState = GlassState.MOVE_TO_BOTTOM_ROBOT;
         }
+        
+        stateChanged();
     }
 
     public void msgReadyToTakeGlass(){
         print("Received message : msgReadyToTakeGlass");
 
         myGlassState = GlassState.MOVE_TO_CONVEYOR;
+        
+        stateChanged();
 
     }
 

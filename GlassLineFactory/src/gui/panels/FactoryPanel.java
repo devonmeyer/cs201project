@@ -137,13 +137,13 @@ public class FactoryPanel extends JPanel
 		cutter = new OnlineWorkStationAgent("CUTTER", 0, 1, transducer, cPanel.getTracePanel());
 		breakout = new OnlineWorkStationAgent("BREAKOUT", 111, 1, transducer, cPanel.getTracePanel());
 		mbreakout= new OnlineWorkStationAgent("MANUAL_BREAKOUT", 222, 1, transducer, cPanel.getTracePanel());
-		crossSeamer = new PopupAgent(transducer, 1, 1 ,2);
+		crossSeamer = new PopupAgent(transducer, 0, 0 ,1);
 		csRobot1 = new PopupRobotAgent("CROSS_SEAMER",1,true,crossSeamer,transducer);
 		csRobot2 = new PopupRobotAgent("CROSS_SEAMER",2,false,crossSeamer,transducer);
-		drill = new PopupAgent(transducer, 3, 1, 2);
+		drill = new PopupAgent(transducer, 1, 2, 3);
 		dRobot1 = new PopupRobotAgent("DRILL",1,true,drill,transducer);
 		dRobot2 = new PopupRobotAgent("DRILL",2,false,drill,transducer);
-		grinder = new PopupAgent(transducer, 2, 1, 2);
+		grinder = new PopupAgent(transducer, 2, 3, 4);
 		gRobot1 = new PopupRobotAgent("GRINDER",1,true,grinder,transducer);
 		gRobot2 = new PopupRobotAgent("GRINDER",2,false,grinder,transducer);
 		
@@ -174,7 +174,7 @@ public class FactoryPanel extends JPanel
 		conv2.setTwoMachines(conv1, breakout);
 		conv3.setTwoMachines(breakout, mbreakout);
 		conv4.setTwoMachines(mbreakout, conv5);
-		conv5.setTwoMachines(conv6, crossSeamer);
+		conv5.setTwoMachines(conv4, crossSeamer);
 		conv6.setTwoMachines(crossSeamer, drill);
 		conv7.setTwoMachines(drill, grinder);
 		conv8.setTwoMachines(grinder,washer);
