@@ -16,5 +16,5 @@ public interface Robot {
 	
     public abstract void msgPopupReady();
 
-
+    public void finishTransfer();
 }
