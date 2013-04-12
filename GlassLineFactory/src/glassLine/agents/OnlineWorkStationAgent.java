@@ -30,7 +30,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	private List<MyGlass> glassList; 
 
 	private enum PrecedingAgentState {none, requestingToSend, sending};
-	private enum FollowingAgentState {none, requestSent, readyToReceive};
+	private enum FollowingAgentState {none, requestSent, readyToReceive, receiving};
 	private enum GlassState {none, needsProcessing, doneProcessing}
 	private PrecedingAgentState precedingAgentState;
 	private FollowingAgentState followingAgentState;
@@ -38,8 +38,9 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	private ConveyorAgent followingConveyorAgent;
 	private enum AgentState {processing, notProcessing}
 	private AgentState state;
-	private Semaphore waitForTransferAnimation = new Semaphore(0,true);
+	private Semaphore waitForLoadAnimation = new Semaphore(0,true);
 	private Semaphore waitForProcessAnimation = new Semaphore(0,true);
+	private Semaphore waitForReleaseAnimation = new Semaphore(0,true);
 
 
 
@@ -196,11 +197,14 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 				processGlass();
 				return true;
 			}else if (glassList.get(0).state == GlassState.doneProcessing ){
-				if(followingAgentState == FollowingAgentState.none)
+				if(followingAgentState == FollowingAgentState.none){
 					requestToTransferGlass();
-				else if (followingAgentState == FollowingAgentState.readyToReceive)
+					return true;
+				}else if (followingAgentState == FollowingAgentState.readyToReceive){
 					transferGlass();
-				return true;
+					return true;
+				}
+
 			}
 		}
 
@@ -219,7 +223,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			precedingConveyorAgent.msgReadyToTakeGlass();
 			this.precedingAgentState = PrecedingAgentState.sending;
 			try {
-				this.waitForTransferAnimation.acquire();
+				this.waitForLoadAnimation.acquire();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -283,7 +287,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
 		this.glassList.get(0).state = GlassState.none;
-		this.followingAgentState = FollowingAgentState.none;
+		this.followingAgentState = FollowingAgentState.receiving;
 
 		Object args[] = new Object[1];
 		args[0] = this.guiIndex;
@@ -314,7 +318,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}else if (event == TEvent.WORKSTATION_LOAD_FINISHED){
-					waitForTransferAnimation.release();
+					waitForLoadAnimation.release();
 				}
 			}
 		}else if (type.equals("MANUAL_BREAKOUT")){
@@ -324,7 +328,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}else if (event == TEvent.WORKSTATION_LOAD_FINISHED){
-					waitForTransferAnimation.release();
+					waitForLoadAnimation.release();
 				}
 			}
 		}else if (type.equals("CUTTER")){
@@ -334,7 +338,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}else if (event == TEvent.WORKSTATION_LOAD_FINISHED){
-					waitForTransferAnimation.release();
+					waitForLoadAnimation.release();
 				}
 			}
 		}else if (type.equals("WASHER")){
@@ -344,7 +348,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}else if (event == TEvent.WORKSTATION_LOAD_FINISHED){
-					waitForTransferAnimation.release();
+					waitForLoadAnimation.release();
 				}
 			}
 		}else if (type.equals("UV_LAMP")){
@@ -354,7 +358,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}else if (event == TEvent.WORKSTATION_LOAD_FINISHED){
-					waitForTransferAnimation.release();
+					waitForLoadAnimation.release();
 				}
 			}
 		}else if (type.equals("OVEN")){
@@ -364,7 +368,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}else if (event == TEvent.WORKSTATION_LOAD_FINISHED){
-					waitForTransferAnimation.release();
+					waitForLoadAnimation.release();
 				}
 			}
 		}else if (type.equals("PAINTER")){
@@ -374,7 +378,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
 				}else if (event == TEvent.WORKSTATION_LOAD_FINISHED){
-					waitForTransferAnimation.release();
+					waitForLoadAnimation.release();
 				}
 			}
 
