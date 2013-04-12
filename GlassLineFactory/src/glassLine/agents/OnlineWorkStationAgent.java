@@ -1,6 +1,7 @@
 package glassLine.agents;
 
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 import javax.swing.JTextArea;
 
@@ -37,6 +38,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	private ConveyorAgent followingConveyorAgent;
 	private enum AgentState {processing, notProcessing}
 	private AgentState state;
+	private Semaphore waitForAnimation = new Semaphore(0,true);
 	
 	
 
@@ -101,7 +103,12 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		else 
 			glassList.get(0).state = GlassState.doneProcessing;
 		this.precedingAgentState = PrecedingAgentState.none;
-
+		try {
+			this.waitForAnimation.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		stateChanged();
 	}
 
@@ -289,6 +296,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 					this.msgGlassDoneProcessing();
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
+				}else if (event == TEvent.WORKSTATION_LOAD_FINISHED){
+					waitForAnimation.release();
 				}
 			}
 		}else if (type.equals("MANUAL_BREAKOUT")){
@@ -297,6 +306,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 					this.msgGlassDoneProcessing();
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
+				}else if (event == TEvent.WORKSTATION_LOAD_FINISHED){
+					waitForAnimation.release();
 				}
 			}
 		}else if (type.equals("CUTTER")){
@@ -305,6 +316,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 					this.msgGlassDoneProcessing();
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
+				}else if (event == TEvent.WORKSTATION_LOAD_FINISHED){
+					waitForAnimation.release();
 				}
 			}
 		}else if (type.equals("WASHER")){
@@ -337,6 +350,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 					this.msgGlassDoneProcessing();
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					msgGlassRemoved();
+				}else if (event == TEvent.WORKSTATION_LOAD_FINISHED){
+					waitForAnimation.release();
 				}
 			}
 
