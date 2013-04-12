@@ -478,21 +478,25 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
         if(channel == TChannel.POPUP){
             if(event == TEvent.POPUP_GUI_LOAD_FINISHED)  {
-
-                animation.release();
+        		if((Integer) args[0] == this.myPopupIndex){
+        			animation.release();
+        		}
 
             } else if(event == TEvent.POPUP_GUI_RELEASE_FINISHED){
 
-                animation.release();
-
+        		if((Integer) args[0] == this.myPopupIndex){
+        			animation.release();
+        		}
             } else if(event == TEvent.POPUP_GUI_MOVED_UP){
 
-                animation.release();
-
+        		if((Integer) args[0] == this.myPopupIndex){
+        			animation.release();
+        		}
             } else if(event == TEvent.POPUP_GUI_MOVED_DOWN){
 
-                animation.release();
-
+        		if((Integer) args[0] == this.myPopupIndex){
+        			animation.release();
+        		}
             }
         } else if(channel == myMachineChannel){
 
