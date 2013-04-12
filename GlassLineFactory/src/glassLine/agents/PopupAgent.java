@@ -579,8 +579,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
         //reset popup to initial state
         conveyorGlassState = GlassState.NONE;
         myGlassState = GlassState.NONE;
-        robotTopGlassState = GlassState.NONE;
-        robotBottomGlassState = GlassState.NONE;
+//        robotTopGlassState = GlassState.NONE;
+//        robotBottomGlassState = GlassState.NONE;
         
         currentGlass = null;
         

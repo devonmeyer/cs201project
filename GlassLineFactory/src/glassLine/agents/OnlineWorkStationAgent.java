@@ -174,6 +174,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 	public void msgGlassRemoved(){
 		this.glassList.remove(0);
+		this.followingAgentState = FollowingAgentState.none;
 		stateChanged();
 	}
 
