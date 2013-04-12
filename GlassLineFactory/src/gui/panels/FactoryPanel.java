@@ -138,16 +138,16 @@ public class FactoryPanel extends JPanel
 		breakout = new OnlineWorkStationAgent("BREAKOUT", 111, 1, transducer, cPanel.getTracePanel());
 		mbreakout= new OnlineWorkStationAgent("MANUAL_BREAKOUT", 222, 1, transducer, cPanel.getTracePanel());
 		drill = new PopupAgent(transducer, 0, 1, 2, cPanel.getTracePanel());
-		dRobot1 = new PopupRobotAgent("DRILL",1,true,drill,transducer);
-		dRobot2 = new PopupRobotAgent("DRILL",2,false,drill,transducer);
+		dRobot1 = new PopupRobotAgent("DRILL",1,true,drill,transducer,cPanel.getTracePanel());
+		dRobot2 = new PopupRobotAgent("DRILL",2,false,drill,transducer,cPanel.getTracePanel());
 		drill.setRobots(dRobot1, dRobot2);
 		crossSeamer = new PopupAgent(transducer, 1, 1 ,2, cPanel.getTracePanel());
-		csRobot1 = new PopupRobotAgent("CROSS_SEAMER",1,true,crossSeamer,transducer);
-		csRobot2 = new PopupRobotAgent("CROSS_SEAMER",2,false,crossSeamer,transducer);
+		csRobot1 = new PopupRobotAgent("CROSS_SEAMER",1,true,crossSeamer,transducer,cPanel.getTracePanel());
+		csRobot2 = new PopupRobotAgent("CROSS_SEAMER",2,false,crossSeamer,transducer,cPanel.getTracePanel());
 		crossSeamer.setRobots(csRobot1, csRobot2);
 		grinder = new PopupAgent(transducer, 2, 1, 2, cPanel.getTracePanel());
-		gRobot1 = new PopupRobotAgent("GRINDER",1,true,grinder,transducer);
-		gRobot2 = new PopupRobotAgent("GRINDER",2,false,grinder,transducer);
+		gRobot1 = new PopupRobotAgent("GRINDER",1,true,grinder,transducer,cPanel.getTracePanel());
+		gRobot2 = new PopupRobotAgent("GRINDER",2,false,grinder,transducer,cPanel.getTracePanel());
 		grinder.setRobots(gRobot1, gRobot2);
 		
 		washer = new OnlineWorkStationAgent("WASHER", 1, 1, transducer, cPanel.getTracePanel());
