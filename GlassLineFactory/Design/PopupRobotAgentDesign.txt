@@ -1,0 +1,98 @@
+PopupRobotAgent Design
+
+## Data
+	List<MyGlass> myglasses = new ArrayList<MyGlass>();
+	enum GlassState{processing, processed, removing};
+	
+	class MyGlass{
+		Glass glass;
+		GlassState gstate;
+		
+		MyGlass(Glass glass){
+			this.glass = glass;
+			this.gstate = GlassState.processing;
+		}
+	}
+	
+	PopupAgent Popup;
+	enum PopupState{none, glassready, popupready, requested, robotready, notified};
+	PopupState pstate = PopupState.none;
+	
+	String type;
+	int guiIndex;
+	boolean isTop;
+	
+## Messages
+	
+	//popup messaging robot that glass is ready to be transferred
+	msgPopupGlassIsReady() {
+		pstate = glassready;
+	}
+	//popup giving glass to robot
+	msgPopupHereIsGlass(Glass g) {
+		myglasses.add(new MyGlass(g));
+	}
+	//popup notifying robot that it is ready to receive glass
+	msgPopupReady() {
+		pstate = popupready;
+	}
+	//message that animation is done processing glass
+	msgGlassDoneProcessing(){
+		myglasses.get(0).gstate = processed;
+	}
+	//message that the animation is removing glass
+	msgRemoveGlass(){
+		myglasses.get(0).gstate = removing;
+	}
+
+## Scheduler
+
+	if there exists a glass in myglasses that needs processing{
+		processGlass();
+	}
+	if there exists a glass in myglasses that is processed{
+		requestPopup();
+	}
+	if there exists a glass in myglasses that is processed and the popup is ready{
+		giveGlassToPopup();
+	}
+	if there exists a robot that is ready to receive glass{
+		notifyPopupThatRobotIsReady();
+	}
+	if the robot is removing the glass{
+		removeGlass();
+	}
+	
+## Actions
+	
+	//fires the animation to process the glass
+	processGlass() {	
+		Object args[] = new Object[1];
+		args[0] = this.guiIndex;
+		if(type.equals("DRILL"))
+			this.transducer.fireEvent(TChannel.DRILL, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("GRINDER"))
+			this.transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_DO_ACTION, args); 
+		else if (type.equals("CROSS_SEAMER"))
+			this.transducer.fireEvent(TChannel.CROSS_SEAMER, TEvent.WORKSTATION_DO_ACTION, args); 
+
+	}
+	//requests permission to transfer glass to popup
+	requestPopup(){
+		Popup.msgRobotGlassIsReady(this.isTop);
+		pstate = requested;
+	}
+	//fires animation to remove glass
+	private void giveGlassToPopup(){
+		Popup.msgRobotHereIsGlass(myglasses.get(0).glass, this.isTop);
+	}
+	//notifies the popup that the robot is ready to take glass
+	private void notifyPopupThatRobotIsReady(){
+		Popup.msgRobotReady(this.isTop);
+		pstate = notified;
+	}
+	//removes the glass from the robot
+	private void removeGlass(){
+		myglasses.remove(0);
+		pstate = robotready;
+	}
