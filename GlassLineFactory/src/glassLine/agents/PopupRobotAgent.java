@@ -8,6 +8,7 @@ import transducer.TEvent;
 import transducer.Transducer;
 import glassLine.Glass;
 import glassLine.interfaces.Robot;
+import gui.panels.subcontrolpanels.TracePanel;
 
 public class PopupRobotAgent extends Agent implements Robot{
 
@@ -32,13 +33,15 @@ public class PopupRobotAgent extends Agent implements Robot{
 	private String type;
 	private int guiIndex;
 	private boolean isTop;
-	public PopupRobotAgent(String type, int guiIndex, boolean isTop, PopupAgent popup, Transducer transducer){
+	
+	public PopupRobotAgent(String type, int guiIndex, boolean isTop, PopupAgent popup, Transducer transducer, TracePanel tp){
 		super(type);
 		this.type = type;
 		this.guiIndex = guiIndex;
 		this.isTop = isTop;
 		this.Popup = popup;
 		this.transducer = transducer;
+		this.tracePanel = tp;
 		
 		try{
 			if(type.equals("DRILL"))

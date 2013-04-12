@@ -296,8 +296,10 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
     private void readyMoveToRobot(){
         print("Popup"+myPopupIndex+"Carrying out action : readyMoveToRobot");
-        if(robotTopGlassState != GlassState.NONE){
+        if(robotTopGlassState == GlassState.NONE){
+        	print("GOT HERE");
             topRobot.msgPopupGlassIsReady();
+            print("AND HERE"); 
         } else {
             bottomRobot.msgPopupGlassIsReady();
         }
