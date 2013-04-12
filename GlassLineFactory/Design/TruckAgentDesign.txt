@@ -1,0 +1,55 @@
+TruckAgent Design
+
+## Data
+
+	Glass glass;
+	
+	ConveyorAgent conveyor;
+	enum ConveyorState{ready, transferred, permission};
+	ConveyorState cstate;
+	
+	enum TruckState{loading, emptying, loaded, none};
+	TruckState tstate;
+	
+	
+## Messages
+	
+	msgGlassIsReady(){
+		this.cstate = ConveyorState.ready;
+	}
+	
+	msgHereIsGlass(Glass g){
+		this.glass = g;
+		this.tstate = TruckState.loading;
+		this.cstate = ConveyorState.transferred;
+	}
+	
+	msgDoneEmptying() {
+		this.tstate = TruckState.none;
+		this.glass = null;
+	}
+
+	msgDoneLoading() {
+		this.tstate = TruckState.loaded;
+	}
+	
+## Scheduler
+
+	if there exists a glass and cstate ==ready{
+		receiveGlass();
+	}
+	if there exists a glass and cstate == transferred and tstate == loaded{
+		processGlass();
+	}
+
+## Actions
+
+	receiveGlass(){
+		conveyor.msgReadyToTakeGlass();
+		cstate = permission;
+	}
+	
+	processGlass(){
+		this.tstate = TruckState.emptying;
+	}
+	
