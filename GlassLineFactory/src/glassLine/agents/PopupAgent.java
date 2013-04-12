@@ -317,7 +317,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
             args = new Object[1];
             args[0] = myPopupIndex;
             
-            transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
+             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 
             try {
                 animation.acquire();
