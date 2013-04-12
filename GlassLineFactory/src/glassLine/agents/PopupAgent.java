@@ -200,9 +200,9 @@ public class PopupAgent extends Agent implements Popup, Machine {
         print("Popup"+myPopupIndex+" Received message : msgRobotReady");
 
         if(isTop){
-            robotTopGlassState = GlassState.MOVE_TO_TOP_ROBOT;
+            myGlassState = GlassState.MOVE_TO_TOP_ROBOT;
         } else {
-            robotBottomGlassState = GlassState.MOVE_TO_BOTTOM_ROBOT;
+            myGlassState = GlassState.MOVE_TO_BOTTOM_ROBOT;
         }
         
         stateChanged();
