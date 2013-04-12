@@ -226,7 +226,8 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
      */
 
     private void moveGlassToMachine(MyGlass g){
-        print("Carrying out action : moveGlassToMachine");
+        print("Carrying out action : moveGlassToMachine\n");
+        System.out.println("Carrying out action : moveGlassToMachine");
 
         Object args[] = new Object[1];
         args[0] = myConveyorIndex;
@@ -252,7 +253,8 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     private void requestMoveGlass(MyGlass g){
-        print("Carrying out action : requestMoveGlass");
+        print("Carrying out action : requestMoveGlass\n");
+        System.out.println("Carrying out action : requestMoveGlass");
 
         if(!g.glass.getProcesses().contains(myMachine)){
             exitMachine.msgGlassNeedsThrough();
