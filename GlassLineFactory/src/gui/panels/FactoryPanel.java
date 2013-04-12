@@ -137,13 +137,13 @@ public class FactoryPanel extends JPanel
 		cutter = new OnlineWorkStationAgent("CUTTER", 0, 1, transducer, cPanel.getTracePanel());
 		breakout = new OnlineWorkStationAgent("BREAKOUT", 111, 1, transducer, cPanel.getTracePanel());
 		mbreakout= new OnlineWorkStationAgent("MANUAL_BREAKOUT", 222, 1, transducer, cPanel.getTracePanel());
-		crossSeamer = new PopupAgent(transducer, 0, 0 ,1);
+		crossSeamer = new PopupAgent(transducer, 0, 0 ,1, cPanel.getTracePanel());
 		csRobot1 = new PopupRobotAgent("CROSS_SEAMER",1,true,crossSeamer,transducer);
 		csRobot2 = new PopupRobotAgent("CROSS_SEAMER",2,false,crossSeamer,transducer);
-		drill = new PopupAgent(transducer, 1, 2, 3);
+		drill = new PopupAgent(transducer, 1, 2, 3, cPanel.getTracePanel());
 		dRobot1 = new PopupRobotAgent("DRILL",1,true,drill,transducer);
 		dRobot2 = new PopupRobotAgent("DRILL",2,false,drill,transducer);
-		grinder = new PopupAgent(transducer, 2, 3, 4);
+		grinder = new PopupAgent(transducer, 2, 3, 4, cPanel.getTracePanel());
 		gRobot1 = new PopupRobotAgent("GRINDER",1,true,grinder,transducer);
 		gRobot2 = new PopupRobotAgent("GRINDER",2,false,grinder,transducer);
 		

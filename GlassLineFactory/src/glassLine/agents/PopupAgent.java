@@ -6,6 +6,7 @@ import glassLine.interfaces.Machine;
 import glassLine.interfaces.Popup;
 import glassLine.interfaces.Robot;
 import glassLine.test.EventLog;
+import gui.panels.subcontrolpanels.TracePanel;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -64,7 +65,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     public EventLog log;
 
 
-    public PopupAgent(Transducer t, int popupIndex, int topRobotIndex, int bottomRobotIndex){
+    public PopupAgent(Transducer t, int popupIndex, int topRobotIndex, int bottomRobotIndex, TracePanel tp){
         super("PopupAgent");
         currentGlass = null;
         popupEngaged = false;
@@ -75,6 +76,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
         animation = new Semaphore(0);
         transducer = t;
 
+        tracePanel = tp;
+        
         myPopupIndex = popupIndex;
 
         myTopRobotIndex = topRobotIndex;
@@ -283,6 +286,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     */
 
     private void readyMoveToConveyor(){
+
         print("Carrying out action : readyMoveToConveyor");
 
         exitConveyor.msgGlassIsReady();
@@ -382,9 +386,9 @@ public class PopupAgent extends Agent implements Popup, Machine {
             popupEngaged = false;
 
         }
-
+        print("Got to 1");
         transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
-
+        print("Got to 2");
         try {
             animation.acquire();
         } catch (InterruptedException e) {
@@ -457,6 +461,11 @@ public class PopupAgent extends Agent implements Popup, Machine {
         myGlassState = GlassState.WAITING;
 
         entryConveyor.msgReadyToTakeGlass();
+    	try{
+    		animation.acquire();
+    	} catch(Exception e){
+    		e.printStackTrace();
+    	}
 
     }
 

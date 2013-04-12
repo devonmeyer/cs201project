@@ -74,7 +74,7 @@ public abstract class Agent implements TReceiver
 	/** Print message */
 	protected void print(String msg) {
 		if(this.tracePanel != null)
-		tracePanel.print(msg, this);
+		tracePanel.print(msg+"\n", this);
 	}
 
 
