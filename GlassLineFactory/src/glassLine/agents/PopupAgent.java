@@ -302,8 +302,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
         Object args[];
 
         if(!popupEngaged){
-
-            args = new Object[myPopupIndex];
+            args = new Object[1];
+            args[0] = myPopupIndex;
 
             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 
@@ -321,7 +321,9 @@ public class PopupAgent extends Agent implements Popup, Machine {
         //doMoveGlassToRobot
 
         if(myGlassState == GlassState.MOVE_TO_TOP_ROBOT){
-            args = new Object[myTopRobotIndex];
+            args = new Object[1];
+            args[0] = myTopRobotIndex;
+
             transducer.fireEvent(myMachineChannel, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
 
             try {
@@ -335,7 +337,9 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
         } else {
 
-            args = new Object[myBottomRobotIndex];
+            args = new Object[1];
+            args[0] = myBottomRobotIndex;
+
             transducer.fireEvent(myMachineChannel, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
 
             try {
@@ -357,8 +361,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
     private void moveMyGlassToConveyor() {
         log.add(new LoggedEvent("Carrying out action : moveMyGlassToConveyor"));
-
-        Object args[] = new Object[myPopupIndex];
+        Object[] args = new Object[1];
+        args[0] = myPopupIndex;
 
         if(popupEngaged){
 
@@ -395,8 +399,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
 
         if(!popupEngaged){
-
-            Object args[] = new Object[myPopupIndex];
+            Object[] args = new Object[1];
+            args[0] = myPopupIndex;
 
             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 
@@ -425,8 +429,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
         log.add(new LoggedEvent("Carrying out action : readyMoveFromSensor"));
 
         if(popupEngaged){
-
-            Object args[] = new Object[myPopupIndex];
+            Object[] args = new Object[1];
+            args[0] = myPopupIndex;
 
             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
 
