@@ -169,7 +169,7 @@ public class FactoryPanel extends JPanel
 		conv12 = new ConveyorAgent("SHUTLE4", transducer,12,cPanel.getTracePanel());
 		conv13 = new ConveyorAgent("OVEN", transducer,13,cPanel.getTracePanel());
 		conv14 = new ConveyorAgent("EXIT", transducer,14,cPanel.getTracePanel());
-		truck = new TruckAgent("TRUCK", transducer, conv14);
+		truck = new TruckAgent("TRUCK", transducer, conv14,cPanel.getTracePanel());
 		
 		gRobot.setConveyor(conv0);
 		conv0.setTwoMachines(gRobot, cutter);
