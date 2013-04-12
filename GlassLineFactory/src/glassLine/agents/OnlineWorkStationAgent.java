@@ -107,12 +107,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		else 
 			glassList.get(0).state = GlassState.doneProcessing;
 		this.precedingAgentState = PrecedingAgentState.none;
-		try {
-			this.waitForTransferAnimation.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		stateChanged();
 	}
 
@@ -223,6 +218,12 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		if(glassList.size() < capacity){
 			precedingConveyorAgent.msgReadyToTakeGlass();
 			this.precedingAgentState = PrecedingAgentState.sending;
+			try {
+				this.waitForTransferAnimation.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}else 
 			this.precedingAgentState = PrecedingAgentState.requestingToSend;
 
