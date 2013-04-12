@@ -11,6 +11,8 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -27,8 +29,13 @@ public class PopupAgent extends Agent implements Popup, Machine {
     Data
 
      */
-
-    private enum GlassState {NONE, NEEDS_THROUGH, NEEDS_ROBOT, WAITING, WAITING_THROUGH, WAITING_ROBOT, MOVE_TO_TOP_ROBOT, MOVE_TO_BOTTOM_ROBOT, MOVE_TO_CONVEYOR, PROCESSING}
+	private Semaphore robotGUI;
+	public Semaphore conveyorAction;
+	public Timer timer = new Timer();
+	
+	private boolean toldRobot;		//hack
+	
+    private enum GlassState {NONE, NEEDS_THROUGH, ASKEDCONVEYOR, NEEDS_ROBOT, WAITING, WAITING_THROUGH, WAITING_ROBOT, MOVE_TO_TOP_ROBOT, MOVE_TO_BOTTOM_ROBOT, MOVE_TO_CONVEYOR, PROCESSING}
 
     private Glass currentGlass;
 
@@ -74,6 +81,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
         robotTopGlassState = GlassState.NONE;
         robotBottomGlassState = GlassState.NONE;
         animation = new Semaphore(0);
+        robotGUI = new Semaphore(0,true);
+        conveyorAction = new Semaphore(0,true);
         transducer = t;
 
         tracePanel = tp;
@@ -85,8 +94,11 @@ public class PopupAgent extends Agent implements Popup, Machine {
         myBottomRobotIndex = bottomRobotIndex;
 
         transducer.register(this, TChannel.POPUP);
+        transducer.register(this, TChannel.DRILL);
 
         log = new EventLog();
+        
+        toldRobot = false;
 
     }
 
@@ -160,7 +172,6 @@ public class PopupAgent extends Agent implements Popup, Machine {
         
         stateChanged();
 
-
     }
 
     public void msgHereIsGlass(Glass g){
@@ -181,16 +192,17 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
     public void msgRobotHereIsGlass(Glass g, boolean isTop){
         print("Popup"+myPopupIndex+"Received message : msgRobotHereIsGlass");
-
+        
         currentGlass = g;
         myGlassState = GlassState.NEEDS_THROUGH;
 
+        toldRobot = false;	//hack
 
         if(isTop){
             robotTopGlassState = GlassState.NONE;
         } else {
             robotBottomGlassState = GlassState.NONE;
-        }
+        } 
 
         stateChanged();
 
@@ -211,7 +223,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
     public void msgReadyToTakeGlass(){
         print("Popup"+myPopupIndex+"Received message : msgReadyToTakeGlass");
-
+        conveyorAction.release();
         myGlassState = GlassState.MOVE_TO_CONVEYOR;
         
         stateChanged();
@@ -239,6 +251,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
         }
         if(myGlassState == GlassState.NEEDS_THROUGH){
+ //       	if(myStation()){
+ //       	  System.out.println("Waiting for robot glass release animation");
 
             readyMoveToConveyor();
             return true;
@@ -250,13 +264,13 @@ public class PopupAgent extends Agent implements Popup, Machine {
             return true;
 
         }
-        if(myGlassState == GlassState.NONE){
+        if(myGlassState == GlassState.NONE || myGlassState == GlassState.WAITING){
 
             if((robotTopGlassState == GlassState.NEEDS_THROUGH || robotBottomGlassState == GlassState.NEEDS_THROUGH)){
-
-                readyMoveFromRobot();
-                return true;
-
+            	if(!toldRobot){
+            		readyMoveFromRobot();
+                	return true;
+            	}
             }
             if(conveyorGlassState == GlassState.NEEDS_THROUGH){
 
@@ -289,10 +303,16 @@ public class PopupAgent extends Agent implements Popup, Machine {
     private void readyMoveToConveyor(){
 
         print("Popup"+myPopupIndex+"Carrying out action : readyMoveToConveyor");
-
+        myGlassState = GlassState.ASKEDCONVEYOR;
         exitConveyor.msgGlassIsReady();
-        myGlassState = GlassState.WAITING;
-
+        try {
+			conveyorAction.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//  	}
+       
     }
 
     private void readyMoveToRobot(){
@@ -425,12 +445,14 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
         myGlassState = GlassState.WAITING;
 
-        if(robotTopGlassState == GlassState.NEEDS_THROUGH ){
+        if(robotTopGlassState == GlassState.NEEDS_THROUGH){
             robotTopGlassState = GlassState.WAITING;
             topRobot.msgPopupReady();
-        } else {
+            toldRobot = true;
+        } else{
             robotBottomGlassState = GlassState.WAITING;
             bottomRobot.msgPopupReady();
+            toldRobot = true;
         }
 
     }
@@ -507,12 +529,35 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
                 animation.release();
 
+            }else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
+            	timer.schedule(new TimerTask(){
+            	    public void run(){//this routine is like a message reception    
+            	    	stateChanged();
+            	    }
+            	}, 500);
+                }
+            	robotGUI.release();
             }
-
-
-        }
     }
-
+    
+    private boolean myStation(){
+    	String myStation;
+    	if(myPopupIndex == 0){
+    		myStation = "DRILL";
+    	}
+    	else if(myPopupIndex == 1){
+    		myStation = "CROSS_SEAMER";
+    	}
+    	else{
+    		myStation = "GRINDER";
+    	}
+    	for(int i=0; i<currentGlass.getProcesses().size(); i++){
+    		if(currentGlass.getProcesses().get(i) == myStation){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 
 
 }
