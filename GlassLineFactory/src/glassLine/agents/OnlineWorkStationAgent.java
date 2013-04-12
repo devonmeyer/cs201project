@@ -127,6 +127,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		this.state = AgentState.notProcessing;
 		this.precedingAgentState = PrecedingAgentState.requestingToSend;
 		
+		stateChanged();
 	}
 
 	/** This message is sent by the following ConveyorAgent or by a RobotAgent requesting to transfer a piece of glass. 

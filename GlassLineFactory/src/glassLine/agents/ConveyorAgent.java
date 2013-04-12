@@ -238,6 +238,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
     private void requestMoveGlass(MyGlass g){
         log.add(new LoggedEvent("Carrying out action : requestMoveGlass"));
+        print("Carrying out action : requestMoveGlass");
 
         if(!g.glass.getProcesses().contains(myMachine)){
             exitMachine.msgGlassNeedsThrough();
