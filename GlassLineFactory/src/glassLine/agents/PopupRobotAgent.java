@@ -268,8 +268,10 @@ public class PopupRobotAgent extends Agent implements Robot{
 			{
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED){
 					if((Integer) args[0] == this.guiIndex){
-						System.out.println("Sem released");
-						animation.release();
+						if(myglass.gstate != GlassState.processed){
+							myglass.gstate = GlassState.processed;
+							animation.release();
+							}
 					}
 				}
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
@@ -286,7 +288,10 @@ public class PopupRobotAgent extends Agent implements Robot{
 			{
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED){
 					if((Integer) args[0] == this.guiIndex){
-						animation.release();
+						if(myglass.gstate != GlassState.processed){
+							myglass.gstate = GlassState.processed;
+							animation.release();
+						}
 					}
 				}else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
 					if((Integer) args[0] == this.guiIndex){
@@ -302,7 +307,10 @@ public class PopupRobotAgent extends Agent implements Robot{
 			{
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED){
 					if((Integer) args[0] == this.guiIndex){
-						animation.release();
+						if(myglass.gstate != GlassState.processed){
+							myglass.gstate = GlassState.processed;
+							animation.release();
+						}
 					}
 				}
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
