@@ -129,7 +129,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     public void msgGlassIsReady(){
-        print("Received message : msgGlassIsReady");
+        print("Received message : msgGlassIsReady\n");
 
 
         glassInQueue = true;
@@ -138,7 +138,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     public void msgHereIsGlass(Glass g){
-        print("Received message : msgHereIsGlass");
+        print("Received message : msgHereIsGlass\n");
 
         glassInQueue = false;
 
@@ -149,7 +149,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     public void msgGlassAtEndSensor(Glass g){
-        print("Received message : msgGlassAtEndSensor");
+        print("Received message : msgGlassAtEndSensor\n");
 
 
         for(MyGlass mg : glassOnMe){
@@ -162,7 +162,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     public void msgReadyToTakeGlass(){
-        print("Received message : msgReadyToTakeGlass");
+        print("Received message : msgReadyToTakeGlass\n");
 
 
         for(MyGlass mg : glassOnMe){

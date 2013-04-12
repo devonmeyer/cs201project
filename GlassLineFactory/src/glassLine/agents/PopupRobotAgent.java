@@ -32,8 +32,8 @@ public class PopupRobotAgent extends Agent implements Robot{
 	private String type;
 	private int guiIndex;
 	private boolean isTop;
-	public PopupRobotAgent(String name, String type, int guiIndex, boolean isTop, PopupAgent popup, Transducer transducer){
-		super(name);
+	public PopupRobotAgent(String type, int guiIndex, boolean isTop, PopupAgent popup, Transducer transducer){
+		super(type);
 		this.type = type;
 		this.guiIndex = guiIndex;
 		this.isTop = isTop;
@@ -85,19 +85,25 @@ public class PopupRobotAgent extends Agent implements Robot{
 	public boolean pickAndExecuteAnAction() {
 		
 		//if there is a glass that needs processing
-		if(myglasses != null && myglasses.get(0).gstate == GlassState.processing){
-			processGlass();
-			return true;
+		if(!myglasses.isEmpty()){
+			if(myglasses.get(0).gstate == GlassState.processing){
+				processGlass();
+				return true;
+			}
 		}
 		//if there is a glass that is processed
-		if(myglasses != null && myglasses.get(0).gstate == GlassState.processed){
-			requestPopup();
-			return true;
+		if(!myglasses.isEmpty()){
+			if(myglasses.get(0).gstate ==  GlassState.processed && pstate != PopupState.popupready){
+				requestPopup();
+				return true;
+			}
 		}
 		//if there is a glass that is processed and the popup is ready
-		if(myglasses !=null && myglasses.get(0).gstate == GlassState.processed && pstate == PopupState.popupready){
-			giveGlassToPopup();
-			return true;
+		if(!myglasses.isEmpty()){
+			if(myglasses.get(0).gstate == GlassState.processed && pstate == PopupState.popupready){
+				giveGlassToPopup();
+				return true;
+			}
 		}
 		//if the robot is ready to receive glass
 		if(pstate == PopupState.robotready){
@@ -105,9 +111,11 @@ public class PopupRobotAgent extends Agent implements Robot{
 			return true;
 		}
 		//if the robot is removing the glass
-		if(myglasses != null && myglasses.get(0).gstate == GlassState.removing){
-			removeGlass();
-			return true;
+		if(!myglasses.isEmpty()){
+			if(myglasses.get(0).gstate == GlassState.removing){
+				removeGlass();
+				return true;
+			}
 		}
 		
 		return false;
