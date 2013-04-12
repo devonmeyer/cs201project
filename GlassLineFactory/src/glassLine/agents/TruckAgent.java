@@ -27,11 +27,13 @@ public class TruckAgent extends Agent implements Machine {
 	/**MESSAGES**/
 	
 	public void msgGlassIsReady(){
+		System.out.println("Truck has received msgGlassIsReady from Conveyor" + this.conveyor);
 		this.cstate = ConveyorState.ready;
 		stateChanged();
 	}
 	
 	public void msgHereIsGlass(Glass g){
+		System.out.println("Truck has received msgHereIsGlass from Conveyor" + this.conveyor);
 		this.glass = g;
 		this.transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_LOAD_GLASS, null); 
 		this.tstate = TruckState.loading;
@@ -40,12 +42,14 @@ public class TruckAgent extends Agent implements Machine {
 	}
 	
 	private void msgDoneEmptying() {
+		System.out.println("Truck has received msgDoneEmptying after animation is done emptying the glass");
 		this.tstate = TruckState.none;
 		this.glass = null;
 		stateChanged();		
 	}
 
 	private void msgDoneLoading() {
+		System.out.println("Truck has received msgDoneLoading after animation is done loading");
 		this.tstate = TruckState.loaded;
 		stateChanged();
 	}

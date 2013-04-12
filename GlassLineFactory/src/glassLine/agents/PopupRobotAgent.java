@@ -58,26 +58,31 @@ public class PopupRobotAgent extends Agent implements Robot{
 	
 	//popup messaging robot that glass is ready to be transferred
 	public void msgPopupGlassIsReady() {
+		System.out.println("PopupAgent " + this.type + "received msgPopupGlassIsReady from Popup " + this.Popup.name + "\n");
 		pstate = PopupState.glassready;
 		stateChanged();
 	}
 	//popup giving glass to robot
 	public void msgPopupHereIsGlass(Glass g) {
+		System.out.println("PopupAgent " + this.type + "received msgPopupHereIsGlass from Popup " + this.Popup.name + "\n");
 		myglasses.add(new MyGlass(g));
 		stateChanged();
 	}
 	//popup notifying robot that it is ready to receive glass
 	public void msgPopupReady() {
+		System.out.println("PopupAgent " + this.type + "received msgPopupReady from Popup " + this.Popup.name + "\n");
 		pstate = PopupState.popupready;
 		stateChanged();
 	}
 	//message that animation is done processing glass
 	public void msgGlassDoneProcessing(){
+		System.out.println("PopupAgent " + this.type + "received msgGlassDoneProcessing after animation is done processing \n");
 		myglasses.get(0).gstate = GlassState.processed;
 		stateChanged();
 	}
 	//message that the animation is removing glass
 	public void msgRemoveGlass(){
+		System.out.println("PopupAgent " + this.type + "received msgRemoveGlass after animation starts removing \n");
 		myglasses.get(0).gstate = GlassState.removing;
 	}
 
