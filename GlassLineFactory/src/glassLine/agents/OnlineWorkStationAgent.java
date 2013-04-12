@@ -95,6 +95,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 	public void msgHereIsGlass(Glass g) {
 		print("Receiving new piece of glass.");
+		System.out.println("Receing new piece of glass.");
 		glassList.add(new MyGlass(g));
 		if(this.state == AgentState.processing)
 			glassList.get(0).state = GlassState.needsProcessing;
@@ -111,6 +112,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 	public void msgGlassIsReady(){
 		print("Received a glass transfer request.");
+		System.out.println("Received a glass transfer request.");
 		this.state = AgentState.processing;
 		this.precedingAgentState = PrecedingAgentState.requestingToSend;
 
@@ -124,6 +126,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	@Override
 	public void msgGlassNeedsThrough() {
 		print("Received a glass transfer request.");
+		System.out.println("Received a glass transfer request.");
 		this.state = AgentState.notProcessing;
 		this.precedingAgentState = PrecedingAgentState.requestingToSend;
 		
@@ -135,6 +138,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 	public void msgReadyToTakeGlass(){
 		print("Received a confirmation that recipient is ready for glass transfer.");
+		System.out.println("Received a confirmation that recipient is ready for glass transfer.");
 		this.followingAgentState = FollowingAgentState.readyToReceive;
 
 		stateChanged();
