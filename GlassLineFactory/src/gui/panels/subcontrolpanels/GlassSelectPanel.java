@@ -98,7 +98,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		recipe.add(chckbxCrossseamer);
 		GridBagConstraints gbc_chckbxCrossseamer = new GridBagConstraints();
 		gbc_chckbxCrossseamer.insets = new Insets(0, 0, 5, 5);
-		gbc_chckbxCrossseamer.gridx = 1;
+		gbc_chckbxCrossseamer.gridx = 2;
 		gbc_chckbxCrossseamer.gridy = 1;
 		add(chckbxCrossseamer, gbc_chckbxCrossseamer);
 		chckbxCrossseamer.setHorizontalAlignment(SwingConstants.LEFT);
@@ -108,7 +108,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		recipe.add(chckbxDrill);
 		GridBagConstraints gbc_chckbxDrill = new GridBagConstraints();
 		gbc_chckbxDrill.insets = new Insets(0, 0, 5, 5);
-		gbc_chckbxDrill.gridx = 2;
+		gbc_chckbxDrill.gridx = 1;
 		gbc_chckbxDrill.gridy = 1;
 		add(chckbxDrill, gbc_chckbxDrill);
 		chckbxDrill.setHorizontalAlignment(SwingConstants.LEFT);
