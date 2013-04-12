@@ -1,28 +1,41 @@
-class GlassRobot extends Agent{
+GlassRobotAgent Design
 
-	//Data
+## Data
+
 	List<Glass> glasses;
 	GlassSelectPanel parent;
-	ConveyorFamily entrance;
-	boolean conveyorReady
+
+	boolean entranceReady;
+
+	GlassRobotAgent(Transducer trans, TracePanel tp, String name){
+		this.glasses = new ArrayList<Glass>();
+		this.entranceReady = true;
+		
+		transducer = trans;
+		tracePanel = tp;
+	}
 	
-	//messages
+## Messages
+
 	msgReadyForGlass(){
-		//sent from the entrance conveyor family, telling the robot it's okay to send glass
+		entranceReady = true;
 	}
 	
-	//Scheduler
-	if(glasses not empty){
-		if(entrance is ready for glass){
+## Scheduler
+
+	if there exists a glass in glasses{
+		if(entranceReady)
 			sendGlassToEntrance();
-			return true;
-		}
 	}
+
+
+## Actions
 	
-	//Actions
+	//Send the first glass in the list to the entrance conveyor 
 	sendGlassToEntrance(){
-		entrance.msgHereIsGlass(glasses.get(0));
-		stateChanged();
+		glasses.remove(0);
+		entranceReady = false;
 	}
-	
-}	
+	addGlass(Glass g){
+		glasses.add(g);
+	}

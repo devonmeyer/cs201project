@@ -1,0 +1,186 @@
+Popup Agent Design
+
+## Data
+
+    enum GlassState {NONE, NEEDS_THROUGH, NEEDS_ROBOT, WAITING, WAITING_THROUGH, WAITING_ROBOT, MOVE_TO_TOP_ROBOT, MOVE_TO_BOTTOM_ROBOT, MOVE_TO_CONVEYOR, PROCESSING}
+    Glass currentGlass;
+    Conveyor entryConveyor;
+    Conveyor exitConveyor;
+    Robot topRobot;
+    Robot bottomRobot;
+    boolean popupEngaged;
+    GlassState conveyorGlassState;
+    GlassState myGlassState;
+    GlassState robotTopGlassState;
+    GlassState robotBottomGlassState;
+    int myPopupIndex;
+    int myTopRobotIndex;
+    int myBottomRobotIndex;
+    public PopupAgent(){
+        super("PopupAgent");
+        currentGlass = null;
+        popupEngaged = false;
+        conveyorGlassState = GlassState.NONE;
+        myGlassState = GlassState.NONE;
+        robotTopGlassState = GlassState.NONE;
+        robotBottomGlassState = GlassState.NONE;
+    }
+
+## Messages
+
+    msgGlassIsReady(){
+        conveyorGlassState = NEEDS_ROBOT;
+    }
+
+    msgGlassNeedsThrough(){
+        conveyorGlassState = NEEDS_THROUGH;
+    }
+
+    msgRobotGlassIsReady(boolean isTop){
+        if(isTop)
+            robotTopGlassState = NEEDS_THROUGH;
+        else
+            robotBottomGlassState = NEEDS_THROUGH;
+    }
+
+    msgHereIsGlass(Glass g){
+        currentGlass = g;
+        if(conveyorGlassState == WAITING_ROBOT){
+            myGlassState = NEEDS_ROBOT;
+        } else {
+            myGlassState = NEEDS_THROUGH;
+        }
+        conveyorGlassState = NONE;
+    }
+
+    msgRobotHereIsGlass(Glass g, boolean isTop){
+        currentGlass = g;
+        myGlassState = NEEDS_THROUGH;
+        if(isTop)
+            robotTopGlassState = NONE;
+        else 
+            robotBottomGlassState = NONE;
+    }
+
+    msgRobotReady(boolean isTop){
+        if(isTop)
+            robotTopGlassState = MOVE_TO_TOP_ROBOT;
+        else
+            robotBottomGlassState = MOVE_TO_BOTTOM_ROBOT;
+    }
+
+    msgReadyToTakeGlass(){
+        myGlassState = MOVE_TO_CONVEYOR;
+    }
+
+## Scheduler
+
+    if there exists a glass such that myGlassState == MOVE_TO_TOP_ROBOT or == MOVE_TO_BOTTOM_ROBOT{
+            moveMyGlassToRobot();
+    }
+    if there exists a glass such that myGlassState == MOVE_TO_CONVEYOR{
+            moveMyGlassToConveyor();
+    }
+    if there exists a glass such that myGlassState == NEEDS_THROUGH{
+            readyMoveToConveyor();
+    }
+    if there exists a glass such that myGlassState == NEEDS_ROBOT{
+            readyMoveToRobot();
+    }
+    if there exists a glass such that myGlassState == NONE{
+            if there exists a glass such that robotTopGlassState == NEEDS_THROUGH or robotBottomGlassState == NEEDS_THROUGH{
+                readyMoveFromRobot();
+            }
+            if there exists a glass such that conveyorGlassState == NEEDS_THROUGH{
+                readyMoveFromConveyor();
+            }
+            if there exists a glass such that conveyorGlassState == NEEDS_ROBOT and (robotTopGlassState == NONE or robotBottomGlassState == NONE){
+                readyMoveFromConveyor();
+            }
+        }
+    }
+
+## Actions
+
+    readyMoveToConveyor(){
+        exitConveyor.msgGlassIsReady();
+        myGlassState = WAITING;
+    }
+
+    readyMoveToRobot(){
+        if(robotTopGlassState != NONE){
+            topRobot.msgPopupGlassIsReady();
+        } else {
+            bottomRobot.msgPopupGlassIsReady();
+        }
+        myGlassState = WAITING;
+    }
+
+    moveMyGlassToRobot(){
+        Object args[];
+        if(!popupEngaged){
+            args = new Object[myPopupIndex];
+         popupEngaged = true;
+        }
+
+        if(myGlassState == GlassState.MOVE_TO_TOP_ROBOT){
+            args = new Object[myTopRobotIndex];
+
+            topRobot.msgPopupHereIsGlass(currentGlass);
+            robotTopGlassState = PROCESSING;
+
+        } else {
+
+            args = new Object[myBottomRobotIndex];
+            bottomRobot.msgPopupHereIsGlass(currentGlass);
+            robotBottomGlassState = PROCESSING;
+        }
+        currentGlass = null;
+        myGlassState = NONE;
+    }
+
+    moveMyGlassToConveyor() {
+        Object args[] = new Object[myPopupIndex];
+
+        if(popupEngaged){
+            popupEngaged = false;
+        }
+        exitConveyor.msgHereIsGlass(currentGlass);
+        currentGlass = null;
+        myGlassState = NONE;
+    }
+
+    readyMoveFromRobot(){
+        if(!popupEngaged){
+            Object args[] = new Object[myPopupIndex];
+            popupEngaged = true;
+        }
+
+        myGlassState = WAITING;
+
+        if(robotTopGlassState == NEEDS_THROUGH ){
+            robotTopGlassState = WAITING;
+            topRobot.msgPopupReady();
+        } else {
+            robotBottomGlassState = WAITING;
+            bottomRobot.msgPopupReady();
+        }
+    }
+
+    readyMoveFromConveyor(){
+        if(popupEngaged){
+            Object args[] = new Object[myPopupIndex];
+            popupEngaged = false;
+        }
+
+        if(conveyorGlassState == NEEDS_ROBOT){
+            conveyorGlassState = WAITING_ROBOT;
+        } else {
+            conveyorGlassState = WAITING_THROUGH;
+        }
+
+        myGlassState = WAITING;
+
+        entryConveyor.msgReadyToTakeGlass();
+
+    }
