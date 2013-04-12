@@ -200,7 +200,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 * 
 	 **/
 	public void checkIfReadyToReceive(){
-		if(glassList.size() >= capacity){
+		if(glassList.size() < capacity){
 			precedingConveyorAgent.msgReadyToTakeGlass();
 			this.precedingAgentState = PrecedingAgentState.sending;
 		}else 

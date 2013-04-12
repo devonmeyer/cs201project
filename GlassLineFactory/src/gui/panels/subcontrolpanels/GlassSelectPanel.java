@@ -209,8 +209,8 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		// check which checkboxes are selected when the createGlas button is pressed
 		// the selected stations will be added to the glass' recipe 
 		if(ae.getSource() == createGlass){
-			glassCount++;
 			createGlass(JOptionPane.showInputDialog("Please enter a name for glass:"));
+			glassCount++;
 		}
 		else{
 			

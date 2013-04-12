@@ -150,7 +150,9 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
     public void msgGlassAtEndSensor(Glass g){
         print("Received message : msgGlassAtEndSensor\n");
-
+        if(g == null){
+        	print("Glass at end sensor not recognized.");
+        }
 
         for(MyGlass mg : glassOnMe){
             if(mg.glass == g){
