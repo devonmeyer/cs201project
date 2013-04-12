@@ -92,6 +92,8 @@ public class PopupRobotAgent extends Agent implements Robot{
 	public void msgGlassDoneProcessing(){
 		print("PopupAgent " + this.type + "received msgGlassDoneProcessing after animation is done processing \n");
 		System.out.println("PopupAgent " + this.type + "received msgGlassDoneProcessing after animation is done processing \n");
+		if(myglass == null)
+			System.out.println("NULL");
 		this.myglass.gstate = GlassState.processed;
 		System.out.println("CHECK");
 		stateChanged();
@@ -121,26 +123,26 @@ public class PopupRobotAgent extends Agent implements Robot{
 		}
 		//if there is a glass that is processed
 		if(myglass != null){
-			if(myglass.gstate ==  GlassState.processed && pstate != PopupState.popupready){
+			if(myglass.gstate ==  GlassState.processed && pstate != PopupState.popupready && pstate != PopupState.requested){
 				requestPopup();
 				return true;
 			}
 		}
 		//if there is a glass that is processed and the popup is ready
 		if(myglass != null){
-			if(myglass.gstate == GlassState.processed && pstate == PopupState.popupready){
+			if(myglass.gstate == GlassState.processed && pstate == PopupState.popupready && pstate != PopupState.requested){
 				giveGlassToPopup();
 				return true;
 			}
 		}
 		
 		//if the robot is removing the glass
-		if(myglass != null){
-			if(myglass.gstate == GlassState.removing){
+		/*if(myglass != null){
+			if(myglass.gstate == GlassState.removing && pstate == PopupState.popupready){
 				removeGlass();
 				return true;
 			}
-		}
+		}*/
 		
 		
 		
@@ -154,6 +156,8 @@ public class PopupRobotAgent extends Agent implements Robot{
 		print("PopupAgent " + this.type + "action: processGlass \n");
 		System.out.println("PopupAgent " + this.type + "action: processGlass \n");
 		myglass.gstate = GlassState.none;
+		if(myglass == null)
+			System.out.println("NULL 3");
 		Object args[] = new Object[1];
 		args[0] = this.guiIndex;
 		if(type.equals("DRILL"))
@@ -163,7 +167,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 		else if (type.equals("CROSS_SEAMER"))
 			this.transducer.fireEvent(TChannel.CROSS_SEAMER, TEvent.WORKSTATION_DO_ACTION, args); 
 
-		stateChanged();
+		
 	}
 	//requests permission to transfer glass to popup
 	private void requestPopup(){
@@ -171,7 +175,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 		System.out.println("PopupAgent " + this.type + "action: requestPopup to popup " + this.Popup.getName() + "\n");
 		Popup.msgRobotGlassIsReady(this.isTop);
 		pstate = PopupState.requested;
-		stateChanged();
+	
 	}
 	//fires animation to remove glass
 	private void giveGlassToPopup(){
@@ -187,7 +191,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 			this.transducer.fireEvent(TChannel.CROSS_SEAMER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
 		else if (type.equals("GRINDER"))
 			this.transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
-		stateChanged();
+	
 	}
 	
 	//notifies the popup that the robot is ready to take glass
@@ -196,7 +200,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 		System.out.println("PopupAgent " + this.type + "action: notifyPopupThatRobotIsReady to popup " + this.Popup.getName() + "\n");
 		Popup.msgRobotReady(this.isTop);
 		pstate = PopupState.notified;
-		stateChanged();	
+		
 	}
 	//removes the glass from the robot
 	private void removeGlass(){
@@ -205,7 +209,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 		myglass = null;
 		pstate = PopupState.none;
 		rstate = RobotState.none;
-		stateChanged();
+		
 	}
 	
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
@@ -214,6 +218,8 @@ public class PopupRobotAgent extends Agent implements Robot{
 			if(channel == TChannel.DRILL)
 			{
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED){
+					if(myglass == null)
+						System.out.println("NULL 2");
 					this.msgGlassDoneProcessing();
 				}
 				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
