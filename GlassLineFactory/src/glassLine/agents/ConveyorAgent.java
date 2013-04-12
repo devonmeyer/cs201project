@@ -126,6 +126,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
     public void msgHereIsGlass(Glass g){
         log.add(new LoggedEvent("Received message : msgHereIsGlass"));
+        print("Conveyor " + this.myConveyorIndex + "Received a glass");
 
         glassInQueue = false;
 
