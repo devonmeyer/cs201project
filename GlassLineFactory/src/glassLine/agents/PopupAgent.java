@@ -198,6 +198,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
     public void msgRobotReady(boolean isTop){
         print("Popup"+myPopupIndex+" Received message : msgRobotReady");
+        print("Popup"+myPopupIndex+" myGlassState is none? "+(myGlassState == GlassState.NONE ? "TRUE" : "FALSE"));
 
         if(isTop){
             myGlassState = GlassState.MOVE_TO_TOP_ROBOT;
@@ -315,7 +316,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
         if(!popupEngaged){
             args = new Object[1];
             args[0] = myPopupIndex;
-
+            
             transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 
             try {

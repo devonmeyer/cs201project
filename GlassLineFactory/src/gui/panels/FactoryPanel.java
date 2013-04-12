@@ -138,9 +138,9 @@ public class FactoryPanel extends JPanel
 		cutter = new OnlineWorkStationAgent("CUTTER", 0, 1, transducer, cPanel.getTracePanel());
 		breakout = new OnlineWorkStationAgent("BREAKOUT", 111, 1, transducer, cPanel.getTracePanel());
 		mbreakout= new OnlineWorkStationAgent("MANUAL_BREAKOUT", 222, 1, transducer, cPanel.getTracePanel());
-		drill = new PopupAgent(transducer, 0, 1, 2, cPanel.getTracePanel());
-		dRobot1 = new PopupRobotAgent("DRILL",1,true,drill,transducer,cPanel.getTracePanel());
-		dRobot2 = new PopupRobotAgent("DRILL",2,false,drill,transducer,cPanel.getTracePanel());
+		drill = new PopupAgent(transducer, 0, 0, 1, cPanel.getTracePanel());
+		dRobot1 = new PopupRobotAgent("DRILL",0,true,drill,transducer,cPanel.getTracePanel());
+		dRobot2 = new PopupRobotAgent("DRILL",1,false,drill,transducer,cPanel.getTracePanel());
 		drill.setRobots(dRobot1, dRobot2);
 		drill.setMachineChannel(TChannel.DRILL);
 		crossSeamer = new PopupAgent(transducer, 1, 1 ,2, cPanel.getTracePanel());

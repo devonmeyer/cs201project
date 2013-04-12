@@ -13,7 +13,7 @@ import gui.panels.subcontrolpanels.TracePanel;
 public class PopupRobotAgent extends Agent implements Robot{
 
 	
-	private List<MyGlass> myglasses = new ArrayList<MyGlass>();
+	private MyGlass myglass;
 	private enum GlassState{processing, processed, removing};
 	
 	public class MyGlass{
@@ -73,7 +73,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 	//popup giving glass to robot
 	public void msgPopupHereIsGlass(Glass g) {
 		print("PopupAgent " + this.type + "received msgPopupHereIsGlass from Popup " + this.Popup.getName() + "\n");
-		myglasses.add(new MyGlass(g));
+		myglass = new MyGlass(g);
 		rstate = RobotState.busy;
 		stateChanged();
 	}
@@ -86,13 +86,13 @@ public class PopupRobotAgent extends Agent implements Robot{
 	//message that animation is done processing glass
 	public void msgGlassDoneProcessing(){
 		print("PopupAgent " + this.type + "received msgGlassDoneProcessing after animation is done processing \n");
-		myglasses.get(0).gstate = GlassState.processed;
+		myglass.gstate = GlassState.processed;
 		stateChanged();
 	}
 	//message that the animation is removing glass
 	public void msgRemoveGlass(){
 		print("PopupAgent " + this.type + "received msgRemoveGlass after animation starts removing \n");
-		myglasses.get(0).gstate = GlassState.removing;
+		myglass.gstate = GlassState.removing;
 		
 	}
 
@@ -104,30 +104,30 @@ public class PopupRobotAgent extends Agent implements Robot{
 			return true;
 		}
 		//if there is a glass that needs processing
-		if(!myglasses.isEmpty()){
-			if(myglasses.get(0).gstate == GlassState.processing){
+		if(myglass != null){
+			if(myglass.gstate == GlassState.processing){
 				processGlass();
 				return true;
 			}
 		}
 		//if there is a glass that is processed
-		if(!myglasses.isEmpty()){
-			if(myglasses.get(0).gstate ==  GlassState.processed && pstate != PopupState.popupready){
+		if(myglass != null){
+			if(myglass.gstate ==  GlassState.processed && pstate != PopupState.popupready){
 				requestPopup();
 				return true;
 			}
 		}
 		//if there is a glass that is processed and the popup is ready
-		if(!myglasses.isEmpty()){
-			if(myglasses.get(0).gstate == GlassState.processed && pstate == PopupState.popupready){
+		if(myglass != null){
+			if(myglass.gstate == GlassState.processed && pstate == PopupState.popupready){
 				giveGlassToPopup();
 				return true;
 			}
 		}
 		
 		//if the robot is removing the glass
-		if(!myglasses.isEmpty()){
-			if(myglasses.get(0).gstate == GlassState.removing){
+		if(myglass != null){
+			if(myglass.gstate == GlassState.removing){
 				removeGlass();
 				return true;
 			}
@@ -164,7 +164,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 	//fires animation to remove glass
 	private void giveGlassToPopup(){
 		print("PopupAgent " + this.type + "action: giveGlassToPopup to popup " + this.Popup.getName() + "\n");
-		Popup.msgRobotHereIsGlass(myglasses.get(0).glass, this.isTop);
+		Popup.msgRobotHereIsGlass(myglass.glass, this.isTop);
 		Object args[] = new Object[1];
 		args[0] = this.guiIndex;
 		if(type.equals("DRILL"))
@@ -186,7 +186,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 	//removes the glass from the robot
 	private void removeGlass(){
 		print("PopupAgent " + this.type + "action: removeGlass \n");
-		myglasses.remove(0);
+		myglass = null;
 		pstate = PopupState.none;
 		rstate = RobotState.none;
 		stateChanged();
@@ -197,33 +197,38 @@ public class PopupRobotAgent extends Agent implements Robot{
 		{
 			if(channel == TChannel.DRILL)
 			{
-				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED){
 					this.msgGlassDoneProcessing();
+				}
+				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
+					msgRemoveGlass();
+				}
 			}
-			else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
-				msgRemoveGlass();
-			}
+			
 		}
 		else if(type.equals("GRINDER"))
 		{
 			if(channel == TChannel.GRINDER)
 			{
-				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED){
 					this.msgGlassDoneProcessing();
-			}else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
-				msgRemoveGlass();
+				}else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
+					msgRemoveGlass();
+				}
 			}
 		}
 		else if(type.equals("CROSS_SEAMER"))
 		{
 			if(channel == TChannel.CROSS_SEAMER)
 			{
-				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED){
 					this.msgGlassDoneProcessing();
+				}
+				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
+					msgRemoveGlass();
+				}
 			}
-			else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
-				msgRemoveGlass();
-			}
+			
 		}
 		
 	}
