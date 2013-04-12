@@ -223,29 +223,31 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		}
 	}
 	private void createGlass(String name){
-		List<String> station = new ArrayList<String>();
-		for(JCheckBox cb:recipe){
-			if(cb.isSelected()){
-				station.add(cb.getText());
+		if(name != null){
+			List<String> station = new ArrayList<String>();
+			for(JCheckBox cb:recipe){
+				if(cb.isSelected()){
+					station.add(cb.getText());
+				}
 			}
+			Glass temp = new Glass(glassCount, station);
+			parent.makeGlass(temp);
+			gRobot.addGlass(temp);
+			//add to the list
+			JButton glass = new JButton(name);
+			glass.setBackground(Color.white);
+			Dimension paneSize = this.scrollPane.getSize();
+			Dimension buttonSize = new Dimension(paneSize.width-20, 
+							     (int)(paneSize.height/5));
+			glass.setPreferredSize(buttonSize);
+			glass.setMinimumSize(buttonSize);
+			glass.setMaximumSize(buttonSize);
+			glass.addActionListener(this);
+			
+			this.view.add(glass);
+			this.glasses.add(temp);
+			this.glassList.add(glass);
+			validate();
 		}
-		Glass temp = new Glass(glassCount, station);
-		parent.makeGlass(temp);
-		gRobot.addGlass(temp);
-		//add to the list
-		JButton glass = new JButton(name);
-		glass.setBackground(Color.white);
-		Dimension paneSize = this.scrollPane.getSize();
-		Dimension buttonSize = new Dimension(paneSize.width-20, 
-						     (int)(paneSize.height/5));
-		glass.setPreferredSize(buttonSize);
-		glass.setMinimumSize(buttonSize);
-		glass.setMaximumSize(buttonSize);
-		glass.addActionListener(this);
-		
-		this.view.add(glass);
-		this.glasses.add(temp);
-		this.glassList.add(glass);
-		validate();
 	}
 }

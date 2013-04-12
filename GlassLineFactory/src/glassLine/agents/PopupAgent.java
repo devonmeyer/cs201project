@@ -94,8 +94,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
         myBottomRobotIndex = bottomRobotIndex;
 
         transducer.register(this, TChannel.POPUP);
-        transducer.register(this, TChannel.DRILL);
-
+	
         log = new EventLog();
         
         toldRobot = false;

@@ -288,25 +288,29 @@ public class PopupRobotAgent extends Agent implements Robot{
 		}
 		else if(type.equals("GRINDER")){
 			if(channel == TChannel.GRINDER){
-				if(myglass.gstate != GlassState.processed){
-					myglass.gstate = GlassState.processed;
-					animation.release();
-				}
-				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
-				
-				rstate = RobotState.ready;
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED){
+					if(myglass.gstate != GlassState.processed){
+						myglass.gstate = GlassState.processed;
+						animation.release();
+					}
+					else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
+					
+					rstate = RobotState.ready;
+					}
 				}
 			}
 		}
 		else if(type.equals("CROSS_SEAMER")){
 			if(channel == TChannel.CROSS_SEAMER){
-				if(myglass.gstate != GlassState.processed){
-					myglass.gstate = GlassState.processed;
-					animation.release();
-				}
-				else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
-				
-				rstate = RobotState.ready;
+				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED){
+					if(myglass.gstate != GlassState.processed){
+						myglass.gstate = GlassState.processed;
+						animation.release();
+					}
+					else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
+					
+					rstate = RobotState.ready;
+					}
 				}
 			}
 			
