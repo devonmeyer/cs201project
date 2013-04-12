@@ -4,7 +4,6 @@ import glassLine.Glass;
 import glassLine.interfaces.Conveyor;
 import glassLine.interfaces.Machine;
 import glassLine.test.EventLog;
-import glassLine.test.LoggedEvent;
 import gui.panels.subcontrolpanels.TracePanel;
 import transducer.TChannel;
 import transducer.TEvent;
@@ -114,6 +113,11 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
         return glassOnMe.size();
     }
 
+    public int getConveyorIndex(){
+
+        return myConveyorIndex;
+    }
+
     /*
 
     Messaging
@@ -125,7 +129,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     public void msgGlassIsReady(){
-        log.add(new LoggedEvent("Received message : msgGlassIsReady"));
+        print("Received message : msgGlassIsReady");
 
 
         glassInQueue = true;
@@ -134,7 +138,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     public void msgHereIsGlass(Glass g){
-        log.add(new LoggedEvent("Received message : msgHereIsGlass"));
+        print("Received message : msgHereIsGlass");
 
         glassInQueue = false;
 
@@ -145,7 +149,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     public void msgGlassAtEndSensor(Glass g){
-        log.add(new LoggedEvent("Received message : msgGlassAtEndSensor"));
+        print("Received message : msgGlassAtEndSensor");
 
 
         for(MyGlass mg : glassOnMe){
@@ -158,7 +162,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     public void msgReadyToTakeGlass(){
-        log.add(new LoggedEvent("Received message : msgReadyToTakeGlass"));
+        print("Received message : msgReadyToTakeGlass");
 
 
         for(MyGlass mg : glassOnMe){
@@ -220,7 +224,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
      */
 
     private void moveGlassToMachine(MyGlass g){
-        log.add(new LoggedEvent("Carrying out action : moveGlassToMachine"));
+        print("Carrying out action : moveGlassToMachine");
 
         Object args[] = new Object[1];
         args[0] = myConveyorIndex;
@@ -246,7 +250,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     private void requestMoveGlass(MyGlass g){
-        log.add(new LoggedEvent("Carrying out action : requestMoveGlass"));
+        print("Carrying out action : requestMoveGlass");
 
         if(!g.glass.getProcesses().contains(myMachine)){
             exitMachine.msgGlassNeedsThrough();
@@ -266,7 +270,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     private void startConveyor(){
-        log.add(new LoggedEvent("Carrying out action : startConveyor"));
+        print("Carrying out action : startConveyor");
 
         moving = true;
 
@@ -282,7 +286,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     private void prepareToTakeGlass(){
-        log.add(new LoggedEvent("Carrying out action : prepareToTakeGlass"));
+        print("Carrying out action : prepareToTakeGlass");
 
         entryMachine.msgReadyToTakeGlass();
 
