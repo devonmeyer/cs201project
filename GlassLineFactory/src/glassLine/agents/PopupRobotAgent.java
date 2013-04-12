@@ -198,7 +198,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 		System.out.println("PopupAgent " + this.type + "action: removeGlass \n");
 		glassList.remove(0);
 		pstate = PopupState.none;
-		rstate = RobotState.none;
+		rstate = RobotState.ready;
 
 	}
 
