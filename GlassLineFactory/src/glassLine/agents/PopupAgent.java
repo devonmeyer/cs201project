@@ -94,6 +94,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
         myBottomRobotIndex = bottomRobotIndex;
 
         transducer.register(this, TChannel.POPUP);
+  
 	
         log = new EventLog();
         
@@ -579,8 +580,8 @@ public class PopupAgent extends Agent implements Popup, Machine {
         //reset popup to initial state
         conveyorGlassState = GlassState.NONE;
         myGlassState = GlassState.NONE;
-//        robotTopGlassState = GlassState.NONE;
-//        robotBottomGlassState = GlassState.NONE;
+        robotTopGlassState = GlassState.NONE;
+        robotBottomGlassState = GlassState.NONE;
         
         currentGlass = null;
         

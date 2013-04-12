@@ -31,6 +31,10 @@ public class PopupRobotAgent extends Agent implements Robot{
 			//			this.glass = glass;
 			gstate = GlassState.none;
 		}
+		public MyGlass(Glass g){
+			gstate = GlassState.none;
+			glass = g;
+		}
 
 		public void setGlass(Glass g){
 			this.glass = g;
@@ -93,7 +97,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 	@Override
 	public void msgPopupHereIsGlass(Glass g) {
 		print("PopupRobot " + this.type + " received glass from Popup" + this.Popup.getName() + "\n");
-		myglass.setGlass(g);
+		myglass = new MyGlass(g);
 		myglass.setState(GlassState.needProcessing);
 		stateChanged();
 	}
@@ -132,23 +136,25 @@ public class PopupRobotAgent extends Agent implements Robot{
 			notifyPopupThatRobotIsReady();
 			return true;
 		}
-
-		if(myglass.gstate != GlassState.none){
-
-			if(myglass.gstate == GlassState.needProcessing){
-
-				processGlass();
-				return true;
-			}
-			if(pstate == PopupState.popupready && myglass.gstate == GlassState.removing){
-				giveGlassToPopup();
-				return true;
-			}
-
-			//if there is a glass that is processed and the popup is ready
-			if(myglass.gstate == GlassState.processed){	
-				requestPopup();
-				return true;
+		
+		if(myglass != null){
+			if(myglass.gstate != GlassState.none){
+	
+				if(myglass.gstate == GlassState.needProcessing){
+	
+					processGlass();
+					return true;
+				}
+				if(pstate == PopupState.popupready && myglass.gstate == GlassState.removing){
+					giveGlassToPopup();
+					return true;
+				}
+	
+				//if there is a glass that is processed and the popup is ready
+				if(myglass.gstate == GlassState.processed){	
+					requestPopup();
+					return true;
+				}
 			}
 		}
 		//if the robot is removing the glass
@@ -231,7 +237,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 		}
 		removeGlass();
 		Popup.msgRobotHereIsGlass(myglass.glass, this.isTop);
-		myglass.gstate = GlassState.none;
+		myglass = null;
 		//		stateChanged();
 
 	}
@@ -249,7 +255,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 	private void removeGlass(){
 		//	temp = myglass.glass;
 		print("PopupAgent " + this.type + "action: removeGlass \n");
-
+		myglass.gstate = GlassState.none;
 		pstate = PopupState.none;
 		rstate = RobotState.ready;
 		//		stateChanged();
