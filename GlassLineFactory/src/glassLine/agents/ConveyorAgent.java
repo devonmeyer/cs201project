@@ -250,10 +250,6 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
         glassOnMe.remove(g);
 
-        if(glassOnMe.isEmpty()){
-            transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
-            moving = false;
-        }
     }
 
     private void requestMoveGlass(MyGlass g){
