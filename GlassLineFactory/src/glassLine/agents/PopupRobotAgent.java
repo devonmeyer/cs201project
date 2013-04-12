@@ -318,7 +318,6 @@ public class PopupRobotAgent extends Agent implements Robot{
 						rstate = RobotState.ready;
 					}
 				}
-				animation.release();
 			}
 
 		}
