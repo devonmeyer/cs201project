@@ -151,7 +151,7 @@ public class FactoryPanel extends JPanel
 		painter = new OnlineWorkStationAgent("PAINTER", 2, 1, transducer, cPanel.getTracePanel());
 		uv = new OnlineWorkStationAgent("UV_LAMP", 3, 1, transducer, cPanel.getTracePanel());
 		baker = new OnlineWorkStationAgent("OVEN", 4, 1, transducer, cPanel.getTracePanel());
-		conv0 = new ConveyorAgent("Cutter", transducer,0, cPanel.getTracePanel());
+		conv0 = new ConveyorAgent("CUTTER", transducer,0, cPanel.getTracePanel());
 		conv1 = new ConveyorAgent("SHUTTLE1", transducer,1,cPanel.getTracePanel());
 		conv2 = new ConveyorAgent("BREAKOUT", transducer,2,cPanel.getTracePanel());
 		conv3 = new ConveyorAgent("MANUAL_BREAKOUT", transducer,3,cPanel.getTracePanel());
@@ -166,7 +166,7 @@ public class FactoryPanel extends JPanel
 		conv12 = new ConveyorAgent("SHUTLE4", transducer,12,cPanel.getTracePanel());
 		conv13 = new ConveyorAgent("OVEN", transducer,13,cPanel.getTracePanel());
 		conv14 = new ConveyorAgent("EXIT", transducer,14,cPanel.getTracePanel());
-		truck = new TruckAgent("Truck", transducer, conv14);
+		truck = new TruckAgent("TRUCK", transducer, conv14);
 		
 		gRobot.setConveyor(conv0);
 		conv0.setTwoMachines(gRobot, cutter);

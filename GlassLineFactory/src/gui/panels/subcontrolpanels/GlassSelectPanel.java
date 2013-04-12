@@ -66,7 +66,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		 * Checkboxes for each station.
 		 * Selected stations will be added to the Glass's recipe
 		 */
-		JCheckBox chckbxCutter = new JCheckBox("Cut ");
+		JCheckBox chckbxCutter = new JCheckBox("CUTTER");
 		recipe.add(chckbxCutter);
 		GridBagConstraints gbc_chckbxCutter = new GridBagConstraints();
 		gbc_chckbxCutter.insets = new Insets(0, 0, 5, 5);
@@ -75,7 +75,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		add(chckbxCutter, gbc_chckbxCutter);
 		chckbxCutter.setHorizontalAlignment(SwingConstants.LEFT);
 		
-		JCheckBox chckbxBreakout = new JCheckBox("BO  ");
+		JCheckBox chckbxBreakout = new JCheckBox("BREAKOUT");
 		recipe.add(chckbxBreakout);
 		GridBagConstraints gbc_chckbxBreakout = new GridBagConstraints();
 		gbc_chckbxBreakout.insets = new Insets(0, 0, 5, 5);
@@ -84,7 +84,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		add(chckbxBreakout, gbc_chckbxBreakout);
 		chckbxBreakout.setHorizontalAlignment(SwingConstants.RIGHT);
 		
-		JCheckBox chckbxManualBo = new JCheckBox("MBO ");
+		JCheckBox chckbxManualBo = new JCheckBox("MANUAL_BREAKOUT");
 		recipe.add(chckbxManualBo);
 		GridBagConstraints gbc_chckbxManualBo = new GridBagConstraints();
 		gbc_chckbxManualBo.insets = new Insets(0, 0, 5, 5);
@@ -94,7 +94,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		chckbxManualBo.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 				
-		JCheckBox chckbxCrossseamer = new JCheckBox("Seam");
+		JCheckBox chckbxCrossseamer = new JCheckBox("CROSS_SEAMER");
 		recipe.add(chckbxCrossseamer);
 		GridBagConstraints gbc_chckbxCrossseamer = new GridBagConstraints();
 		gbc_chckbxCrossseamer.insets = new Insets(0, 0, 5, 5);
@@ -104,7 +104,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		chckbxCrossseamer.setHorizontalAlignment(SwingConstants.LEFT);
 
 		
-		JCheckBox chckbxDrill = new JCheckBox("Drill");
+		JCheckBox chckbxDrill = new JCheckBox("DRILL");
 		recipe.add(chckbxDrill);
 		GridBagConstraints gbc_chckbxDrill = new GridBagConstraints();
 		gbc_chckbxDrill.insets = new Insets(0, 0, 5, 5);
@@ -113,7 +113,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		add(chckbxDrill, gbc_chckbxDrill);
 		chckbxDrill.setHorizontalAlignment(SwingConstants.LEFT);
 		
-		JCheckBox chckbxGrinder = new JCheckBox("Grind");
+		JCheckBox chckbxGrinder = new JCheckBox("GRINDER");
 		recipe.add(chckbxGrinder);
 		GridBagConstraints gbc_chckbxGrinder = new GridBagConstraints();
 		gbc_chckbxGrinder.insets = new Insets(0, 0, 5, 5);
@@ -122,7 +122,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		add(chckbxGrinder, gbc_chckbxGrinder);
 		chckbxGrinder.setHorizontalAlignment(SwingConstants.LEFT);
 		
-		JCheckBox chckbxWasher = new JCheckBox("Wash");
+		JCheckBox chckbxWasher = new JCheckBox("WASHER");
 		recipe.add(chckbxWasher);
 		GridBagConstraints gbc_chckbxWasher = new GridBagConstraints();
 		gbc_chckbxWasher.insets = new Insets(0, 0, 5, 5);
@@ -132,7 +132,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		chckbxWasher.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 				
-		JCheckBox chckbxUv = new JCheckBox("UV");
+		JCheckBox chckbxUv = new JCheckBox("UV_LAMP");
 		recipe.add(chckbxUv);
 		GridBagConstraints gbc_chckbxUv = new GridBagConstraints();
 		gbc_chckbxUv.insets = new Insets(0, 0, 5, 5);
@@ -142,7 +142,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		chckbxUv.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		
-		JCheckBox chckbxPaint = new JCheckBox("Paint");
+		JCheckBox chckbxPaint = new JCheckBox("PAINTER");
 		recipe.add(chckbxPaint);
 		GridBagConstraints gbc_chckbxPaint = new GridBagConstraints();
 		gbc_chckbxPaint.insets = new Insets(0, 0, 5, 5);
@@ -152,7 +152,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		chckbxPaint.setHorizontalAlignment(SwingConstants.LEFT);
 				
 						
-		JCheckBox chckbxBake = new JCheckBox("Bake");
+		JCheckBox chckbxBake = new JCheckBox("OVEN");
 		recipe.add(chckbxBake);
 		GridBagConstraints gbc_chckbxBake = new GridBagConstraints();
 		gbc_chckbxBake.insets = new Insets(0, 0, 5, 5);
