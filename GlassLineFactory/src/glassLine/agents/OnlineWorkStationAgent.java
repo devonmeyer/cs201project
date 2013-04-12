@@ -265,7 +265,6 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
 		this.glassList.get(0).state = GlassState.none;
-		this.glassList.remove(0);
 		this.followingAgentState = FollowingAgentState.none;
 
 		Object args[] = new Object[1];
