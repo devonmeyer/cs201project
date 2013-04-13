@@ -37,6 +37,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 	/** The ControlPanel this is linked to */
 	private ControlPanel parent;
 
+	Timer timer = new Timer();
 	/** list of checkboxes for creating glass recipe */
 	List<JCheckBox> recipe;
 	

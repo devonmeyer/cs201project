@@ -34,7 +34,7 @@ public class GlassRobotAgent extends Agent implements Machine{
 		
 		transducer = trans;
 		tracePanel = tp;
-		transducer.register(this, TChannel.BIN);
+//		transducer.register(this, TChannel.BIN);
 		
 	}
 	
