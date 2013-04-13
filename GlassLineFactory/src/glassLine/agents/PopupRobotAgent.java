@@ -157,19 +157,6 @@ public class PopupRobotAgent extends Agent implements Robot{
 				}
 			}
 		}
-		//if the robot is removing the glass
-		//				if(myglass.gstate == GlassState.removing){
-		//					try {
-		//						sem.acquire();
-		//					} catch (InterruptedException e) {
-		//						// TODO Auto-generated catch block
-		//						e.printStackTrace();
-		//					}
-		//					removeGlass();
-		//					return true;
-		//				}
-
-		//if there is a glass that needs processing
 
 		return false;
 	}

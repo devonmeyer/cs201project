@@ -31,6 +31,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
      */
 	private Semaphore robotGUI;
 	public Semaphore conveyorAction;
+
 	public Timer timer = new Timer();
 	
 	private boolean toldRobot;		//hack
@@ -217,7 +218,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
         } else {
             myGlassState = GlassState.MOVE_TO_BOTTOM_ROBOT;
         }
-        
+        robotGUI.release();
         stateChanged();
     }
 
@@ -238,12 +239,12 @@ public class PopupAgent extends Agent implements Popup, Machine {
      */
 
     public boolean pickAndExecuteAnAction(){
-        if(myGlassState == GlassState.MOVE_TO_TOP_ROBOT || myGlassState == GlassState.MOVE_TO_BOTTOM_ROBOT){
-
-            moveMyGlassToRobot();
-            return true;
-
-        }
+//        if(myGlassState == GlassState.MOVE_TO_TOP_ROBOT || myGlassState == GlassState.MOVE_TO_BOTTOM_ROBOT){
+//
+//            moveMyGlassToRobot();
+//            return true;
+//
+//        }
         if(myGlassState == GlassState.MOVE_TO_CONVEYOR){
 
             moveMyGlassToConveyor();
@@ -337,7 +338,12 @@ public class PopupAgent extends Agent implements Popup, Machine {
             bottomRobot.msgPopupGlassIsReady();
         }
         myGlassState = GlassState.WAITING;
-
+        try {
+			robotGUI.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+        moveMyGlassToRobot();
     }
 
     private void moveMyGlassToRobot(){
@@ -464,7 +470,12 @@ public class PopupAgent extends Agent implements Popup, Machine {
             bottomRobot.msgPopupReady();
             toldRobot = true;
         }
-
+        try {
+			animation.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private void readyMoveFromConveyor(){
@@ -532,6 +543,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
         		if((Integer) args[0] == this.myPopupIndex){
         			animation.release();
+        			System.out.println("PopupRaised, Permit " + animation.availablePermits());
         		}
             } else if(event == TEvent.POPUP_GUI_MOVED_DOWN){
 
@@ -539,21 +551,25 @@ public class PopupAgent extends Agent implements Popup, Machine {
         			animation.release();
         		}
             }
-        } else if(channel == myMachineChannel){
+        } 
+        else if(channel == myMachineChannel){
 
             if(event == TEvent.WORKSTATION_LOAD_FINISHED){
-
+            	
                 animation.release();
+                System.out.println("Permits: " + animation.availablePermits());
 
-            }else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
-            		animation.release();
+            }
+//            else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){
+//            		animation.release();
+//            	    System.out.println("Permits: " + animation.availablePermits());
 //        		if(robotTopGlassState == GlassState.NEEDS_THROUGH){
 //    				topRobot.finishTransfer();
 //    			}
 //    			else if(robotBottomGlassState == GlassState.NEEDS_THROUGH){
 //    				bottomRobot.finishTransfer();
 //    			}
-            }
+//           }
             }
     }
     
