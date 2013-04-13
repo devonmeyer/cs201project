@@ -20,9 +20,10 @@ public class GlassRobotAgent extends Agent implements Machine{
 	List<Glass> glasses;
 	GlassSelectPanel parent;
 	ConveyorAgent entrance;
-	
-	enum State {Ready, Requested, NotReady};
-	State state;
+	enum AgentState {Ready, NotReady};
+	enum ConveyorState {Ready, Requested, NotReady};
+	ConveyorState conveyorState;
+	AgentState state;
 	
 	/** Constructor ****/
 	public GlassRobotAgent(Transducer trans, TracePanel tp, String name){
@@ -30,36 +31,37 @@ public class GlassRobotAgent extends Agent implements Machine{
 		super(name);
 		
 		this.glasses = new ArrayList<Glass>();
-		this.state = State.NotReady;
-		
+		this.conveyorState = ConveyorState.NotReady;
+		this.state = AgentState.Ready;
 		transducer = trans;
 		tracePanel = tp;
 		transducer.register(this, TChannel.BIN);
+		transducer.register(this, TChannel.SENSOR);
 		
 	}
 	
 	/** Messages *******************/
 	public void msgReadyForGlass(){
-		state = State.Ready;
+		
 		stateChanged();
 	}
 	
 	@Override
 	public void msgReadyToTakeGlass() {
 		print("Conveyor " + entrance.getConveyorIndex() +" is ready to take glass\n");
-		state = State.Ready;
+		conveyorState = ConveyorState.Ready;
 		stateChanged();
 	}
 	
 	/** Scheduler *******************/
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		if(!glasses.isEmpty()){
-			if(state == State.NotReady){
+		if(!glasses.isEmpty() && this.state == AgentState.Ready){
+			if(conveyorState == ConveyorState.NotReady){
 				requestSend();
 				return true;
 			}
-			else if(state == State.Ready){
+			else if(conveyorState == ConveyorState.Ready){
 				sendGlassToEntrance();
 				return true;
 			}
@@ -72,7 +74,7 @@ public class GlassRobotAgent extends Agent implements Machine{
 	
 	private void requestSend(){
 		entrance.msgGlassIsReady();
-		state = State.Requested;
+		conveyorState = ConveyorState.Requested;
 		stateChanged();
 	}
 	/*
@@ -81,8 +83,9 @@ public class GlassRobotAgent extends Agent implements Machine{
 	private void sendGlassToEntrance(){
 		print("sending glass to conveyor " + entrance.getConveyorIndex() +"\n");
 		entrance.msgHereIsGlass(glasses.get(0));
-		glasses.remove(0);		// remove the glass thats sent to the conveyor
-		state = State.NotReady;						//set entrance to not ready after sending glass
+		
+		conveyorState = ConveyorState.NotReady;						//set entrance to not ready after sending glass
+		this.state = AgentState.NotReady;
 		transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 		stateChanged();
 	}
@@ -90,10 +93,25 @@ public class GlassRobotAgent extends Agent implements Machine{
 //		System.out.println("Making Glass");
 		print("A new piece of glass is made\n");
 		glasses.add(g);
+		this.state = AgentState.Ready;
+		if(glasses.size() > 1){
+			this.state = AgentState.NotReady;
+		}
 		stateChanged();
 	}
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
+		if(channel == TChannel.SENSOR){
+			if(event == TEvent.SENSOR_GUI_PRESSED){
+				if((Integer)args[0] == 0){
+					this.state = AgentState.Ready;
+
+					glasses.remove(0);		// remove the glass thats sent to the conveyor
+					
+					
+				}
+			}
+		}
 		stateChanged();
 	}
 
