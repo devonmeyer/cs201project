@@ -9,7 +9,9 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
+import java.util.*;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -23,7 +25,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
     enum GlassState {MID_CONVEYOR, END_CONVEYOR, WAITING_TO_EXIT, EXIT_TO_SENSOR }
 
-    private LinkedList<MyGlass> glassOnMe;
+    private List<MyGlass> glassOnMe;
 
     private boolean moving;
 
@@ -64,7 +66,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
         tracePanel = tp;
 
-        glassOnMe = new LinkedList<MyGlass>();
+        glassOnMe = Collections.synchronizedList(new LinkedList<MyGlass>());
         movingToMachine = new Semaphore(0);
         myMachine = machine;
         moving = false;
@@ -157,12 +159,13 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
         if(g == null){
         	print("Conveyor " + myConveyorIndex + " Glass at end sensor not recognized.");
         }
-
-        for(MyGlass mg : glassOnMe){
-            if(mg.glass == g){
-                mg.state = GlassState.END_CONVEYOR;
-                stateChanged();
-            }
+        synchronized(glassOnMe){
+		    for(MyGlass mg : glassOnMe){
+		        if(mg.glass == g){
+		            mg.state = GlassState.END_CONVEYOR;
+		            stateChanged();
+		        }
+		    }
         }
 
     }
@@ -170,12 +173,13 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     public void msgReadyToTakeGlass(){
         print("Conveyor " + myConveyorIndex + " Received message : msgReadyToTakeGlass\n");
 
-
-        for(MyGlass mg : glassOnMe){
-            if(mg.state == GlassState.WAITING_TO_EXIT){
-                mg.state = GlassState.EXIT_TO_SENSOR;
-                stateChanged();
-            }
+        synchronized(glassOnMe){
+	        for(MyGlass mg : glassOnMe){
+	            if(mg.state == GlassState.WAITING_TO_EXIT){
+	                mg.state = GlassState.EXIT_TO_SENSOR;
+	                stateChanged();
+	            }
+	        }
         }
 
     }
@@ -187,34 +191,41 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
      */
 
     public boolean pickAndExecuteAnAction(){
-
+    	synchronized(glassOnMe){
         for(MyGlass mg : glassOnMe){
             if(mg.state == GlassState.EXIT_TO_SENSOR){
                 moveGlassToMachine(mg);
                 return true;
             }
         }
+    	}
+    	synchronized(glassOnMe){
         for(MyGlass mg : glassOnMe){
             if(mg.state == GlassState.END_CONVEYOR){
                 requestMoveGlass(mg);
                 return true;
             }
         }
+    	}
         if(!moving){
+          	synchronized(glassOnMe){
             for(MyGlass mg : glassOnMe){
                 if(mg.state == GlassState.MID_CONVEYOR){
                     startConveyor();
                     return true;
                 }
             }
+          	}
         }
         if(glassInQueue){
             boolean canTakeGlass = true;
+          	synchronized(glassOnMe){
             for(MyGlass mg : glassOnMe){
                 if(mg.state == GlassState.WAITING_TO_EXIT){
                     canTakeGlass = false;
                 }
             }
+          	}
             if(canTakeGlass){
                 prepareToTakeGlass();
             }
