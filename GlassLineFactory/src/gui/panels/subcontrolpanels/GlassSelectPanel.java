@@ -210,7 +210,6 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		// the selected stations will be added to the glass' recipe 
 		if(ae.getSource() == createGlass){
 			createGlass(JOptionPane.showInputDialog("Please enter a name for glass:"));
-			glassCount++;
 		}
 		else{
 			
@@ -248,6 +247,8 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 			this.glasses.add(temp);
 			this.glassList.add(glass);
 			validate();
+			
+			glassCount++;
 		}
 	}
 }
