@@ -436,8 +436,10 @@ public class PopupAgent extends Agent implements Popup, Machine {
         }
 
         exitConveyor.msgHereIsGlass(currentGlass);
+        this.myGlassState = GlassState.NONE;
+
         
-        resetState();
+        stateChanged();
 
     }
 
@@ -591,18 +593,6 @@ public class PopupAgent extends Agent implements Popup, Machine {
     		}
     	}
     	return false;
-    }
-    
-    private void resetState(){
-        //reset popup to initial state
-        conveyorGlassState = GlassState.NONE;
-        myGlassState = GlassState.NONE;
-        robotTopGlassState = GlassState.NONE;
-        robotBottomGlassState = GlassState.NONE;
-        
-        currentGlass = null;
-        
-        popupEngaged = false;
     }
 
 
