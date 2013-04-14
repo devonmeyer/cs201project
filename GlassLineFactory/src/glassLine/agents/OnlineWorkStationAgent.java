@@ -101,7 +101,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 
 	public void msgHereIsGlass(Glass g) {
-		print("Receiving new piece of glass from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n" );
+		print(this.type + " : Receiving new piece of glass from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n" );
 		glassList.add(new MyGlass(g));
 		if(this.state == AgentState.processing)
 			glassList.get(0).state = GlassState.needsProcessing;
@@ -117,8 +117,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 
 	public void msgGlassIsReady(){
-		System.out.println("Glass Needs Processing");
-		print("Received a glass transfer request from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n");
+		
+		print(this.type + " : Received a glass transfer request from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n");
 
 		this.state = AgentState.processing;
 		this.precedingAgentState = PrecedingAgentState.requestingToSend;
@@ -134,8 +134,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 	@Override
 	public void msgGlassNeedsThrough() {
-		System.out.println("Glass Needs Through");
-		print("Received a glass transfer request from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n");
+		print(this.type + " : Received a glass transfer request from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n");
 
 		this.state = AgentState.notProcessing;
 		this.precedingAgentState = PrecedingAgentState.requestingToSend;
@@ -149,7 +148,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 
 	public void msgReadyToTakeGlass(){
-		print("Received a confirmation that recipient is ready for glass transfer from Conveyor " + followingConveyorAgent.getConveyorIndex() + ".\n");
+		print(this.type + " : Received a confirmation that recipient is ready for glass transfer from Conveyor " + followingConveyorAgent.getConveyorIndex() + ".\n");
 		System.out.println("Received a confirmation that recipient is ready for glass transfer.");
 		this.followingAgentState = FollowingAgentState.readyToReceive;
 
@@ -161,7 +160,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 *
 	 **/
 	public void msgGlassDoneProcessing(){
-		print("Received a confirmation that glass is done processing.\n");
+		print(this.type + " : Received a confirmation that glass is done processing.\n");
 		this.waitForProcessAnimation.release();
 		this.glassList.get(0).state = GlassState.doneProcessing;
 		stateChanged();
@@ -173,6 +172,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 *
 	 **/
 	public void msgGlassRemoved(){
+		print(this.type + " : Glass has been removed.");
 		this.glassList.remove(0);
 		this.followingAgentState = FollowingAgentState.none;
 		stateChanged();
@@ -222,7 +222,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 * 
 	 **/
 	public void sayReadyToReceive(){
-		print("Ready to Receive");
+		print(this.type + " : Ready to Receive");
 
 		precedingConveyorAgent.msgReadyToTakeGlass();
 		this.precedingAgentState = PrecedingAgentState.sending;
@@ -240,7 +240,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 * 
 	 **/
 	public void processGlass(){
-		System.out.println("Processing Glass");
+		print(this.type + " : Processing Glass");
 
 		Object args[] = new Object[1];
 		args[0] = this.guiIndex;
@@ -272,7 +272,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	public void requestToTransferGlass(){
 
 
-		System.out.println("Request To Transfer");
+		print(this.type + " : Request To Transfer");
 
 		followingConveyorAgent.msgGlassIsReady();
 		this.followingAgentState = FollowingAgentState.requestSent;
@@ -285,7 +285,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	public void transferGlass(){
 
 
-		System.out.println("Transfering glass");
+		print(this.type + " : Transfering glass");
 
 		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
 		this.glassList.get(0).state = GlassState.none;
