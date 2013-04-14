@@ -34,7 +34,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
 	public Timer timer = new Timer();
 	
-	private boolean toldRobot;		//hack
+//	private boolean toldRobot;		//hack
 	
     private enum GlassState {NONE, NEEDS_THROUGH, ASKEDCONVEYOR, NEEDS_ROBOT, WAITING, WAITING_THROUGH, WAITING_ROBOT, MOVE_TO_TOP_ROBOT, MOVE_TO_BOTTOM_ROBOT, MOVE_TO_CONVEYOR, PROCESSING}
 
@@ -99,7 +99,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
 	
         log = new EventLog();
         
-        toldRobot = false;
+//        toldRobot = false;
 
     }
 
@@ -197,7 +197,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
         currentGlass = g;
         myGlassState = GlassState.NEEDS_THROUGH;
 
-        toldRobot = false;	//hack
+//        toldRobot = false;	//hack
 
         if(isTop){
             robotTopGlassState = GlassState.NONE;
@@ -256,6 +256,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
  //       	  System.out.println("Waiting for robot glass release animation");
 
             readyMoveToConveyor();
+            
             return true;
 
         }
@@ -268,10 +269,10 @@ public class PopupAgent extends Agent implements Popup, Machine {
         if(myGlassState == GlassState.NONE || myGlassState == GlassState.WAITING){
 
             if((robotTopGlassState == GlassState.NEEDS_THROUGH || robotBottomGlassState == GlassState.NEEDS_THROUGH)){
-            	if(!toldRobot){
+//            	if(!toldRobot){
             		readyMoveFromRobot();
                 	return true;
-            	}
+//            	}
             }
             if(conveyorGlassState == GlassState.NEEDS_THROUGH){
 
@@ -464,11 +465,11 @@ public class PopupAgent extends Agent implements Popup, Machine {
         if(robotTopGlassState == GlassState.NEEDS_THROUGH){
             robotTopGlassState = GlassState.WAITING;
             topRobot.msgPopupReady();
-            toldRobot = true;
+ //           toldRobot = true;
         } else{
             robotBottomGlassState = GlassState.WAITING;
             bottomRobot.msgPopupReady();
-            toldRobot = true;
+//            toldRobot = true;
         }
         try {
 			animation.acquire();
