@@ -108,7 +108,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		else 
 			glassList.get(0).state = GlassState.doneProcessing;
 		this.precedingAgentState = PrecedingAgentState.none;
-		
+
 		stateChanged();
 	}
 
@@ -188,8 +188,11 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		/* If the preceding conveyor agent is requesting to send a piece of glass, 
     check if ready.  */
 		if(precedingAgentState == PrecedingAgentState.requestingToSend){
-			checkIfReadyToReceive();
-			return true;
+			if(glassList.size() < capacity){
+				sayReadyToReceive();
+				return true;
+			}
+
 		}
 
 		/* If a piece of glass needs to be processed or transferred.  */
@@ -218,19 +221,17 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	/**This action checks if the machine is ready to receive a piece of glass. 
 	 * 
 	 **/
-	public void checkIfReadyToReceive(){
-		System.out.println("Check if Ready to Receive");
-		if(glassList.size() < capacity){
-			precedingConveyorAgent.msgReadyToTakeGlass();
-			this.precedingAgentState = PrecedingAgentState.sending;
-			try {
-				this.waitForLoadAnimation.acquire();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}else 
-			this.precedingAgentState = PrecedingAgentState.requestingToSend;
+	public void sayReadyToReceive(){
+		print("Ready to Receive");
+
+		precedingConveyorAgent.msgReadyToTakeGlass();
+		this.precedingAgentState = PrecedingAgentState.sending;
+		try {
+			this.waitForLoadAnimation.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		stateChanged();
 	}
