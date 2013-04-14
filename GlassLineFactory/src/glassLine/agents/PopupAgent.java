@@ -266,7 +266,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
             return true;
 
         }
-        if(myGlassState == GlassState.NONE || myGlassState == GlassState.WAITING){
+        if(myGlassState == GlassState.NONE){
 
             if((robotTopGlassState == GlassState.NEEDS_THROUGH || robotBottomGlassState == GlassState.NEEDS_THROUGH)){
 //            	if(!toldRobot){
