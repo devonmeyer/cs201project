@@ -60,7 +60,7 @@ public class GUITruck extends GuiComponent
 
 	enum TruckState
 	{
-		LOADING, LEAVING, RETURNING
+		LOADING, LEAVING, RETURNING, IDLE
 	};
 
 	TruckState state;
@@ -107,6 +107,7 @@ public class GUITruck extends GuiComponent
 		{
 			//part.setVisible(false);//monroe moved to after the part is completely removed
 			//part = null;//monroe moved to after the part is completely removed
+			state = TruckState.IDLE;
 			transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_GUI_LOAD_FINISHED, null);
 		}
 
