@@ -18,6 +18,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import transducer.Transducer;
+
 /**
  * The NonNormPanel is responsible for initiating and managing non-normative
  * situations. It contains buttons for each possible non-norm.
@@ -56,6 +58,8 @@ public class NonNormPanel extends JPanel
 	public NonNormPanel(ControlPanel cp)
 	{
 		parent = cp;
+		
+		Transducer transducer;
 
 		this.setBackground(Color.black);
 		this.setForeground(Color.black);
@@ -137,6 +141,8 @@ public class NonNormPanel extends JPanel
 		JLabel clLabel2 = new JLabel();
 		colorLinesPanel2.add(clLabel2);
 		this.add(colorLinesPanel2);
+		
+		transducer = parent.getTransducer();
 	}
 
 	/**

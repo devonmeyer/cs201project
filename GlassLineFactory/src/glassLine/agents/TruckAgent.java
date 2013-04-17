@@ -109,7 +109,7 @@ public class TruckAgent extends Agent implements Machine {
 		}else{
 			cstate = ConveyorState.requestingToSend;
 		}
-		stateChanged();
+//		stateChanged();
 	}
 
 	private void processGlass(){
@@ -123,7 +123,7 @@ public class TruckAgent extends Agent implements Machine {
 			e.printStackTrace();
 		}
 
-		stateChanged();
+//		stateChanged();
 	}
 
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
