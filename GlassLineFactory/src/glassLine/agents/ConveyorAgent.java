@@ -349,6 +349,10 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
                 }
 
             } else if(event == TEvent.SENSOR_GUI_RELEASED){
+            	
+            	if(myConveyorIndex == 0){
+            		System.out.println("Sensor gui released : sensor number " + (Integer) args[0]);
+            	}
 
                 if((Integer) args[0] == myExitSensorIndex){
                     movingToMachine.release();

@@ -141,7 +141,7 @@ public class GUISensor extends GuiComponent
 			// it's current glass piece no longer intersects
 			// within a certain range and will reset it's icon
 			// to red(not pressed).
-			if (currentGlassPiece.getCenterX()<=getCenterX()-10||currentGlassPiece.getCenterX()>=getCenterX()+10||currentGlassPiece.getCenterY()<=getCenterY()-10||currentGlassPiece.getCenterY()>=getCenterY()+10)
+			if (currentGlassPiece.getCenterX()<getCenterX()-10||currentGlassPiece.getCenterX()>getCenterX()+10||currentGlassPiece.getCenterY()<getCenterY()-10||currentGlassPiece.getCenterY()>getCenterY()+10)
 			{
 				// Redraws the sensor to it's red icon
 				setIcon(sensorOff);
