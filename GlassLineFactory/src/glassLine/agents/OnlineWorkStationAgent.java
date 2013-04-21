@@ -173,9 +173,12 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 	public void msgGlassRemoved(){
 		print(this.type + " : Glass has been removed.");
+//		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
+		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
 		this.glassList.remove(0);
 		this.followingAgentState = FollowingAgentState.none;
-		stateChanged();
+		this.waitForReleaseAnimation.release();
+//		stateChanged();
 	}
 
 
@@ -187,13 +190,6 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 		/* If the preceding conveyor agent is requesting to send a piece of glass, 
     check if ready.  */
-		if(precedingAgentState == PrecedingAgentState.requestingToSend){
-			if(glassList.size() < capacity){
-				sayReadyToReceive();
-				return true;
-			}
-
-		}
 
 		/* If a piece of glass needs to be processed or transferred.  */
 		if(!glassList.isEmpty()){
@@ -210,6 +206,14 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 				}
 
 			}
+		}
+		
+		if(precedingAgentState == PrecedingAgentState.requestingToSend){
+			if(glassList.size() < capacity){
+				sayReadyToReceive();
+				return true;
+			}
+
 		}
 
 		return false;
@@ -276,7 +280,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 		followingConveyorAgent.msgGlassIsReady();
 		this.followingAgentState = FollowingAgentState.requestSent;
-
+		
 		//stateChanged();
 	}
 
@@ -287,10 +291,10 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 		print(this.type + " : Transfering glass");
 
-		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
+		
 		this.glassList.get(0).state = GlassState.none;
 		this.followingAgentState = FollowingAgentState.receiving;
-
+//		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
 		Object args[] = new Object[1];
 		args[0] = this.guiIndex;
 		if(type.equals("BREAKOUT"))
@@ -307,6 +311,12 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			this.transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_RELEASE_GLASS, args); 
 		else if (type.equals("PAINTER"))
 			this.transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		try {
+			this.waitForReleaseAnimation.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//stateChanged();
 	}
 
@@ -393,8 +403,10 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		this.followingConveyorAgent = following;
 	}
 
-
-
+	public String getType(){
+		return type;
+	}
+	
 
 
 

@@ -25,7 +25,7 @@ import transducer.Transducer;
  * situations. It contains buttons for each possible non-norm.
  * 
  * The non-normative situations are:
- * 1.
+ * 1. Truck runs out of gas
  * 2.
  * 3.
  * 4.
@@ -86,7 +86,7 @@ public class NonNormPanel extends JPanel
 
 		// make buttons
 		nonNormButtons = new ArrayList<JButton>(NUM_NON_NORMS);
-		nonNormButtons.add(new JButton("NON NORM 1"));
+		nonNormButtons.add(new JButton("Truck Out of Gas"));
 		nonNormButtons.add(new JButton("NON NORM 2"));
 		nonNormButtons.add(new JButton("NON NORM 3"));
 		nonNormButtons.add(new JButton("NON NORM 4"));
