@@ -159,14 +159,19 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
         if(g == null){
         	print("Conveyor " + myConveyorIndex + " Glass at end sensor not recognized.");
         }
+        
+        stopConveyor();
+        
         synchronized(glassOnMe){
 		    for(MyGlass mg : glassOnMe){
 		        if(mg.glass == g){
 		            mg.state = GlassState.END_CONVEYOR;
-		            stateChanged();
 		        }
 		    }
         }
+        
+        stateChanged();
+
 
     }
 
@@ -177,10 +182,12 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 	        for(MyGlass mg : glassOnMe){
 	            if(mg.state == GlassState.WAITING_TO_EXIT){
 	                mg.state = GlassState.EXIT_TO_SENSOR;
-	                stateChanged();
 	            }
 	        }
         }
+        
+        stateChanged();
+
 
     }
 
@@ -192,39 +199,46 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
     public boolean pickAndExecuteAnAction(){
     	synchronized(glassOnMe){
-        for(MyGlass mg : glassOnMe){
-            if(mg.state == GlassState.EXIT_TO_SENSOR){
-                moveGlassToMachine(mg);
-                return true;
-            }
-        }
+	        for(MyGlass mg : glassOnMe){
+	            if(mg.state == GlassState.WAITING_TO_EXIT){
+	            	return true;
+	            }
+	        }
     	}
     	synchronized(glassOnMe){
-        for(MyGlass mg : glassOnMe){
-            if(mg.state == GlassState.END_CONVEYOR){
-                requestMoveGlass(mg);
-                return true;
-            }
-        }
+	        for(MyGlass mg : glassOnMe){
+	            if(mg.state == GlassState.EXIT_TO_SENSOR){
+	                moveGlassToMachine(mg);
+	                return true;
+	            }
+	        }
+    	}
+    	synchronized(glassOnMe){
+	        for(MyGlass mg : glassOnMe){
+	            if(mg.state == GlassState.END_CONVEYOR){
+	                requestMoveGlass(mg);
+	                return true;
+	            }
+	        }
     	}
         if(!moving){
           	synchronized(glassOnMe){
-            for(MyGlass mg : glassOnMe){
-                if(mg.state == GlassState.MID_CONVEYOR){
-                    startConveyor();
-                    return true;
-                }
-            }
+	            for(MyGlass mg : glassOnMe){
+	                if(mg.state == GlassState.MID_CONVEYOR){
+	                    startConveyor();
+	                    return true;
+	                }
+	            }
           	}
         }
         if(glassInQueue){
             boolean canTakeGlass = true;
           	synchronized(glassOnMe){
-            for(MyGlass mg : glassOnMe){
-                if(mg.state == GlassState.WAITING_TO_EXIT){
-                    canTakeGlass = false;
-                }
-            }
+	            for(MyGlass mg : glassOnMe){
+	                if(mg.state == GlassState.WAITING_TO_EXIT){
+	                    canTakeGlass = false;
+	                }
+	            }
           	}
             if(canTakeGlass){
                 prepareToTakeGlass();
@@ -244,11 +258,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
         print("Conveyor " + myConveyorIndex + " Carrying out action : moveGlassToMachine\n");
         System.out.println("Carrying out action : moveGlassToMachine");
 
-        Object args[] = new Object[1];
-        args[0] = myConveyorIndex;
-
-        transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
-        moving = true;
+    	startConveyor();
 
         try {
             movingToMachine.acquire();
@@ -258,15 +268,20 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
 
         exitMachine.msgHereIsGlass(g.glass);
+        
+        stopConveyor();
 
         glassOnMe.remove(g);
+        
+        stateChanged();
 
     }
 
     private void requestMoveGlass(MyGlass g){
         print("Conveyor " + myConveyorIndex + " Carrying out action : requestMoveGlass\n");
         System.out.println("Carrying out action : requestMoveGlass");
-
+        
+        
         if(!g.glass.getProcesses().contains(myMachine)){
             exitMachine.msgGlassNeedsThrough();
         } else {
@@ -276,19 +291,10 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
         g.state = GlassState.WAITING_TO_EXIT;
 
-        Object args[] = new Object[1];
-        args[0] = myConveyorIndex;
-
-        transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
-        moving = false;
-
     }
 
     private void startConveyor(){
         print("Conveyor " + myConveyorIndex + " Carrying out action : startConveyor");
-
-        moving = true;
-
 
         Object args[] = new Object[1];
         args[0] = myConveyorIndex;
@@ -307,6 +313,19 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
         glassInQueue = false;
 
+    }
+    
+    private void stopConveyor(){
+    	
+        print("Conveyor " + myConveyorIndex + " Carrying out action : stopConveyor");
+    	
+        Object args[] = new Object[1];
+        args[0] = myConveyorIndex;
+
+        transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
+    	
+        moving = false;
+        
     }
 
 
