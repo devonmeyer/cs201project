@@ -175,6 +175,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		print(this.type + " : Glass has been removed.");
 		this.glassList.remove(0);
 		this.followingAgentState = FollowingAgentState.none;
+		this.waitForReleaseAnimation.release();
 		stateChanged();
 	}
 
@@ -307,6 +308,12 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			this.transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_RELEASE_GLASS, args); 
 		else if (type.equals("PAINTER"))
 			this.transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		try {
+			this.waitForReleaseAnimation.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//stateChanged();
 	}
 
