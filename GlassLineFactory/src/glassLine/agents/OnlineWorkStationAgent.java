@@ -233,7 +233,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			e.printStackTrace();
 		}
 
-		stateChanged();
+		//stateChanged();
 	}
 
 	/**This action fires an event on the transducer to perform the animation.
@@ -264,7 +264,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		stateChanged();
+		//stateChanged();
 	}
 
 	/**This action sends a message to the following CovneyorAgent requesting to transfer a piece of glass.
@@ -277,7 +277,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		followingConveyorAgent.msgGlassIsReady();
 		this.followingAgentState = FollowingAgentState.requestSent;
 
-		stateChanged();
+		//stateChanged();
 	}
 
 	/**This action sends a message to the following CovneyorAgent transferring a piece of glass.
@@ -307,7 +307,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			this.transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_RELEASE_GLASS, args); 
 		else if (type.equals("PAINTER"))
 			this.transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
-		stateChanged();
+		//stateChanged();
 	}
 
 
