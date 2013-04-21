@@ -83,7 +83,7 @@ public class FactoryPanel extends JPanel
 
 		// initialize transducer
 		transducer = new Transducer();
-		//transducer.startTransducer();
+		transducer.startTransducer();
 
 		// use default layout
 		// dPanel = new DisplayPanel(this);

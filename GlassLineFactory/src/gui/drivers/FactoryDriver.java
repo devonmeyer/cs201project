@@ -32,7 +32,7 @@ public class FactoryDriver
 				mode = TransducerDebugMode.EVENTS_AND_ACTIONS_AND_SCHEDULER;
 			}
 		}
-		//Transducer.setDebugMode(mode);
+		Transducer.setDebugMode(mode);
 		
 		FactoryFrame myFactory = new FactoryFrame();
 		myFactory.setLocation(50, 50);
