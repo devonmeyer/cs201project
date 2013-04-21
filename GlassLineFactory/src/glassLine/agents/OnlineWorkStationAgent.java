@@ -403,8 +403,10 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		this.followingConveyorAgent = following;
 	}
 
-
-
+	public String getType(){
+		return type;
+	}
+	
 
 
 
