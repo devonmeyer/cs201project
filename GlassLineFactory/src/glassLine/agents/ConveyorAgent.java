@@ -269,8 +269,6 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
         exitMachine.msgHereIsGlass(g.glass);
         
-        stopConveyor();
-
         glassOnMe.remove(g);
         
         stateChanged();
