@@ -173,6 +173,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 	public void msgGlassRemoved(){
 		print(this.type + " : Glass has been removed.");
+		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
 		this.glassList.remove(0);
 		this.followingAgentState = FollowingAgentState.none;
 		this.waitForReleaseAnimation.release();
@@ -288,7 +289,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 		print(this.type + " : Transfering glass");
 
-		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
+		
 		this.glassList.get(0).state = GlassState.none;
 		this.followingAgentState = FollowingAgentState.receiving;
 
