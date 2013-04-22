@@ -38,6 +38,8 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     private int myConveyorIndex;
 
     private int myEntrySensorIndex;
+    
+    private boolean waitingForGlass;
 
     private int myExitSensorIndex;
 
@@ -73,6 +75,8 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
         entryMachine = null;
         exitMachine = null;
 
+        waitingForGlass = false;
+        
         myConveyorIndex = index;
 
 
@@ -143,9 +147,15 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
 
     }
 
+    public void msgGlassOffEntrySensor(){
+        waitingForGlass = false;
+        stateChanged();
+    }
+    
     public void msgHereIsGlass(Glass g){
     	System.out.println("Received message here is glass");
         print("Conveyor " + myConveyorIndex + " Received message : msgHereIsGlass\n");
+        
 
         glassInQueue = false;
 
@@ -244,11 +254,11 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
             	return true;
           	}
         }
-        if(glassInQueue){
+        if(glassInQueue && !waitingForGlass){
             boolean canTakeGlass = true;
           	synchronized(glassOnMe){
 	            for(MyGlass mg : glassOnMe){
-	                if(mg.state == GlassState.WAITING_TO_EXIT){
+	                if(mg.state != GlassState.MID_CONVEYOR){
 	                    canTakeGlass = false;
 	                }
 	            }
@@ -322,6 +332,8 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     private void prepareToTakeGlass(){
         print("Conveyor " + myConveyorIndex + " Carrying out action : prepareToTakeGlass");
 
+        waitingForGlass = true;
+        
         entryMachine.msgReadyToTakeGlass();
 
         glassInQueue = false;
@@ -359,17 +371,16 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
                         }
                     }
                     msgGlassAtEndSensor(g);
+                } else if((Integer) args[0] == myEntrySensorIndex){
+                	msgGlassOffEntrySensor();
                 }
 
             } else if(event == TEvent.SENSOR_GUI_RELEASED){
-            	
-            	if(myConveyorIndex == 0){
-            		System.out.println("Sensor gui released : sensor number " + (Integer) args[0]);
-            	}
 
                 if((Integer) args[0] == myExitSensorIndex){
                     movingToMachine.release();
                 }
+                
 
 
             }

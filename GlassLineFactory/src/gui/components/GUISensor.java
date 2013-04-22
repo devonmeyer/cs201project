@@ -11,6 +11,8 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
+// Andrew fixed a minor bug in this class. Search "Andrew" (without quotes) to find it.
+
 /**
  * Class for animation of sensor
  */
@@ -141,7 +143,10 @@ public class GUISensor extends GuiComponent
 			// it's current glass piece no longer intersects
 			// within a certain range and will reset it's icon
 			// to red(not pressed).
-			if (currentGlassPiece.getCenterX()<=getCenterX()-10||currentGlassPiece.getCenterX()>=getCenterX()+10||currentGlassPiece.getCenterY()<=getCenterY()-10||currentGlassPiece.getCenterY()>=getCenterY()+10)
+
+			// Andrew fixed a bug on the line below.
+			// Before, if the glass stopped at the very edge of the sensor, the sensor would continuously flicker on and off.
+			if (currentGlassPiece.getCenterX()<getCenterX()-10||currentGlassPiece.getCenterX()>getCenterX()+10||currentGlassPiece.getCenterY()<getCenterY()-10||currentGlassPiece.getCenterY()>getCenterY()+10)
 			{
 				// Redraws the sensor to it's red icon
 				setIcon(sensorOff);
