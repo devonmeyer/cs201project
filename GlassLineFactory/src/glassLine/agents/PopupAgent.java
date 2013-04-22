@@ -212,14 +212,14 @@ public class PopupAgent extends Agent implements Popup, Machine {
         } else {
             myGlassState = GlassState.MOVE_TO_BOTTOM_ROBOT;
         }
-        animation.release();
-        stateChanged();
+/*        animation.release();
+*/        stateChanged();
     }
 
     public void msgReadyToTakeGlass(){
         print("Popup"+myPopupIndex+"Received message : msgReadyToTakeGlass");
-        animation.release();
-        myGlassState = GlassState.MOVE_TO_CONVEYOR;
+/*        animation.release();
+*/        myGlassState = GlassState.MOVE_TO_CONVEYOR;
         
         stateChanged();
 
@@ -295,11 +295,11 @@ public class PopupAgent extends Agent implements Popup, Machine {
         print("Popup"+myPopupIndex+"Carrying out action : readyMoveToConveyor");
         myGlassState = GlassState.WAITING;
         exitConveyor.msgGlassIsReady();
-        try {
+/*        try {
 			animation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
+		}*/
        
     }
 
@@ -313,11 +313,11 @@ public class PopupAgent extends Agent implements Popup, Machine {
         } else {
             bottomRobot.msgPopupGlassIsReady();
         }
-        try {
+/*        try {
 			animation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
+		}*/
     }
 
     private void moveMyGlassToRobot(){
@@ -537,7 +537,6 @@ public class PopupAgent extends Agent implements Popup, Machine {
             if(event == TEvent.WORKSTATION_LOAD_FINISHED){
             	
                 animation.release();
-                System.out.println("Permits: " + animation.availablePermits());
 
             }
 //            else if (event == TEvent.WORKSTATION_RELEASE_FINISHED){

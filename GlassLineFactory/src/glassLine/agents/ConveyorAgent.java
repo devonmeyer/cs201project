@@ -371,15 +371,15 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
                         }
                     }
                     msgGlassAtEndSensor(g);
-                } else if((Integer) args[0] == myEntrySensorIndex){
-                	msgGlassOffEntrySensor();
-                }
-
+                } 
             } else if(event == TEvent.SENSOR_GUI_RELEASED){
 
                 if((Integer) args[0] == myExitSensorIndex){
                     movingToMachine.release();
+                } else if((Integer) args[0] == myEntrySensorIndex){
+                	msgGlassOffEntrySensor();
                 }
+
                 
 
 
