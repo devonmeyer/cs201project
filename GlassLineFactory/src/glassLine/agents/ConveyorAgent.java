@@ -144,6 +144,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     public void msgHereIsGlass(Glass g){
+    	System.out.println("Received message here is glass");
         print("Conveyor " + myConveyorIndex + " Received message : msgHereIsGlass\n");
 
         glassInQueue = false;
@@ -160,7 +161,6 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
         	print("Conveyor " + myConveyorIndex + " Glass at end sensor not recognized.");
         }
         
-        stopConveyor();
         
         synchronized(glassOnMe){
 		    for(MyGlass mg : glassOnMe){
@@ -198,6 +198,8 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
      */
 
     public boolean pickAndExecuteAnAction(){
+		boolean found = false;
+		MyGlass m = null;
     	synchronized(glassOnMe){
 	        for(MyGlass mg : glassOnMe){
 	            if(mg.state == GlassState.WAITING_TO_EXIT){
@@ -208,27 +210,38 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     	synchronized(glassOnMe){
 	        for(MyGlass mg : glassOnMe){
 	            if(mg.state == GlassState.EXIT_TO_SENSOR){
-	                moveGlassToMachine(mg);
-	                return true;
+	                found = true;
+	                m = mg;
 	            }
 	        }
+    	}
+    	if(found){
+            moveGlassToMachine(m);
+            return true;
     	}
     	synchronized(glassOnMe){
 	        for(MyGlass mg : glassOnMe){
 	            if(mg.state == GlassState.END_CONVEYOR){
-	                requestMoveGlass(mg);
-	                return true;
+	                found = true;
+	                m = mg;
 	            }
 	        }
+    	}
+    	if(found){
+            requestMoveGlass(m);
+            return true;
     	}
         if(!moving){
           	synchronized(glassOnMe){
 	            for(MyGlass mg : glassOnMe){
 	                if(mg.state == GlassState.MID_CONVEYOR){
-	                    startConveyor();
-	                    return true;
+	                    found = true;
 	                }
 	            }
+          	}
+          	if(found){
+                startConveyor();
+            	return true;
           	}
         }
         if(glassInQueue){
@@ -265,7 +278,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        
 
         exitMachine.msgHereIsGlass(g.glass);
         
@@ -279,6 +292,8 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
         print("Conveyor " + myConveyorIndex + " Carrying out action : requestMoveGlass\n");
         System.out.println("Carrying out action : requestMoveGlass");
         
+        stopConveyor();
+
         
         if(!g.glass.getProcesses().contains(myMachine)){
             exitMachine.msgGlassNeedsThrough();
