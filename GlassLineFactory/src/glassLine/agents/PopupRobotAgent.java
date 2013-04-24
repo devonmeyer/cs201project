@@ -149,16 +149,17 @@ public class PopupRobotAgent extends Agent implements Robot{
 			return true;
 		}
 		
+		if(pstate == PopupState.none && rstate == RobotState.fixed){
+			notifyPopupThatRobotIsFixed();
+			return true;
+		}
+		
 		if(pstate == PopupState.glassready && rstate == RobotState.broken){
 
 			notifyPopupThatRobotIsBroken();
 			return true;
 		}
 		
-		if(pstate == PopupState.none && rstate == RobotState.fixed){
-			notifyPopupThatRobotIsFixed();
-			return true;
-		}
 		
 		if(myglass != null){
 			if(myglass.gstate != GlassState.none){

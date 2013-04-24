@@ -58,6 +58,8 @@ public class NonNormPanel extends JPanel
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JTextField textField_3;
+	private JTextField textField_4;
+	private JTextField textField_5;
 
 	/**
 	 * Creates a new HavocPanel and links the control panel to it
@@ -212,13 +214,6 @@ public class NonNormPanel extends JPanel
 		textField_2.setColumns(10);
 		
 		JButton btnNewButton_1 = new JButton("Truck Broke");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				parent.parent.truck.msgToggleTruckOutOfGas();
-				
-			}
-		});
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
 		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
 		gbc_btnNewButton_1.gridx = 7;
@@ -314,11 +309,65 @@ public class NonNormPanel extends JPanel
 		btnNewButton_6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 								
+				String text = textField_4.getText();
+				try{
+					  int num = Integer.parseInt(text);
+					  if(parent.parent.robots.containsKey(num)){
+						  parent.parent.robots.get(num).msgBreakRobot();
+					  } else  {
+						  System.out.println("That popup index doesn't exist. Who taught you to count?");
+					  }
+					  
+					} catch (NumberFormatException ex) {
+					  System.out.println("Please enter an integer, dumbass.");
+					}
 				
-				parent.parent.csRobot1.msgBreakRobot();
-					
 			}
 		});
+		
+		textField_4 = new JTextField();
+		GridBagConstraints gbc_textField_4 = new GridBagConstraints();
+		gbc_textField_4.insets = new Insets(0, 0, 5, 5);
+		gbc_textField_4.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField_4.gridx = 2;
+		gbc_textField_4.gridy = 6;
+		buttonPanel.add(textField_4, gbc_textField_4);
+		textField_4.setColumns(10);
+		
+		JButton btnNewButton_7 = new JButton("Robot Fix");
+		GridBagConstraints gbc_btnNewButton_7 = new GridBagConstraints();
+		gbc_btnNewButton_7.insets = new Insets(0, 0, 5, 5);
+		gbc_btnNewButton_7.gridx = 1;
+		gbc_btnNewButton_7.gridy = 7;
+		buttonPanel.add(btnNewButton_7, gbc_btnNewButton_7);
+		btnNewButton_7.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+								
+				String text = textField_5.getText();
+				try{
+					  int num = Integer.parseInt(text);
+					  if(parent.parent.robots.containsKey(num)){
+						  parent.parent.robots.get(num).msgFixRobot();
+					  } else  {
+						  System.out.println("That popup index doesn't exist. Who taught you to count?");
+					  }
+					  
+					} catch (NumberFormatException ex) {
+					  System.out.println("Please enter an integer, dumbass.");
+					}
+				
+			}
+		});
+		
+		
+		textField_5 = new JTextField();
+		GridBagConstraints gbc_textField_5 = new GridBagConstraints();
+		gbc_textField_5.insets = new Insets(0, 0, 5, 5);
+		gbc_textField_5.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField_5.gridx = 2;
+		gbc_textField_5.gridy = 7;
+		buttonPanel.add(textField_5, gbc_textField_5);
+		textField_5.setColumns(10);
 		
 		JLabel label_4 = new JLabel("  ");
 		GridBagConstraints gbc_label_4 = new GridBagConstraints();

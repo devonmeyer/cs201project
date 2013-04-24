@@ -77,6 +77,7 @@ public class FactoryPanel extends JPanel
 	
 	public TreeMap<Integer, ConveyorAgent> conveyors;
 	public TreeMap<Integer, PopupAgent> popups;
+	public TreeMap<Integer, PopupRobotAgent> robots;
 	
 
 	/**
@@ -92,6 +93,7 @@ public class FactoryPanel extends JPanel
 		
 		conveyors = new TreeMap<Integer, ConveyorAgent>();
 		popups = new TreeMap<Integer, PopupAgent>();
+		robots = new TreeMap<Integer, PopupRobotAgent>();
 
 		// use default layout
 		// dPanel = new DisplayPanel(this);
@@ -235,13 +237,19 @@ public class FactoryPanel extends JPanel
 		mbreakout.startThread();
 		drill.startThread();
 		dRobot1.startThread();
+		robots.put(0, dRobot1);
 		dRobot2.startThread();
+		robots.put(1, dRobot2);
 		crossSeamer.startThread();
 		csRobot1.startThread();
+		robots.put(2, csRobot1);
 		csRobot2.startThread();
+		robots.put(3, csRobot2);
 		grinder.startThread();
 		gRobot1.startThread();
+		robots.put(4, gRobot1);
 		gRobot2.startThread();
+		robots.put(5, gRobot2);
 		washer.startThread();
 		painter.startThread();
 		uv.startThread();
