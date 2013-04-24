@@ -228,6 +228,34 @@ public class PopupAgent extends Agent implements Popup, Machine {
 /*        animation.release();
 */        stateChanged();
     }
+    
+    public void msgRobotBroken(boolean isTop){
+    	
+    	if(isTop){
+    		robotTopGlassState = GlassState.PROCESSING;
+    	} else {
+    		robotBottomGlassState = GlassState.PROCESSING;
+    	}
+    	
+    	if(myGlassState == GlassState.WAITING_ROBOT){
+    		myGlassState = GlassState.NEEDS_ROBOT;
+    	}
+    	
+    	stateChanged();
+    	
+    }
+    
+    public void msgRobotFixed(boolean isTop){
+    	
+    	if(isTop){
+    		robotTopGlassState = GlassState.NONE;
+    	} else {
+    		robotBottomGlassState = GlassState.NONE;
+    	}
+    	
+    	stateChanged();
+    	
+    }
 
     public void msgReadyToTakeGlass(){
         print("Popup"+myPopupIndex+"Received message : msgReadyToTakeGlass");
@@ -314,7 +342,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
 
     private void readyMoveToRobot(){
     	
-        myGlassState = GlassState.WAITING;
+        myGlassState = GlassState.WAITING_ROBOT;
     	
         print("Popup"+myPopupIndex+"Carrying out action : readyMoveToRobot");
         if(robotTopGlassState == GlassState.NONE){
