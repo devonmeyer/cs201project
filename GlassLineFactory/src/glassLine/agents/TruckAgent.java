@@ -50,8 +50,9 @@ public class TruckAgent extends Agent implements Machine {
 			outofgas=true;
 		else{
 			outofgas=false;
-			stateChanged();
+			
 		}
+		stateChanged();
 		
 	}
 	public void msgGlassIsReady() {
@@ -107,7 +108,7 @@ public class TruckAgent extends Agent implements Machine {
 
 	/** SCHEDULER **/
 	public boolean pickAndExecuteAnAction() {
-
+		
 		if (cstate == ConveyorState.requestingToSend) {
 			checkIfReadyToReceiveGlass();
 			return true;
