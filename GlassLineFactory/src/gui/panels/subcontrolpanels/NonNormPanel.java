@@ -165,7 +165,7 @@ public class NonNormPanel extends JPanel
 		 */
 		public void actionPerformed(ActionEvent ae)
 		{
-
+			
 		}
 	}
 
