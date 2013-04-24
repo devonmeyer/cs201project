@@ -19,7 +19,7 @@ public class TruckAgent extends Agent implements Machine {
 	private enum ConveyorState {none, requestingToSend, sending};
 	private ConveyorState cstate;
 
-	private enum TruckState{loading, emptying, loaded, none};
+	private enum TruckState{loading, emptying, loaded, none, broken};
 	private TruckState tstate;
 	private Semaphore waitLoadAnimation = new Semaphore(0,true);
 	private Semaphore waitEmptyAnimation = new Semaphore(0,true);
