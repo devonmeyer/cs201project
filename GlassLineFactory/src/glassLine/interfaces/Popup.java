@@ -15,5 +15,9 @@ public interface Popup {
 	// Sent to Popup when handing popup a piece of processed glass
 
     public abstract void msgRobotHereIsGlass(Glass g, boolean isTop);
+    
+    // Sent to Popup from GUI when wanting to Jam a popup.
+    
+    public abstract void msgToggleJamPopup();
 
 }
