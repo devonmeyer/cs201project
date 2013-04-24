@@ -47,11 +47,13 @@ public class PopupRobotAgent extends Agent implements Robot{
 	private PopupAgent Popup;
 	public enum PopupState{none, glassready, popupready, requested, robotready, notified};
 	private PopupState pstate;
+	public enum AgentState{broken, working};
+	private boolean working = true;
 
 	private String type;
 	private int guiIndex;
 	private boolean isTop;
-	public enum RobotState{ready, busy, none};
+	public enum RobotState{ready, busy, none, broken, fixed};
 	private RobotState rstate;
 
 	public PopupRobotAgent(String type, int guiIndex, boolean isTop, PopupAgent popup, Transducer transducer, TracePanel tp){
@@ -126,6 +128,16 @@ public class PopupRobotAgent extends Agent implements Robot{
 		stateChanged();
 
 	}
+	
+	public void msgBreakRobot(){
+		print("PopupRobot" + this.type + "received msgBreakRobot");
+		this.rstate = RobotState.broken;
+	}
+	
+	public void msgFixRobot(){
+		print("PopupRobot" + this.type + "received msgFixedRobot");
+		this.rstate = RobotState.fixed;
+	}
 
 	/**SCHEDULER**/
 	public boolean pickAndExecuteAnAction() {
@@ -134,6 +146,17 @@ public class PopupRobotAgent extends Agent implements Robot{
 		if(pstate == PopupState.glassready && rstate == RobotState.ready){
 
 			notifyPopupThatRobotIsReady();
+			return true;
+		}
+		
+		if(pstate == PopupState.glassready && rstate == RobotState.broken){
+
+			notifyPopupThatRobotIsBroken();
+			return true;
+		}
+		
+		if(rstate == RobotState.fixed){
+			notifyPopupThatRobotIsFixed();
 			return true;
 		}
 		
@@ -248,6 +271,18 @@ public class PopupRobotAgent extends Agent implements Robot{
 		//		stateChanged();
 		//		myglass.gstate = GlassState.removing;
 
+	}
+	
+	private void notifyPopupThatRobotIsBroken(){
+		print("PopupRobot " + this.type + "action: notifyPopupThatRobotIsBroken to popup " + this.Popup.getName() + "\n");
+		Popup.msgRobotBroken(this.isTop);
+		pstate = PopupState.none;
+	}
+	
+	private void notifyPopupThatRobotIsFixed(){
+		print("PopupRobot " + this.type + "action: notifyPopupThatRobotIsFixed to popup " + this.Popup.getName() + "\n");
+		Popup.msgRobotFixed(this.isTop);
+		rstate = RobotState.ready;
 	}
 
 	public void finishTransfer(){
