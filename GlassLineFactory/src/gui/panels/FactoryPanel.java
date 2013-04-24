@@ -76,6 +76,7 @@ public class FactoryPanel extends JPanel
 	public ConveyorAgent conv14;
 	
 	public TreeMap<Integer, ConveyorAgent> conveyors;
+	public TreeMap<Integer, PopupAgent> popups;
 	
 
 	/**
@@ -90,6 +91,7 @@ public class FactoryPanel extends JPanel
 		transducer.startTransducer();
 		
 		conveyors = new TreeMap<Integer, ConveyorAgent>();
+		popups = new TreeMap<Integer, PopupAgent>();
 
 		// use default layout
 		// dPanel = new DisplayPanel(this);
@@ -145,16 +147,19 @@ public class FactoryPanel extends JPanel
 		breakout = new OnlineWorkStationAgent("BREAKOUT", 111, 1, transducer, cPanel.getTracePanel());
 		mbreakout= new OnlineWorkStationAgent("MANUAL_BREAKOUT", 222, 1, transducer, cPanel.getTracePanel());
 		drill = new PopupAgent(transducer, 0, 0, 1, cPanel.getTracePanel());
+		popups.put(0, drill);
 		dRobot1 = new PopupRobotAgent("DRILL",0,true,drill,transducer,cPanel.getTracePanel());
 		dRobot2 = new PopupRobotAgent("DRILL",1,false,drill,transducer,cPanel.getTracePanel());
 		drill.setRobots(dRobot1, dRobot2);
 		drill.setMachineChannel(TChannel.DRILL);
 		crossSeamer = new PopupAgent(transducer, 1, 0, 1, cPanel.getTracePanel());
+		popups.put(1,  crossSeamer);
 		csRobot1 = new PopupRobotAgent("CROSS_SEAMER",0,true,crossSeamer,transducer,cPanel.getTracePanel());
 		csRobot2 = new PopupRobotAgent("CROSS_SEAMER",1,false,crossSeamer,transducer,cPanel.getTracePanel());
 		crossSeamer.setRobots(csRobot1, csRobot2);
 		crossSeamer.setMachineChannel(TChannel.CROSS_SEAMER);
 		grinder = new PopupAgent(transducer, 2, 0, 1, cPanel.getTracePanel());
+		popups.put(2, grinder);
 		gRobot1 = new PopupRobotAgent("GRINDER",0,true,grinder,transducer,cPanel.getTracePanel());
 		gRobot2 = new PopupRobotAgent("GRINDER",1,false,grinder,transducer,cPanel.getTracePanel());
 		grinder.setRobots(gRobot1, gRobot2);
