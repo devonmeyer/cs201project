@@ -305,6 +305,21 @@ public class NonNormPanel extends JPanel
 			}
 		});
 		
+		JButton btnNewButton_6 = new JButton("Robot Break");
+		GridBagConstraints gbc_btnNewButton_6 = new GridBagConstraints();
+		gbc_btnNewButton_6.insets = new Insets(0, 0, 5, 5);
+		gbc_btnNewButton_6.gridx = 1;
+		gbc_btnNewButton_6.gridy = 6;
+		buttonPanel.add(btnNewButton_6, gbc_btnNewButton_6);
+		btnNewButton_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+								
+				
+				parent.parent.csRobot1.msgBreakRobot();
+					
+			}
+		});
+		
 		JLabel label_4 = new JLabel("  ");
 		GridBagConstraints gbc_label_4 = new GridBagConstraints();
 		gbc_label_4.insets = new Insets(0, 0, 5, 5);
