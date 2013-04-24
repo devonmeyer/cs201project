@@ -36,8 +36,9 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	private FollowingAgentState followingAgentState;
 	private ConveyorAgent precedingConveyorAgent;
 	private ConveyorAgent followingConveyorAgent;
-	private enum AgentState {processing, notProcessing}
+	private enum AgentState {functional, broken};
 	private AgentState state;
+	private boolean processing;
 	private Semaphore waitForLoadAnimation = new Semaphore(0,true);
 	private Semaphore waitForProcessAnimation = new Semaphore(0,true);
 	private Semaphore waitForReleaseAnimation = new Semaphore(0,true);
@@ -63,8 +64,10 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 		this.capacity = capacity;
 		this.transducer = transducer;
-		this.state = AgentState.notProcessing;
+		//this.state = AgentState.notProcessing;
 		this.tracePanel = tracePanel;
+		this.processing = false;
+		this.state = AgentState.functional;
 
 
 		// Registering to the appropriate transducer channel
@@ -103,7 +106,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	public void msgHereIsGlass(Glass g) {
 		print(this.type + " : Receiving new piece of glass from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n" );
 		glassList.add(new MyGlass(g));
-		if(this.state == AgentState.processing)
+		if(this.processing)
 			glassList.get(0).state = GlassState.needsProcessing;
 		else 
 			glassList.get(0).state = GlassState.doneProcessing;
@@ -117,10 +120,10 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 
 	public void msgGlassIsReady(){
-		
+
 		print(this.type + " : Received a glass transfer request from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n");
 
-		this.state = AgentState.processing;
+		this.processing = true;
 		this.precedingAgentState = PrecedingAgentState.requestingToSend;
 
 		stateChanged();
@@ -136,7 +139,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	public void msgGlassNeedsThrough() {
 		print(this.type + " : Received a glass transfer request from Conveyor " + precedingConveyorAgent.getConveyorIndex() + ".\n");
 
-		this.state = AgentState.notProcessing;
+		this.processing = false;
 		this.precedingAgentState = PrecedingAgentState.requestingToSend;
 
 
@@ -173,13 +176,32 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 	public void msgGlassRemoved(){
 		print(this.type + " : Glass has been removed.");
-//		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
 		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
 		this.glassList.remove(0);
 		this.followingAgentState = FollowingAgentState.none;
 		this.waitForReleaseAnimation.release();
-//		stateChanged();
+
 	}
+
+
+	/** This message is sent when the transfer animation is done.
+	 *
+	 **/
+	public void msgBreakMachine(){
+		print(this.type + " : Machine has broken down.");
+
+		this.state = AgentState.broken;
+		stateChanged();
+	}
+
+
+	public void msgFixMachine(){
+		print(this.type + " : Machine has been fixed.");
+
+		this.state = AgentState.functional;
+		stateChanged();
+	}
+
 
 
 
@@ -194,8 +216,10 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		/* If a piece of glass needs to be processed or transferred.  */
 		if(!glassList.isEmpty()){
 			if(glassList.get(0).state == GlassState.needsProcessing){
-				processGlass();
-				return true;
+				if(this.state == AgentState.functional){
+					processGlass();
+					return true;
+				}
 			}else if (glassList.get(0).state == GlassState.doneProcessing ){
 				if(followingAgentState == FollowingAgentState.none){
 					requestToTransferGlass();
@@ -207,7 +231,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 			}
 		}
-		
+
 		if(precedingAgentState == PrecedingAgentState.requestingToSend){
 			if(glassList.size() < capacity){
 				sayReadyToReceive();
@@ -280,7 +304,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 		followingConveyorAgent.msgGlassIsReady();
 		this.followingAgentState = FollowingAgentState.requestSent;
-		
+
 		//stateChanged();
 	}
 
@@ -291,10 +315,10 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 		print(this.type + " : Transfering glass");
 
-		
+
 		this.glassList.get(0).state = GlassState.none;
 		this.followingAgentState = FollowingAgentState.receiving;
-//		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
+		//		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
 		Object args[] = new Object[1];
 		args[0] = this.guiIndex;
 		if(type.equals("BREAKOUT"))
@@ -406,7 +430,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	public String getType(){
 		return type;
 	}
-	
+
 
 
 
