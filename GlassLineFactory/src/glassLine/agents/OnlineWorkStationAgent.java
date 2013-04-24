@@ -31,7 +31,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 	private enum PrecedingAgentState {none, requestingToSend, sending};
 	private enum FollowingAgentState {none, requestSent, readyToReceive, receiving};
-	private enum GlassState {none, needsProcessing, doneProcessing}
+	private enum GlassState {none, needsProcessing, doneProcessing, broken}
 	private PrecedingAgentState precedingAgentState;
 	private FollowingAgentState followingAgentState;
 	private ConveyorAgent precedingConveyorAgent;
@@ -39,6 +39,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	private enum AgentState {functional, broken};
 	private AgentState state;
 	private boolean processing;
+	private boolean breakingGlass;
 	private Semaphore waitForLoadAnimation = new Semaphore(0,true);
 	private Semaphore waitForProcessAnimation = new Semaphore(0,true);
 	private Semaphore waitForReleaseAnimation = new Semaphore(0,true);
@@ -68,6 +69,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		this.tracePanel = tracePanel;
 		this.processing = false;
 		this.state = AgentState.functional;
+		this.breakingGlass = false;
 
 
 		// Registering to the appropriate transducer channel
@@ -166,6 +168,9 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		print(this.type + " : Received a confirmation that glass is done processing.\n");
 		this.waitForProcessAnimation.release();
 		this.glassList.get(0).state = GlassState.doneProcessing;
+		if(breakingGlass){
+			this.glassList.get(0).state = GlassState.broken;
+		}
 		stateChanged();
 	}
 
@@ -184,7 +189,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	}
 
 
-	/** This message is sent when the transfer animation is done.
+	/** This message is sent by the GUI to break a machine.
 	 *
 	 **/
 	public void msgBreakMachine(){
@@ -194,11 +199,26 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		stateChanged();
 	}
 
-
+	/** This message is sent by the GUI to fix a machine.
+	 * 
+	 */
 	public void msgFixMachine(){
 		print(this.type + " : Machine has been fixed.");
 
 		this.state = AgentState.functional;
+		stateChanged();
+	}
+
+	public void msgBreakGlass(boolean breaking){
+		if(breaking){
+			print(this.type + " : Machine is breaking glass.");
+			this.breakingGlass = true;
+			
+		}else{
+			print(this.type + " : Machine is processing normally.");
+			this.breakingGlass = false;
+			
+		}
 		stateChanged();
 	}
 
@@ -229,6 +249,9 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 					return true;
 				}
 
+			}else if (glassList.get(0).state == GlassState.broken){
+				removeBrokenGlassFromLine();
+				return true;
 			}
 		}
 
@@ -261,7 +284,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			e.printStackTrace();
 		}
 
-		//stateChanged();
+	
 	}
 
 	/**This action fires an event on the transducer to perform the animation.
@@ -292,7 +315,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//stateChanged();
+		
 	}
 
 	/**This action sends a message to the following CovneyorAgent requesting to transfer a piece of glass.
@@ -341,7 +364,15 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//stateChanged();
+
+	}
+	/**This method will simulate removal of broken glass
+	 * 
+	 */
+	public void removeBrokenGlassFromLine(){
+		/*this.transducer.fireEvent(TChannel.
+		 * 
+		 */
 	}
 
 
