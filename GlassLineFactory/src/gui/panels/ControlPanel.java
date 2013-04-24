@@ -38,7 +38,7 @@ public class ControlPanel extends JPanel implements TReceiver
 	/**
 	 * The parent panel for communication with the display
 	 */
-	FactoryPanel parent;
+	public FactoryPanel parent;
 
 	/**
 	 * Allows the control panel to communicate with the back end and give commands

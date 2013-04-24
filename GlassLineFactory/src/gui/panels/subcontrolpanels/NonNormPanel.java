@@ -163,6 +163,16 @@ public class NonNormPanel extends JPanel
 		JButton btnTr = new JButton("Conveyor Jam");
 		btnTr.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+								
+				String text = textField.getText();
+				try{
+					  int num = Integer.parseInt(text);
+					  parent.parent.conveyors.get(num).msgToggleJamConveyor();
+					  
+					} catch (NumberFormatException ex) {
+					  System.out.println("Please enter an integer, dumbass.");
+					}
+				
 			}
 		});
 		GridBagConstraints gbc_btnTr = new GridBagConstraints();

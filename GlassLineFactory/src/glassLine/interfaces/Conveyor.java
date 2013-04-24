@@ -19,6 +19,10 @@ public interface Conveyor {
 	// Sent to Conveyor when the popup it wants to move its glass to is ready for the glass
 	
     public abstract void msgReadyToTakeGlass();
+    
+    // Sent to Conveyor by GUI when it is to be jammed
+    
+    public abstract void msgToggleJamConveyor();
 
 
 

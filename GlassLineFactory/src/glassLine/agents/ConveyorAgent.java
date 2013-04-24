@@ -46,6 +46,8 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     private Transducer transducer;
 
     private Semaphore movingToMachine;
+    
+    private boolean jammed;
 
     private class MyGlass{
         public Glass glass;
@@ -76,6 +78,7 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
         exitMachine = null;
 
         waitingForGlass = false;
+        jammed = false;
         
         myConveyorIndex = index;
 
@@ -129,6 +132,19 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     Messaging
 
      */
+    
+    public void msgToggleJamConveyor(){
+    	if(!jammed){
+    		if(moving){
+        		stopConveyor();
+        	}
+        	jammed = true;
+    	} else {
+    		jammed = false;
+    		stateChanged();
+    	}
+    	
+    }
 
     public void msgGlassNeedsThrough(){
         print("Conveyor " + myConveyorIndex + " Received message : msgGlassNeedsThrough\n");
@@ -317,8 +333,13 @@ public class ConveyorAgent extends Agent implements Conveyor, Machine {
     }
 
     private void startConveyor(){
+    	
         print("Conveyor " + myConveyorIndex + " Carrying out action : startConveyor");
 
+        if(jammed){
+        	return;
+        }
+        
         Object args[] = new Object[1];
         args[0] = myConveyorIndex;
 
