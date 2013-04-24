@@ -13,47 +13,69 @@ import transducer.Transducer;
 
 public class TruckAgent extends Agent implements Machine {
 
-
-	private List<Glass> glassList; 
+	private List<Glass> glassList;
 	private ConveyorAgent conveyor;
-	private enum ConveyorState {none, requestingToSend, sending};
+
+	private enum ConveyorState {
+		none, requestingToSend, sending
+	};
+
 	private ConveyorState cstate;
 
-	private enum TruckState{loading, emptying, loaded, none, broken};
-	private TruckState tstate;
-	private Semaphore waitLoadAnimation = new Semaphore(0,true);
-	private Semaphore waitEmptyAnimation = new Semaphore(0,true);
+	private enum TruckState {
+		loading, emptying, loaded, none
+	};
 
-	public TruckAgent(String name, Transducer transducer, ConveyorAgent conveyor, TracePanel tp){
+	private TruckState tstate;
+	private boolean outofgas;
+	private Semaphore waitLoadAnimation = new Semaphore(0, true);
+	private Semaphore waitEmptyAnimation = new Semaphore(0, true);
+
+	public TruckAgent(String name, Transducer transducer,
+			ConveyorAgent conveyor, TracePanel tp) {
 		super(name);
 		this.transducer = transducer;
 		this.conveyor = conveyor;
 		this.tstate = TruckState.none;
 		transducer.register(this, TChannel.TRUCK);
 		tracePanel = tp;
+		outofgas = false;
 		this.glassList = new ArrayList<Glass>();
 	}
 
-	/**MESSAGES**/
+	/** MESSAGES **/
 
-	public void msgGlassIsReady(){
-		print("Truck has received msgGlassIsReady from Conveyor" + this.conveyor.getName() + "\n");
+	public void msgToggleTruckOutOfGas(){
+		if(!outofgas)
+			outofgas=true;
+		else{
+			outofgas=false;
+			stateChanged();
+		}
+		
+	}
+	public void msgGlassIsReady() {
+		print("Truck has received msgGlassIsReady from Conveyor"
+				+ this.conveyor.getName() + "\n");
 		this.cstate = ConveyorState.requestingToSend;
 		stateChanged();
 	}
 
 	public void msgGlassNeedsThrough() {
-		print("Truck has received msgGlassIsReady from Conveyor" + this.conveyor.getName() + "\n");
+		print("Truck has received msgGlassIsReady from Conveyor"
+				+ this.conveyor.getName() + "\n");
 		this.cstate = ConveyorState.requestingToSend;
 		stateChanged();
 	}
 
-	public void msgHereIsGlass(Glass g){
-		print("Truck has received msgHereIsGlass from Conveyor" + this.conveyor.getName() + "\n");
+	public void msgHereIsGlass(Glass g) {
+		print("Truck has received msgHereIsGlass from Conveyor"
+				+ this.conveyor.getName() + "\n");
 		this.glassList.add(g);
 		this.tstate = TruckState.loading;
 		this.cstate = ConveyorState.none;
-		this.transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_LOAD_GLASS, null); 
+		this.transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_LOAD_GLASS,
+				null);
 		try {
 			this.waitLoadAnimation.acquire();
 		} catch (InterruptedException e) {
@@ -69,7 +91,7 @@ public class TruckAgent extends Agent implements Machine {
 		this.tstate = TruckState.none;
 		this.glassList.remove(0);
 
-		stateChanged();		
+		stateChanged();
 	}
 
 	private void msgDoneLoading() {
@@ -79,20 +101,18 @@ public class TruckAgent extends Agent implements Machine {
 		stateChanged();
 	}
 
-
-
 	public void msgReadyToTakeGlass() {
 
 	}
 
-	/**SCHEDULER**/
+	/** SCHEDULER **/
 	public boolean pickAndExecuteAnAction() {
 
-		if(cstate == ConveyorState.requestingToSend){
+		if (cstate == ConveyorState.requestingToSend) {
 			checkIfReadyToReceiveGlass();
 			return true;
 		}
-		if(!this.glassList.isEmpty() && tstate == TruckState.loaded){
+		if (!this.glassList.isEmpty() && tstate == TruckState.loaded) {
 			processGlass();
 			return true;
 		}
@@ -100,22 +120,28 @@ public class TruckAgent extends Agent implements Machine {
 		return false;
 	}
 
-	/**ACTIONS**/
-	private void checkIfReadyToReceiveGlass(){
-		print("Truck action: receiveGlass from conveyor " +conveyor.getName() + "\n");
-		if(glassList.isEmpty()){
+	/** ACTIONS **/
+
+	private void checkIfReadyToReceiveGlass() {
+		print("Truck action: receiveGlass from conveyor " + conveyor.getName()
+				+ "\n");
+		if (glassList.isEmpty()) {
 			cstate = ConveyorState.sending;
 			conveyor.msgReadyToTakeGlass();
-		}else{
+		} else {
 			cstate = ConveyorState.requestingToSend;
 		}
-//		stateChanged();
+		// stateChanged();
 	}
 
-	private void processGlass(){
+	private void processGlass() {
+		if(outofgas){
+			return;
+		}
+		
 		print("Truck action: processGlass \n");
 		this.tstate = TruckState.emptying;
-		this.transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_EMPTY, null); 
+		this.transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_EMPTY, null);
 		try {
 			this.waitEmptyAnimation.acquire();
 		} catch (InterruptedException e) {
@@ -123,21 +149,23 @@ public class TruckAgent extends Agent implements Machine {
 			e.printStackTrace();
 		}
 
-//		stateChanged();
+		// stateChanged();
 	}
 
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if(channel == TChannel.TRUCK)
-		{
-			if(event == TEvent.TRUCK_GUI_LOAD_FINISHED){
+		if(outofgas){
+			return;
+		}
+		
+		if (channel == TChannel.TRUCK) {
+			if (event == TEvent.TRUCK_GUI_LOAD_FINISHED) {
 				this.waitLoadAnimation.release();
 				this.msgDoneLoading();
-			}else if (event == TEvent.TRUCK_GUI_EMPTY_FINISHED){
+			} else if (event == TEvent.TRUCK_GUI_EMPTY_FINISHED) {
 				this.waitEmptyAnimation.release();
 				this.msgDoneEmptying();
 			}
 		}
-		
 
 	}
 
