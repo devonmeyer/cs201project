@@ -1,6 +1,8 @@
 
 package gui.panels;
 
+import java.util.TreeMap;
+
 import glassLine.*;
 import glassLine.agents.*;
 import glassLine.interfaces.*;
@@ -73,6 +75,8 @@ public class FactoryPanel extends JPanel
 	public ConveyorAgent conv13;
 	public ConveyorAgent conv14;
 	
+	public TreeMap<Integer, ConveyorAgent> conveyors;
+	
 
 	/**
 	 * Constructor links this panel to its frame
@@ -84,6 +88,8 @@ public class FactoryPanel extends JPanel
 		// initialize transducer
 		transducer = new Transducer();
 		transducer.startTransducer();
+		
+		conveyors = new TreeMap<Integer, ConveyorAgent>();
 
 		// use default layout
 		// dPanel = new DisplayPanel(this);
@@ -159,20 +165,35 @@ public class FactoryPanel extends JPanel
 		uv = new OnlineWorkStationAgent("UV_LAMP", 3, 1, transducer, cPanel.getTracePanel());
 		baker = new OnlineWorkStationAgent("OVEN", 4, 1, transducer, cPanel.getTracePanel());
 		conv0 = new ConveyorAgent("CUTTER", transducer,0, cPanel.getTracePanel());
+		conveyors.put(0, conv0);
 		conv1 = new ConveyorAgent("SHUTTLE1", transducer,1,cPanel.getTracePanel());
+		conveyors.put(1, conv1);
 		conv2 = new ConveyorAgent("BREAKOUT", transducer,2,cPanel.getTracePanel());
+		conveyors.put(2, conv2);
 		conv3 = new ConveyorAgent("MANUAL_BREAKOUT", transducer,3,cPanel.getTracePanel());
+		conveyors.put(3, conv3);
 		conv4 = new ConveyorAgent("SHUTTLE2", transducer,4,cPanel.getTracePanel());
+		conveyors.put(4, conv4);
 		conv5 = new ConveyorAgent("DRILL", transducer,5,cPanel.getTracePanel());
+		conveyors.put(5, conv5);
 		conv6 = new ConveyorAgent("CROSS_SEAMER", transducer,6,cPanel.getTracePanel());
+		conveyors.put(6, conv6);
 		conv7 = new ConveyorAgent("GRINDER", transducer,7,cPanel.getTracePanel());
+		conveyors.put(7, conv7);
 		conv8 = new ConveyorAgent("WASHER", transducer,8,cPanel.getTracePanel());
+		conveyors.put(8, conv8);
 		conv9 = new ConveyorAgent("SHUTTLE3", transducer,9,cPanel.getTracePanel());
+		conveyors.put(9, conv9);
 		conv10 = new ConveyorAgent("UV_LAMP", transducer,10,cPanel.getTracePanel());
+		conveyors.put(10, conv10);
 		conv11 = new ConveyorAgent("PAINTER", transducer,11,cPanel.getTracePanel());
+		conveyors.put(11, conv11);
 		conv12 = new ConveyorAgent("SHUTLE4", transducer,12,cPanel.getTracePanel());
+		conveyors.put(12, conv12);
 		conv13 = new ConveyorAgent("OVEN", transducer,13,cPanel.getTracePanel());
+		conveyors.put(13, conv13);
 		conv14 = new ConveyorAgent("EXIT", transducer,14,cPanel.getTracePanel());
+		conveyors.put(14, conv14);
 		truck = new TruckAgent("TRUCK", transducer, conv14,cPanel.getTracePanel());
 		
 		gRobot.setConveyor(conv0);
