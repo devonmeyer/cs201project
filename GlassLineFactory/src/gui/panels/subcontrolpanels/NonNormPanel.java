@@ -252,12 +252,20 @@ public class NonNormPanel extends JPanel
 		buttonPanel.add(textField_1, gbc_textField_1);
 		textField_1.setColumns(10);
 		
-		JButton btnNewButton_3 = new JButton("New button");
+		JButton btnNewButton_3 = new JButton("Cutter Break");
 		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
 		gbc_btnNewButton_3.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_3.gridx = 4;
 		gbc_btnNewButton_3.gridy = 3;
 		buttonPanel.add(btnNewButton_3, gbc_btnNewButton_3);
+		btnNewButton_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+								
+				
+				parent.parent.cutter.msgBreakMachine();
+					
+			}
+		});
 		
 		textField_3 = new JTextField();
 		GridBagConstraints gbc_textField_3 = new GridBagConstraints();
@@ -275,12 +283,20 @@ public class NonNormPanel extends JPanel
 		gbc_btnNewButton_4.gridy = 3;
 		buttonPanel.add(btnNewButton_4, gbc_btnNewButton_4);
 		
-		JButton btnNewButton_5 = new JButton("New button");
+		JButton btnNewButton_5 = new JButton("Cutter Fix");
 		GridBagConstraints gbc_btnNewButton_5 = new GridBagConstraints();
 		gbc_btnNewButton_5.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_5.gridx = 1;
 		gbc_btnNewButton_5.gridy = 5;
 		buttonPanel.add(btnNewButton_5, gbc_btnNewButton_5);
+		btnNewButton_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+								
+				
+				parent.parent.cutter.msgFixMachine();
+					
+			}
+		});
 		
 		JLabel label_4 = new JLabel("  ");
 		GridBagConstraints gbc_label_4 = new GridBagConstraints();
