@@ -416,7 +416,7 @@ public class NonNormPanel extends JPanel
 				try{
 					  int num = Integer.parseInt(text);
 					  if(parent.parent.robots.containsKey(num)){
-						  parent.parent.robots.get(num).msgRemoveBrokenGlass();
+						  parent.parent.robots.get(num).msgBreakNextGlass();
 					  } else  {
 						  System.out.println("That popup index doesn't exist. Who taught you to count?");
 					  }
