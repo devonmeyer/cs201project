@@ -1,5 +1,7 @@
 package glassLine;
 
+import gui.components.GUIGlass;
+
 import java.util.List;
 
 public class Glass {
@@ -8,9 +10,9 @@ public class Glass {
 	 */
 	private int ID;    
 	
-	
 	private List<String> processes; // This contains the list of processes to be
 									// performed on glass
+	public GUIGlass myGui;
 	
 	public Glass(List<String> processes) {
 		this.setProcesses(processes);
@@ -26,7 +28,10 @@ public class Glass {
 	public int getID() {
 		return ID;
 	}
-
+	
+	public GUIGlass getGui(){
+		return myGui;
+	}
 	public void setID(int ID) {
 		this.ID = ID;
 	}
@@ -35,7 +40,15 @@ public class Glass {
 		return processes;
 	}
 
+	public void setGuiGlass(GUIGlass g){
+		myGui = g;
+	}
+	
 	public void setProcesses(List<String> processes) {
 		this.processes = processes;
+	}
+	
+	public void breakGlass(){
+		myGui.msgPartBroken();
 	}
 }

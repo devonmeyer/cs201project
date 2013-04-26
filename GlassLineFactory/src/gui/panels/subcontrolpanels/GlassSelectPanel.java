@@ -41,8 +41,8 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 	/** list of checkboxes for creating glass recipe */
 	List<JCheckBox> recipe;
 	
-	List<JButton> glassList;
-	List<Glass>	glasses;
+	public List<JButton> glassList;
+	public List<Glass>	glasses;
 	
 	JScrollPane scrollPane;
 	private JPanel view = new JPanel();

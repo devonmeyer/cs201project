@@ -27,7 +27,7 @@ public class FactoryPanel extends JPanel
 	private FactoryFrame parent;
 
 	/** The control system for the factory, displayed on right */
-	private ControlPanel cPanel;
+	public ControlPanel cPanel;
 
 	/** The graphical representation for the factory, displayed on left */
 	private DisplayPanel dPanel;

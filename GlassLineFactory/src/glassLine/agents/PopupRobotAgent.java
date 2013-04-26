@@ -132,11 +132,13 @@ public class PopupRobotAgent extends Agent implements Robot{
 	public void msgBreakRobot(){
 		print("PopupRobot" + this.type + "received msgBreakRobot");
 		this.rstate = RobotState.broken;
+		stateChanged();
 	}
 	
 	public void msgFixRobot(){
 		print("PopupRobot" + this.type + "received msgFixedRobot");
 		this.rstate = RobotState.fixed;
+		stateChanged();
 	}
 
 	/**SCHEDULER**/
