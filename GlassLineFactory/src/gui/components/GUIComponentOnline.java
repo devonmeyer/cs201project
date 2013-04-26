@@ -28,6 +28,8 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 	boolean imageIconChange = false;
 
 	boolean releasePart = false;
+	
+	boolean removingBroken = false;
 
 	int originalY;
 
@@ -207,7 +209,10 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 		}
 		else if (animationState == AnimationState.DONE)
 		{
-			movePartsOut();
+			if(this.removingBroken){
+				removeBrokenGlassFromLine();
+			}else
+				movePartsOut();
 		}
 
 		repaint();
@@ -321,6 +326,38 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 		}
 
 	}
+	
+	public void removeBrokenGlass(){
+		this.removingBroken = true;
+	}
+	
+	private void removeBrokenGlassFromLine(){
+		
+		if (direction.equals(ConveyorDirections.DOWN))
+		{
+			guiPart.setCenterLocation(guiPart.getCenterX()+1, guiPart.getCenterY());
+		}
+		else if (direction.equals(ConveyorDirections.UP))
+		{
+			guiPart.setCenterLocation(guiPart.getCenterX()+1, guiPart.getCenterY());
+		}
+		else if (direction.equals(ConveyorDirections.LEFT))
+		{
+			guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY()+1);
+		}
+		else
+		{
+			guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY()+1);
+		}
+		if (!guiPart.getBounds().intersects(getBounds()))
+		{
+			guiPart = null;
+			animationState = AnimationState.IDLE;
+			transducer.fireEvent(channel, TEvent.WORKSTATION_RELEASE_FINISHED, null);
+		}
+
+		
+	}
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args)
@@ -337,6 +374,9 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 			{
 				animationState = AnimationState.DONE;
 				releasePart = true;
+			}
+			if(event == TEvent.WORKSTATION_REMOVE_BROKEN_GLASS){
+				this.removingBroken = true;
 			}
 		}
 
