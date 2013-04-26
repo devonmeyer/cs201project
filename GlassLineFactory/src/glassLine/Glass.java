@@ -10,6 +10,8 @@ public class Glass {
 	 */
 	private int ID;    
 	
+	public boolean broken;
+	
 	private List<String> processes; // This contains the list of processes to be
 									// performed on glass
 	public GUIGlass myGui;

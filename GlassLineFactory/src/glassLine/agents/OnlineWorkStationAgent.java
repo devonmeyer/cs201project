@@ -46,8 +46,6 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 
 
 
-
-
 	private class MyGlass {
 		private Glass g;
 		private GlassState state;
