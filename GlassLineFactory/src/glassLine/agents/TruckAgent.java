@@ -157,10 +157,7 @@ public class TruckAgent extends Agent implements Machine {
 	}
 
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if(outofgas){
-			return;
-		}
-		
+
 		if (channel == TChannel.TRUCK) {
 			if (event == TEvent.TRUCK_GUI_LOAD_FINISHED) {
 				this.waitLoadAnimation.release();
