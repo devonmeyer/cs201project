@@ -98,7 +98,7 @@ public class GUIBin extends GuiComponent
 		if (event == TEvent.BIN_CREATE_PART)
 		{
 			GUIGlass part = new GUIGlass();
-			parent.getParent().cPanel.getGlassSelectPanel().glasses.get(parent.getParent().cPanel.getGlassSelectPanel().glasses.size()).setGuiGlass(part);
+			parent.getParent().cPanel.getGlassSelectPanel().glasses.get(parent.getParent().cPanel.getGlassSelectPanel().glasses.size()-1).setGuiGlass(part);
 			this.part = part;
 			part.setCenterLocation(getCenterX(), getCenterY());
 			parent.getActivePieces().add(part);
