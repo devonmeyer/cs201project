@@ -48,7 +48,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 	public enum PopupState{none, glassready, popupready, requested, robotready, notified};
 	private PopupState pstate;
 	public enum AgentState{broken, working};
-	private boolean working = true;
+	private boolean breaknextglass = false;
 
 	private String type;
 	private int guiIndex;
@@ -141,10 +141,9 @@ public class PopupRobotAgent extends Agent implements Robot{
 		stateChanged();
 	}
 
-	public void msgRemoveBrokenGlass(){
-		print("PopupRobot" + this.type + "received msgRemoveBrokenGlass");
-		myglass.gstate = GlassState.broken;
-		stateChanged();
+	public void msgBreakNextGlass(){
+		print("PopupRobot" + this.type + "received msgBreakNextGlass");
+		breaknextglass = true;
 	}
 	/**SCHEDULER**/
 	public boolean pickAndExecuteAnAction() {
@@ -170,11 +169,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 		
 		if(myglass != null){
 			if(myglass.gstate != GlassState.none){
-				if(myglass.gstate == GlassState.broken){
-					removeBrokenGlass();
-					return true;
-				}
-	
+				
 				if(myglass.gstate == GlassState.needProcessing){
 	
 					processGlass();
@@ -318,6 +313,10 @@ public class PopupRobotAgent extends Agent implements Robot{
 					if((Integer) args[0] == this.guiIndex){
 						if(myglass.gstate != GlassState.processed){
 							myglass.gstate = GlassState.processed;
+							if(breaknextglass == true){
+								removeBrokenGlass();
+								breaknextglass = false;
+							}
 							animation.release();
 							}
 					}
@@ -338,6 +337,10 @@ public class PopupRobotAgent extends Agent implements Robot{
 					if((Integer) args[0] == this.guiIndex){
 						if(myglass.gstate != GlassState.processed){
 							myglass.gstate = GlassState.processed;
+							if(breaknextglass == true){
+								removeBrokenGlass();
+								breaknextglass = false;
+							}
 							animation.release();
 						}
 					}
@@ -357,6 +360,10 @@ public class PopupRobotAgent extends Agent implements Robot{
 					if((Integer) args[0] == this.guiIndex){
 						if(myglass.gstate != GlassState.processed){
 							myglass.gstate = GlassState.processed;
+							if(breaknextglass == true){
+								removeBrokenGlass();
+								breaknextglass = false;
+							}
 							animation.release();
 						}
 					}
