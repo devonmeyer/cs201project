@@ -18,7 +18,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 	private MyGlass myglass;
 	private Glass temp;
 	private Timer timer;
-	public enum GlassState{none,needProcessing, processing, processed, removing};
+	public enum GlassState{none,needProcessing, processing, processed, removing, broken};
 
 	private Semaphore sem;
 	public Semaphore animation;
@@ -141,6 +141,11 @@ public class PopupRobotAgent extends Agent implements Robot{
 		stateChanged();
 	}
 
+	public void msgRemoveBrokenGlass(){
+		print("PopupRobot" + this.type + "received msgRemoveBrokenGlass");
+		myglass.gstate = GlassState.broken;
+		stateChanged();
+	}
 	/**SCHEDULER**/
 	public boolean pickAndExecuteAnAction() {
 
@@ -165,6 +170,10 @@ public class PopupRobotAgent extends Agent implements Robot{
 		
 		if(myglass != null){
 			if(myglass.gstate != GlassState.none){
+				if(myglass.gstate == GlassState.broken){
+					removeBrokenGlass();
+					return true;
+				}
 	
 				if(myglass.gstate == GlassState.needProcessing){
 	
@@ -285,6 +294,13 @@ public class PopupRobotAgent extends Agent implements Robot{
 	private void notifyPopupThatRobotIsFixed(){
 		print("PopupRobot " + this.type + "action: notifyPopupThatRobotIsFixed to popup " + this.Popup.getName() + "\n");
 		Popup.msgRobotFixed(this.isTop);
+		rstate = RobotState.ready;
+	}
+	
+	private void removeBrokenGlass(){
+		print("PopupRobot " + this.type + " action: removeBrokenGlass to popup " + this.Popup.getName() + "\n");
+		myglass.gstate = GlassState.none;
+		pstate = PopupState.none;
 		rstate = RobotState.ready;
 	}
 
