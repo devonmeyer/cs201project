@@ -25,6 +25,8 @@ public class GUIBin extends GuiComponent
 	 */
 	public boolean stateEmpty;
 
+	public DisplayPanel parent;
+	
 	private enum BinState
 	{
 		CREATING, IDLE
@@ -96,11 +98,16 @@ public class GUIBin extends GuiComponent
 		if (event == TEvent.BIN_CREATE_PART)
 		{
 			GUIGlass part = new GUIGlass();
+			parent.getParent().cPanel.getGlassSelectPanel().glasses.get(parent.getParent().cPanel.getGlassSelectPanel().glasses.size()).setGuiGlass(part);
 			this.part = part;
 			part.setCenterLocation(getCenterX(), getCenterY());
 			parent.getActivePieces().add(part);
 			parent.getParent().getGuiParent().getTimer().addActionListener(part);
 			parent.add(part, DisplayPanel.ROOF_LAYER);
 		}
+	}
+	
+	public void setParent(DisplayPanel p){
+		parent = p;
 	}
 }

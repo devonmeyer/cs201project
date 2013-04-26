@@ -35,6 +35,8 @@ import transducer.Transducer;
  */
 @SuppressWarnings("serial")
 public class DisplayPanel extends JLayeredPane {
+	
+	GUIBin guiBin;
 
 	public final static Dimension size = new Dimension(1000, 880);
 	
@@ -229,13 +231,17 @@ public class DisplayPanel extends JLayeredPane {
 	
 	private void createBin(int x,int y)
 	{
-		GUIBin guiBin = new GUIBin(transducer);
+		guiBin = new GUIBin(transducer);
 		guiBin.setParent(this);
 		guiBin.setLocation(x, y);
 		this.add(guiBin,BIN_LAYER);
 		parent.getGuiParent().getTimer().addActionListener(guiBin);
 		currentComponent = guiBin;
 		
+	}
+	
+	public GUIBin getGuiBin(){
+		return guiBin;
 	}
 	
 	private void createBreakout(int x,int y)
