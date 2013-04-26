@@ -374,6 +374,25 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		/*this.transducer.fireEvent(TChannel.
 		 * 
 		 */
+		Object args[] = new Object[1];
+		args[0] = this.guiIndex;
+		if(type.equals("BREAKOUT"))
+			this.transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_REMOVE_BROKEN_GLASS, args); 
+		else if (type.equals("MANUAL_BREAKOUT"))
+			this.transducer.fireEvent(TChannel.MANUAL_BREAKOUT, TEvent.WORKSTATION_REMOVE_BROKEN_GLASS, args); 
+		else if (type.equals("CUTTER"))
+			this.transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_REMOVE_BROKEN_GLASS, args); 
+		else if (type.equals("WASHER"))
+			this.transducer.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_REMOVE_BROKEN_GLASS, args); 
+		else if (type.equals("UV_LAMP"))
+			this.transducer.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_REMOVE_BROKEN_GLASS, args); 
+		else if (type.equals("OVEN"))
+			this.transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_REMOVE_BROKEN_GLASS, args); 
+		else if (type.equals("PAINTER"))
+			this.transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_REMOVE_BROKEN_GLASS, args); 
+		
+		
+		
 	}
 
 
