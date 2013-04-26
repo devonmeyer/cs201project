@@ -46,10 +46,13 @@ public class TruckAgent extends Agent implements Machine {
 	/** MESSAGES **/
 
 	public void msgToggleTruckOutOfGas(){
-		if(!outofgas)
+		
+		if(!outofgas){
 			outofgas=true;
-		else{
+			print ("Truck out of gas.");
+		}else{
 			outofgas=false;
+			print("Truck refilled.");
 			
 		}
 		stateChanged();
