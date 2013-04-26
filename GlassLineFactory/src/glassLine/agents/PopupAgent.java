@@ -246,7 +246,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
     
     public void msgRobotFixed(boolean isTop){
-    	
+    	print("ROBOT FIXED");
     	if(isTop){
     		robotTopGlassState = GlassState.NONE;
     	} else {

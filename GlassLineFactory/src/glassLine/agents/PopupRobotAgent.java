@@ -149,7 +149,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 			return true;
 		}
 		
-		if(pstate == PopupState.none && rstate == RobotState.fixed){
+		if(rstate == RobotState.fixed){
 			notifyPopupThatRobotIsFixed();
 			return true;
 		}
