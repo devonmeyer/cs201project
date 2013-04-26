@@ -299,6 +299,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 	
 	private void removeBrokenGlass(){
 		print("PopupRobot " + this.type + " action: removeBrokenGlass to popup " + this.Popup.getName() + "\n");
+		myglass.glass.getGui().msgPartBroken();
 		myglass.gstate = GlassState.none;
 		pstate = PopupState.none;
 		rstate = RobotState.ready;
