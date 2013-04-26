@@ -209,8 +209,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		stateChanged();
 	}
 
-	public void msgBreakGlass(boolean breaking){
-		if(breaking){
+	public void msgBreakGlass(){
+		if(!this.breakingGlass){
 			print(this.type + " : Machine is breaking glass.");
 			this.breakingGlass = true;
 			
