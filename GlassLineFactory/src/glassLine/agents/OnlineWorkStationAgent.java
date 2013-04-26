@@ -170,6 +170,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		this.glassList.get(0).state = GlassState.doneProcessing;
 		if(breakingGlass){
 			this.glassList.get(0).state = GlassState.broken;
+			this.glassList.get(0).g.myGui.msgPartBroken();
 		}
 		stateChanged();
 	}
