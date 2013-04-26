@@ -18,11 +18,13 @@ public class Glass {
 	
 	public Glass(List<String> processes) {
 		this.setProcesses(processes);
+		this.broken = false;
 	}
 	
 	public Glass(int id, List<String> processes) {
 		this.setID(id);
 		this.setProcesses(processes);
+		this.broken = false;
 	}
 	
 	/** Getters and Setters **/
