@@ -61,6 +61,7 @@ public class NonNormPanel extends JPanel
 	private JTextField textField_4;
 	private JTextField textField_5;
 	private JTextField textField_6;
+	private JTextField textField_7;
 
 	/**
 	 * Creates a new HavocPanel and links the control panel to it
@@ -401,6 +402,53 @@ public class NonNormPanel extends JPanel
 		gbc_textField_5.gridy = 6;
 		buttonPanel.add(textField_5, gbc_textField_5);
 		textField_5.setColumns(10);
+		
+		JButton btnRglassbreak = new JButton("RGlassBreak");
+		GridBagConstraints gbc_btnRglassbreak = new GridBagConstraints();
+		gbc_btnRglassbreak.insets = new Insets(0, 0, 5, 5);
+		gbc_btnRglassbreak.gridx = 4;
+		gbc_btnRglassbreak.gridy = 6;
+		buttonPanel.add(btnRglassbreak, gbc_btnRglassbreak);
+		btnRglassbreak.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+								
+				String text = textField_7.getText();
+				try{
+					  int num = Integer.parseInt(text);
+					  if(parent.parent.robots.containsKey(num)){
+						  parent.parent.robots.get(num).msgRemoveBrokenGlass();
+					  } else  {
+						  System.out.println("That popup index doesn't exist. Who taught you to count?");
+					  }
+					  
+					} catch (NumberFormatException ex) {
+					  System.out.println("Please enter an integer, dumbass.");
+					}
+				
+			}
+		});
+		
+		JButton btnNewButton_8 = new JButton("Factory Quiet");
+		GridBagConstraints gbc_btnNewButton_8 = new GridBagConstraints();
+		gbc_btnNewButton_8.insets = new Insets(0, 0, 5, 5);
+		gbc_btnNewButton_8.gridx = 7;
+		gbc_btnNewButton_8.gridy = 5;
+		buttonPanel.add(btnNewButton_8, gbc_btnNewButton_8);
+		btnNewButton_8.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+								
+				System.out.println("Factory will be quiescent after no more glass");
+			}
+		});
+		
+		textField_7 = new JTextField();
+		GridBagConstraints gbc_textField_7 = new GridBagConstraints();
+		gbc_textField_7.insets = new Insets(0, 0, 5, 5);
+		gbc_textField_7.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField_7.gridx = 5;
+		gbc_textField_7.gridy = 6;
+		buttonPanel.add(textField_7, gbc_textField_7);
+		textField_7.setColumns(10);
 		
 		JLabel label_4 = new JLabel("  ");
 		GridBagConstraints gbc_label_4 = new GridBagConstraints();
