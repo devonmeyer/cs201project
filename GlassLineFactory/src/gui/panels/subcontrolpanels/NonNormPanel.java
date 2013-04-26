@@ -428,6 +428,19 @@ public class NonNormPanel extends JPanel
 			}
 		});
 		
+		JButton btnNewButton_8 = new JButton("Factory Quiet");
+		GridBagConstraints gbc_btnNewButton_8 = new GridBagConstraints();
+		gbc_btnNewButton_8.insets = new Insets(0, 0, 5, 5);
+		gbc_btnNewButton_8.gridx = 4;
+		gbc_btnNewButton_8.gridy = 5;
+		buttonPanel.add(btnNewButton_8, gbc_btnNewButton_8);
+		btnNewButton_8.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+								
+				System.out.println("Factory will be quiescent after no more glass");
+			}
+		});
+		
 		textField_7 = new JTextField();
 		GridBagConstraints gbc_textField_7 = new GridBagConstraints();
 		gbc_textField_7.insets = new Insets(0, 0, 5, 5);
