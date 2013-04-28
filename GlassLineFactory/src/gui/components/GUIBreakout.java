@@ -193,10 +193,11 @@ public class GUIBreakout extends GuiAnimationComponent
 			{
 				//nextComponent.addPart(guiPart);
 				guiPart.removeGlass();
-				guiPart = null;
+			
 				//guiPart.removeGlass();
 				animationState = AnimationState.IDLE;
 				transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_RELEASE_FINISHED, null);
+				guiPart = null;
 			}
 		}
 
