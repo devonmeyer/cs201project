@@ -329,11 +329,11 @@ public class PopupAgent extends Agent implements Popup, Machine {
                 return true;
 
             }
-            if((robotTopGlassState == GlassState.NONE || robotBottomGlassState == GlassState.NONE)){
+            /*if((robotTopGlassState == GlassState.NONE || robotBottomGlassState == GlassState.NONE)){
             	
             	lowerPopup();
             	return true;
-            }
+            }*/
 
 
         }
