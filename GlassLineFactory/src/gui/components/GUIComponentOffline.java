@@ -186,6 +186,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 				if(!this.part.stateBroken){
 					nextComponent.addPart(part);
 				}else{
+					System.out.println("Glass being removed");
 					this.part.removeGlass();
 					this.part = null;
 				}
