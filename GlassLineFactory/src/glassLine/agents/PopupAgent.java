@@ -143,6 +143,19 @@ public class PopupAgent extends Agent implements Popup, Machine {
    Messaging
 
     */
+    
+    public void msgGlassBroken(boolean isTop){
+    	 if(isTop){
+             robotTopGlassState = GlassState.NONE;
+         } else {
+             robotBottomGlassState = GlassState.NONE;
+         }
+    	 myGlassState = GlassState.NONE;
+    	 if(popupEngaged){
+    		 popupEngaged = false;
+    	 }
+    	 stateChanged();
+    }
 
     public void msgToggleJamPopup(){
     	if(!popupJammed){
