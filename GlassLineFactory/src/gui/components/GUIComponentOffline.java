@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 
@@ -189,8 +191,17 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 					nextComponent.addPart(part);
 				}else{
 					System.out.println("Glass being removed");
-					this.part.removeGlass();
-					this.part = null;
+					part.setCenterLocation(part.getCenterX()+1, part.getCenterY() );
+					Timer timer = new Timer();
+					timer.schedule(new TimerTask(){
+						public void run(){//this routine is like a message reception    
+							part.removeGlass();
+							part = null;
+						}
+					}, 10000);
+					
+					
+					
 				}
 				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_RELEASE_FINISHED, args);
 				return;
