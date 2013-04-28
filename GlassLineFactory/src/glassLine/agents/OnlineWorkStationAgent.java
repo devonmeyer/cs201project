@@ -371,7 +371,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	public void removeBrokenGlassFromLine(){
 		/*this.transducer.fireEvent(TChannel.
 		 * 
-		 */
+		 
 		Object args[] = new Object[1];
 		args[0] = this.guiIndex;
 		if(type.equals("BREAKOUT"))
@@ -389,7 +389,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		else if (type.equals("PAINTER"))
 			this.transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_REMOVE_BROKEN_GLASS, args); 
 		
-		
+		*/
 		
 	}
 
