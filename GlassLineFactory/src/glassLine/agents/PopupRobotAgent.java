@@ -295,11 +295,6 @@ public class PopupRobotAgent extends Agent implements Robot{
 	private void removeBrokenGlass(){
 		print("PopupRobot " + this.type + " action: removeBrokenGlass to popup " + this.Popup.getName() + "\n");
 		myglass.glass.getGui().msgPartBroken();
-		myglass.glass.broken = true;
-		myglass.gstate = GlassState.none;
-		pstate = PopupState.none;
-		rstate = RobotState.ready;
-		myglass.glass = null;
 		//animation
 		Object args[] = new Object[1];
 		args[0] = this.guiIndex;
@@ -309,12 +304,19 @@ public class PopupRobotAgent extends Agent implements Robot{
 			this.transducer.fireEvent(TChannel.CROSS_SEAMER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
 		else if (type.equals("GRINDER"))
 			this.transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_RELEASE_GLASS, args);
-		System.out.println("Acquiring");
-		try {
-			animation.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		System.out.println("Acquiring");
+//		try {
+//			animation.acquire();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+		
+		System.out.println("popup robot release finished");
+		myglass.glass.broken = true;
+		myglass.gstate = GlassState.none;
+		pstate = PopupState.none;
+		rstate = RobotState.ready;
+		myglass.glass = null;
 		this.Popup.msgGlassBroken(this.isTop);
 	}
 
