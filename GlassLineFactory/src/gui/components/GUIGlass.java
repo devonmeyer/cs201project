@@ -388,6 +388,11 @@ public class GUIGlass extends GuiComponent implements Serializable
 			holderImage = new ImageIcon(filePath);
 		}
 	}
+	
+	public void removeGlass(){
+		setIcon(null);
+		
+	}
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		

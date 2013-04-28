@@ -169,6 +169,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		if(breakingGlass){
 			this.glassList.get(0).state = GlassState.broken;
 			this.glassList.get(0).g.myGui.msgPartBroken();
+			this.glassList.get(0).g.broken = true;
 		}
 		stateChanged();
 	}
@@ -390,6 +391,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 			this.transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_REMOVE_BROKEN_GLASS, args); 
 		
 		*/
+		
+		
 		
 	}
 
