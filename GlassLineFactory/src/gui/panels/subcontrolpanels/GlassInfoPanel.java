@@ -67,10 +67,15 @@ public class GlassInfoPanel extends JPanel
 	public void updateGlassInfo(Glass g){
 		List<String> stations = g.getProcesses();
 		String temp = "";
-		for(int i=0; i < stations.size();i++){
-			temp += stations.get(i);
-			if((i+1) < stations.size())
-				temp += ", ";
+		if(!g.broken){
+			for(int i=0; i < stations.size();i++){
+				temp += stations.get(i);
+				if((i+1) < stations.size())
+					temp += ", ";
+			}
+		}
+		else{
+			temp += "GLASS BROKEN";
 		}
 		
 		glassID.setText("Glass ID: " + g.getID());

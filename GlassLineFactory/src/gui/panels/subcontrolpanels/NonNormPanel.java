@@ -214,7 +214,25 @@ public class NonNormPanel extends JPanel
 		gbc_textField_2.gridy = 1;
 		buttonPanel.add(textField_2, gbc_textField_2);
 		textField_2.setColumns(10);
-		
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+								
+				String text = textField_2.getText();
+				try{
+					  int num = Integer.parseInt(text);
+					  if(parent.parent.machines.containsKey(num)){
+						  parent.parent.machines.get(num).msgBreakGlass();
+
+					  } else {
+						  System.out.println("That machine index doesn't exist. Who taught you to count?");
+					  }
+					  
+					} catch (NumberFormatException ex) {
+					  System.out.println("Please enter an integer, dumbass.");
+					}
+				
+			}
+		});
 		JButton btnNewButton_1 = new JButton("Truck Broke");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
