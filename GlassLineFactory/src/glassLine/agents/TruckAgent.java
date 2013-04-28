@@ -112,14 +112,15 @@ public class TruckAgent extends Agent implements Machine {
 	/** SCHEDULER **/
 	public boolean pickAndExecuteAnAction() {
 		
-		if (cstate == ConveyorState.requestingToSend) {
-			checkIfReadyToReceiveGlass();
-			return true;
-		}
 		if (!this.glassList.isEmpty() && tstate == TruckState.loaded) {
 			processGlass();
 			return true;
 		}
+		if (cstate == ConveyorState.requestingToSend) {
+			checkIfReadyToReceiveGlass();
+			return true;
+		}
+		
 
 		return false;
 	}
