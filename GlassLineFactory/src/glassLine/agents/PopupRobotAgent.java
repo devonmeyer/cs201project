@@ -300,6 +300,21 @@ public class PopupRobotAgent extends Agent implements Robot{
 		pstate = PopupState.none;
 		rstate = RobotState.ready;
 		myglass.glass = null;
+		//animation
+		Object args[] = new Object[1];
+		args[0] = this.guiIndex;
+		if(type.equals("DRILL"))
+			this.transducer.fireEvent(TChannel.DRILL, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("CROSS_SEAMER"))
+			this.transducer.fireEvent(TChannel.CROSS_SEAMER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("GRINDER"))
+			this.transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_RELEASE_GLASS, args);
+		System.out.println("Acquiring");
+		try {
+			animation.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		this.Popup.msgGlassBroken(this.isTop);
 	}
 
