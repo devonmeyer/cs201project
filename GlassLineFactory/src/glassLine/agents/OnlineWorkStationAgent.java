@@ -181,7 +181,8 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 	 **/
 	public void msgGlassRemoved(){
 		print(this.type + " : Glass has been removed.");
-		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
+		if(!this.glassList.get(0).g.broken)
+			followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
 		this.glassList.remove(0);
 		this.followingAgentState = FollowingAgentState.none;
 		this.waitForReleaseAnimation.release();

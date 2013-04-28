@@ -211,6 +211,7 @@ public class GUIManualBreakout extends GuiAnimationComponent
 			if (!guiPart.getBounds().intersects(getBounds()))
 			{
 				//nextComponent.addPart(guiPart);
+				guiPart.removeGlass();
 				guiPart = null;
 				//guiPart.removeGlass();
 				animationState = AnimationState.IDLE;

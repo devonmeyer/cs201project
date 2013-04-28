@@ -340,6 +340,7 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 			if (!guiPart.getBounds().intersects(getBounds()))
 			{
 				//nextComponent.addPart(guiPart);
+				guiPart.removeGlass();
 				guiPart = null;
 				animationState = AnimationState.IDLE;
 				transducer.fireEvent(channel, TEvent.WORKSTATION_RELEASE_FINISHED, null);

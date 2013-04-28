@@ -389,7 +389,10 @@ public class GUIGlass extends GuiComponent implements Serializable
 		}
 	}
 	
-
+	public void removeGlass(){
+		setIcon(null);
+		
+	}
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		
