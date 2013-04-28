@@ -1,8 +1,6 @@
 
 package gui.components;
 
-import gui.components.GuiAnimationComponent.AnimationState;
-
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -111,47 +109,19 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 		}
 	}
 
-
-	private void movePartOut()
-	{
-
-
-		part.setCenterLocation(part.getCenterX()+1, part.getCenterY());
-
-		if (!part.getBounds().intersects(getBounds()))
-		{
-			//nextComponent.addPart(guiPart);
-			part.removeGlass();
-			part = null;
-			//guiPart.removeGlass();
-			animationState = AnimationState.IDLE;
-			Object[] args = new Object[1];
-			args[0] = index;
-			transducer.fireEvent(channel, TEvent.WORKSTATION_RELEASE_FINISHED, args);
-		}
-
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent arg0)
 	{
-		if(this.part != null){
-			if(!this.part.stateBroken){
-				if (animationState.equals(AnimationState.MOVING))
-				{
-					if (part != null)
-					{
-						movePartIn();
-					}
-				}
-				if (animationState.equals(AnimationState.ANIMATING))
-				{
-					doAnimate();
-				}
-			}else{
-				if(part != null)
-					movePartOut();
+		if (animationState.equals(AnimationState.MOVING))
+		{
+			if (part != null)
+			{
+				movePartIn();
 			}
+		}
+		if (animationState.equals(AnimationState.ANIMATING))
+		{
+			doAnimate();
 		}
 	}
 
@@ -173,7 +143,6 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 
 	private void movePartIn()
 	{
-
 		if (part.getCenterX() < getCenterX())
 			part.setCenterLocation(part.getCenterX() + 1, part.getCenterY());
 		else if (part.getCenterX() > getCenterX())
@@ -190,15 +159,6 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			args[0] = index;
 			transducer.fireEvent(channel, TEvent.WORKSTATION_LOAD_FINISHED, args);
 		}
-
-
-		if (part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY())
-		{
-			Object[] args = new Object[1];
-			args[0] = index;
-			transducer.fireEvent(channel, TEvent.WORKSTATION_LOAD_FINISHED, args);
-		}
-
 	}
 
 	@Override
@@ -220,13 +180,11 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			{
 				//added by monroe
 				//animationState = AnimationState.DONE;
-				if(!part.stateBroken){
-					this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_RELEASE_FINISHED, args);
-					animationState = AnimationState.IDLE;
-					//above added by monroe
+				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_RELEASE_FINISHED, args);
+				animationState = AnimationState.IDLE;
+				//above added by monroe
 
-					nextComponent.addPart(part);
-				}
+				nextComponent.addPart(part);
 				return;
 			}
 
