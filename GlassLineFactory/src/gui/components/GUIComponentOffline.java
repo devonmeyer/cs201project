@@ -183,7 +183,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_RELEASE_FINISHED, args);
 				animationState = AnimationState.IDLE;
 				//above added by monroe
-				if(this.part.stateBroken){
+				if(!this.part.stateBroken){
 					nextComponent.addPart(part);
 				}else{
 					this.part.removeGlass();
