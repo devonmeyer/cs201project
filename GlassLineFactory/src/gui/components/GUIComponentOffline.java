@@ -135,21 +135,23 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	@Override
 	public void actionPerformed(ActionEvent arg0)
 	{
-		if(!this.part.stateBroken){
-			if (animationState.equals(AnimationState.MOVING))
-			{
-				if (part != null)
+		if(this.part != null){
+			if(!this.part.stateBroken){
+				if (animationState.equals(AnimationState.MOVING))
 				{
-					movePartIn();
+					if (part != null)
+					{
+						movePartIn();
+					}
 				}
+				if (animationState.equals(AnimationState.ANIMATING))
+				{
+					doAnimate();
+				}
+			}else{
+				if(part != null)
+					movePartOut();
 			}
-			if (animationState.equals(AnimationState.ANIMATING))
-			{
-				doAnimate();
-			}
-		}else{
-			if(part != null)
-				movePartOut();
 		}
 	}
 
