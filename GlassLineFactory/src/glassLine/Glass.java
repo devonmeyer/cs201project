@@ -55,4 +55,8 @@ public class Glass {
 	public void breakGlass(){
 		myGui.msgPartBroken();
 	}
+	
+//	public void removeGuiGlass(){
+//		myGui.
+//	}
 }

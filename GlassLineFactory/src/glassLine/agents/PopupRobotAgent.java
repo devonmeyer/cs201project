@@ -299,6 +299,8 @@ public class PopupRobotAgent extends Agent implements Robot{
 		myglass.gstate = GlassState.none;
 		pstate = PopupState.none;
 		rstate = RobotState.ready;
+		myglass.glass = null;
+		this.Popup.msgGlassBroken(this.isTop);
 	}
 
 	public void finishTransfer(){
