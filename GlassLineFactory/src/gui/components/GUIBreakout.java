@@ -1,6 +1,8 @@
 
 package gui.components;
 
+import gui.components.GuiAnimationComponent.AnimationState;
+
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
@@ -146,28 +148,55 @@ public class GUIBreakout extends GuiAnimationComponent
 	private void movePartsOut()
 	{
 
-		if (direction.equals(ConveyorDirections.DOWN))
-		{
-			guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY() + 1);
-		}
-		else if (direction.equals(ConveyorDirections.UP))
-		{
-			guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY() - 1);
-		}
-		else if (direction.equals(ConveyorDirections.LEFT))
-		{
-			guiPart.setCenterLocation(guiPart.getCenterX() - 1, guiPart.getCenterY());
-		}
-		else
-		{
-			guiPart.setCenterLocation(guiPart.getCenterX() + 1, guiPart.getCenterY());
-		}
-		if (!guiPart.getBounds().intersects(getBounds()))
-		{
-			nextComponent.addPart(guiPart);
-			guiPart = null;
-			animationState = AnimationState.IDLE;
-			transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_RELEASE_FINISHED, null);//monroe added
+		if(!guiPart.stateBroken){
+			if (direction.equals(ConveyorDirections.DOWN))
+			{
+				guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY() + 1);
+			}
+			else if (direction.equals(ConveyorDirections.UP))
+			{
+				guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY() - 1);
+			}
+			else if (direction.equals(ConveyorDirections.LEFT))
+			{
+				guiPart.setCenterLocation(guiPart.getCenterX() - 1, guiPart.getCenterY());
+			}
+			else
+			{
+				guiPart.setCenterLocation(guiPart.getCenterX() + 1, guiPart.getCenterY());
+			}
+			if (!guiPart.getBounds().intersects(getBounds()))
+			{
+				nextComponent.addPart(guiPart);
+				guiPart = null;
+				animationState = AnimationState.IDLE;
+				transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_RELEASE_FINISHED, null);
+			}
+		}else{
+			if (direction.equals(ConveyorDirections.DOWN))
+			{
+				guiPart.setCenterLocation(guiPart.getCenterX()+1, guiPart.getCenterY());
+			}
+			else if (direction.equals(ConveyorDirections.UP))
+			{
+				guiPart.setCenterLocation(guiPart.getCenterX()-1, guiPart.getCenterY());
+			}
+			else if (direction.equals(ConveyorDirections.LEFT))
+			{
+				guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY()+1);
+			}
+			else
+			{
+				guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY()-1);
+			}
+			if (!guiPart.getBounds().intersects(getBounds()))
+			{
+				//nextComponent.addPart(guiPart);
+				guiPart = null;
+				//guiPart.removeGlass();
+				animationState = AnimationState.IDLE;
+				transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_RELEASE_FINISHED, null);
+			}
 		}
 
 	}

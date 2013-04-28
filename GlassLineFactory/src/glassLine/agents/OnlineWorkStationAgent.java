@@ -392,7 +392,7 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		
 		*/
 		
-		print(this.type + " : Removing glass");
+		print(this.type + " :  Removing broken glass");
 
 
 		this.glassList.get(0).state = GlassState.none;

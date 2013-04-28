@@ -331,17 +331,16 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 			}
 			else if (direction.equals(ConveyorDirections.LEFT))
 			{
-				guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY()-1);
+				guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY()+1);
 			}
 			else
 			{
-				guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY()+1);
+				guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY()-1);
 			}
 			if (!guiPart.getBounds().intersects(getBounds()))
 			{
-				nextComponent.addPart(guiPart);
+				//nextComponent.addPart(guiPart);
 				guiPart = null;
-				guiPart.removeGlass();
 				animationState = AnimationState.IDLE;
 				transducer.fireEvent(channel, TEvent.WORKSTATION_RELEASE_FINISHED, null);
 			}
@@ -362,6 +361,7 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 			}
 			if (event == TEvent.WORKSTATION_RELEASE_GLASS)
 			{
+				
 				animationState = AnimationState.DONE;
 				releasePart = true;
 			}
