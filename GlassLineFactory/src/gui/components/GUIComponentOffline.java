@@ -165,7 +165,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	public void eventFired(TChannel channel, TEvent event, Object[] args)
 	{
 		
-		System.out.println("in release glass : " + this.part.stateBroken + args[0]);
+		System.out.println("in release glass : " + this.part.stateBroken);
 		if (((Integer)args[0]).equals(index))
 		{
 			if (event == TEvent.WORKSTATION_DO_ACTION)
