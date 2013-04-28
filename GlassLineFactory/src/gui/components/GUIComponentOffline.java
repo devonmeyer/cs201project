@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 
@@ -135,22 +137,11 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	@Override
 	public void actionPerformed(ActionEvent arg0)
 	{
-		if(this.part != null){
-			if(!this.part.stateBroken){
-				if (animationState.equals(AnimationState.MOVING))
-				{
-					if (part != null)
-					{
-						movePartIn();
-					}
-				}
-				if (animationState.equals(AnimationState.ANIMATING))
-				{
-					doAnimate();
-				}
-			}else{
-				if(part != null)
-					movePartOut();
+		if (animationState.equals(AnimationState.MOVING))
+		{
+			if (part != null)
+			{
+				movePartIn();
 			}
 		}
 	}
@@ -226,6 +217,20 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 					//above added by monroe
 
 					nextComponent.addPart(part);
+
+				}else{
+					System.out.println("Glass being removed");
+					part.setCenterLocation(part.getCenterX()+1, part.getCenterY() );
+					Timer timer = new Timer();
+					timer.schedule(new TimerTask(){
+						public void run(){//this routine is like a message reception    
+							part.removeGlass();
+							part = null;
+						}
+					}, 10000);
+					
+					
+					
 				}
 				return;
 			}
