@@ -233,7 +233,7 @@ public class NonNormPanel extends JPanel
 				
 			}
 		});
-		JButton btnNewButton_1 = new JButton("Truck Broke");
+		JButton btnNewButton_1 = new JButton("Truck Breaks");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 								
