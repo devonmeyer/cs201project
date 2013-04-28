@@ -392,6 +392,35 @@ public class OnlineWorkStationAgent extends Agent implements Machine{
 		
 		*/
 		
+		print(this.type + " : Removing glass");
+
+
+		this.glassList.get(0).state = GlassState.none;
+		this.followingAgentState = FollowingAgentState.receiving;
+		//		followingConveyorAgent.msgHereIsGlass(this.glassList.get(0).g);
+		Object args[] = new Object[1];
+		args[0] = this.guiIndex;
+		if(type.equals("BREAKOUT"))
+			this.transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("MANUAL_BREAKOUT"))
+			this.transducer.fireEvent(TChannel.MANUAL_BREAKOUT, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("CUTTER"))
+			this.transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("WASHER"))
+			this.transducer.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("UV_LAMP"))
+			this.transducer.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("OVEN"))
+			this.transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		else if (type.equals("PAINTER"))
+			this.transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_RELEASE_GLASS, args); 
+		try {
+			this.waitForReleaseAnimation.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		
 	}
