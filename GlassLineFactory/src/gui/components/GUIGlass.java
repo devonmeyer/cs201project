@@ -245,7 +245,8 @@ public class GUIGlass extends GuiComponent implements Serializable
 	 */
 	public void setupRect()
 	{
-		glassRect.setRect(getX(), getY(), getIcon().getIconWidth(), getIcon().getIconHeight());
+		if(getIcon()!= null)
+			glassRect.setRect(getX(), getY(), getIcon().getIconWidth(), getIcon().getIconHeight());
 	}
 	
 	/**
