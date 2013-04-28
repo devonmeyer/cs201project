@@ -183,6 +183,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 				
 				animationState = AnimationState.IDLE;
 				//above added by monroe
+				System.out.println("in release glass : " + this.part.stateBroken);
 				if(!this.part.stateBroken){
 					nextComponent.addPart(part);
 				}else{
