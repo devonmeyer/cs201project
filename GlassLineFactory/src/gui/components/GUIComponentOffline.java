@@ -198,7 +198,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 							part.removeGlass();
 							part = null;
 						}
-					}, 10000);
+					}, 1000);
 					
 					
 					
