@@ -183,7 +183,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			{
 				//added by monroe
 				//animationState = AnimationState.DONE;
-				
+
 				animationState = AnimationState.IDLE;
 				//above added by monroe
 				System.out.println("in release glass : " + this.part.stateBroken);
@@ -192,16 +192,13 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 				}else{
 					System.out.println("Glass being removed");
 					part.setCenterLocation(part.getCenterX()+1, part.getCenterY() );
-					Timer timer = new Timer();
-					timer.schedule(new TimerTask(){
-						public void run(){//this routine is like a message reception    
-							part.removeGlass();
-							part = null;
-						}
-					}, 1000);
-					
-					
-					
+
+					part.removeGlass();
+					part = null;
+
+
+
+
 				}
 				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_RELEASE_FINISHED, args);
 				return;
