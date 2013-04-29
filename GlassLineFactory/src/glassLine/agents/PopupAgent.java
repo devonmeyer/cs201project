@@ -243,7 +243,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
     
     public void msgRobotBroken(boolean isTop){
-    	
+    	System.out.println("Robot broken : top? "+isTop);
     	if(isTop){
     		robotTopGlassState = GlassState.PROCESSING;
     	} else {
@@ -329,11 +329,11 @@ public class PopupAgent extends Agent implements Popup, Machine {
                 return true;
 
             }
-            if((robotTopGlassState == GlassState.NONE || robotBottomGlassState == GlassState.NONE)){
+            /*if((robotTopGlassState == GlassState.NONE || robotBottomGlassState == GlassState.NONE)){
             	
             	lowerPopup();
             	return true;
-            }
+            }*/
 
 
         }
