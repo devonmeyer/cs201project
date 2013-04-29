@@ -243,7 +243,7 @@ public class PopupAgent extends Agent implements Popup, Machine {
     }
     
     public void msgRobotBroken(boolean isTop){
-    	
+    	System.out.println("Robot broken : top? "+isTop);
     	if(isTop){
     		robotTopGlassState = GlassState.PROCESSING;
     	} else {

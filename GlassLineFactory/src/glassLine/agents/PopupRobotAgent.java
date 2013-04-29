@@ -132,7 +132,7 @@ public class PopupRobotAgent extends Agent implements Robot{
 	public void msgBreakRobot(){
 		print("PopupRobot" + this.type + "received msgBreakRobot");
 		this.rstate = RobotState.broken;
-		stateChanged();
+		this.notifyPopupThatRobotIsBroken();
 	}
 	
 	public void msgFixRobot(){
@@ -157,12 +157,6 @@ public class PopupRobotAgent extends Agent implements Robot{
 		
 		if(rstate == RobotState.fixed){
 			notifyPopupThatRobotIsFixed();
-			return true;
-		}
-		
-		if(pstate == PopupState.glassready && rstate == RobotState.broken){
-
-			notifyPopupThatRobotIsBroken();
 			return true;
 		}
 		
